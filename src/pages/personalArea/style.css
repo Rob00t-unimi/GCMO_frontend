@@ -1,0 +1,57 @@
+.notLoggedBanner {
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    height: 20rem;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.notLoggedBanner p {
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.infoUser {
+    height: 25vh;
+    background-image: url('../../assets/wallpaper_16.9.jpg');
+    background-size: cover;
+    background-position-y: 70%;
+}
+
+.immagineProfilo {
+    width: 15rem;
+    height: 15rem;
+    display: flex;
+    margin: auto;
+    margin-left: 3rem;
+}
+
+.immagineProfilo img {
+    border-radius: 50%;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.contenuto {
+    background-color: rgb(195, 247, 229);
+    padding: 2rem;
+    width: 100%;
+    min-height: 70.1vh
+}
+
+.filter {
+    margin: 5px;
+    width: 125px;
+    border-color:#429baa;
+}
+
+.search {
+    width: 25%;
+    margin-left: 9%;
+    margin-right: 1rem;
+}
+
