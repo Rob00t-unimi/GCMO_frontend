@@ -4,6 +4,7 @@ import { Button, ListGroup, Modal } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
 import  'bootstrap/dist/css/bootstrap.min.css' ;
 import './style.css';
+import refreshToken from '../../util/refreshToken'
 
 const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4';
 const spotifyApi = new SpotifyWebApi({
@@ -77,7 +78,7 @@ function ModalCreatePlaylist({show, onClose}) {
             })
             .catch(e => {
                 console.log(e.response.status);
-                //refresh token
+                refreshToken()
             })
         }  else {
             spotifyApi.createPlaylist(title, {description: description, public: isPublic})
@@ -86,7 +87,7 @@ function ModalCreatePlaylist({show, onClose}) {
             })
             .catch(e => {
                 console.log( e.response.status);
-                //refresh token
+                refreshToken()
             })
         }
     }
@@ -104,7 +105,7 @@ function ModalCreatePlaylist({show, onClose}) {
             })
             .catch(e => {
                 console.log(e.response.status);
-                //refresh token
+                refreshToken()
             })
         }  else {
             spotifyApi.createPlaylist(title, {description: description, public: isPublic})
@@ -118,7 +119,7 @@ function ModalCreatePlaylist({show, onClose}) {
             })
             .catch(e => {
                 console.log(e.response.status);
-                //refresh token
+                refreshToken()
             })
         }
     }

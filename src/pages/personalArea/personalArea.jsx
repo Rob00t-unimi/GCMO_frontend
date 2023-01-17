@@ -8,6 +8,7 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import { Button, Container, Form, ListGroup, Modal } from 'react-bootstrap';
 import { PlusCircle } from 'react-bootstrap-icons';
 import ModalCreatePlaylist from "../../components/ModalCreatePlaylist/modalCreatePlaylist";
+import refreshToken from '../../util/refreshToken'
 //import Playlist from "../../components/playlist/Playlist";
 
 
@@ -48,7 +49,7 @@ function PersonalArea() {
         })
         .catch(err => {
             console.log(err)      //se ci sono stati errori refresho il token
-            //refresh token
+            refreshToken()
         })
 
   }, [accessToken])
@@ -76,7 +77,7 @@ function PersonalArea() {
       })
       .catch(err => {
         console.log(err)
-        //refresh token
+        refreshToken()
       })
   }
 

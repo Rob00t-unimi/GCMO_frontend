@@ -1,11 +1,26 @@
-function RefreshToken() {
+import axios from 'axios';
+
+const SERVER_BASIC_URL = 'http://localhost:9000';
+
+export default function refreshToken() {
     
-    const expiresAt = localStorage.getItem('expiresAt') - 1000*60*5     //metto un offset aòlla scadenza; lo faccio scadere 5 min prima
-    
-    if (Date.now() < expiresAt) {
-        return
+    const refreshToken = localStorage.getItem('refreshToken')
+
+    if (!refreshToken) {
+        window.location='/login';
+        return;
     }
+    return axios.post(`${SERVER_BASIC_URL}/refresh`, {
+                refreshToken
+            })
+            .then( res => {
+                console.log(res.data)
+                localStorage.setItem('expiresIn', res.data.expiresIn)
+                localStorage.setItem('accessToken', res.data.accessToken)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
 
-    //procedura per il refresh
+}
 
-} 
