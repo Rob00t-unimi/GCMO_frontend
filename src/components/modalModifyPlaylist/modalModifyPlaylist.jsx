@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button, ListGroup, Modal } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
 import  'bootstrap/dist/css/bootstrap.min.css' ;
-import './style.css';
+import '../ModalCreatePlaylist/style.css'
 import refreshToken from '../../util/refreshToken'
 
 const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4';
@@ -11,7 +11,7 @@ const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID
 });
 
-function ModalCreatePlaylist({show, onClose}) {
+function ModalModifyPlaylist({show, onClose, playlist}) {
 
     const accessToken = localStorage.getItem('accessToken');
 
@@ -20,18 +20,9 @@ function ModalCreatePlaylist({show, onClose}) {
         spotifyApi.setAccessToken(accessToken);
     }, [accessToken])
 
-
-
-    const [isPublic, setIsPublic] = useState(false)
-    const [title, setTitle] = useState('')
+    const [isPublic, setIsPublic] = useState(playlist.public)
+    const [title, setTitle] = useState(playlist.name)
     const [description, setDescription] = useState('')
-
-    function close() {      
-        setIsPublic(false);
-        setTitle('')
-        setDescription('')
-        onClose();
-    }
 
 
     return(
@@ -39,7 +30,7 @@ function ModalCreatePlaylist({show, onClose}) {
             <Modal className='modal' show={show} size='xl' centered >
 
                 <Modal.Header className='bg-dark text-light' >
-                    <Modal.Title>CREA LA TUA PLAYLIST</Modal.Title>
+                    <Modal.Title>MODIFICA LA TUA PLAYLIST</Modal.Title>
                     <Button className='btn-light' onClick={close}>Chiudi</Button>
                 </Modal.Header>
 
@@ -63,67 +54,43 @@ function ModalCreatePlaylist({show, onClose}) {
 
                 <Modal.Footer className='d-flex justify-content-center bg-dark text-light'>
                     <Button className='btn-light btn-lg' onClick={async () => await onConfirmFunction()}> Salva </Button>
-                    <Button className='btn-success btn-lg' onClick={async () => await onConfirmFunctionAndGo()}> Aggiungi brani </Button>
                 </Modal.Footer>
             </Modal>
         </>
     )
 
+    function close(){
+        if (title===''||title==null) {
+            setTitle(playlist.title)            //non funziona, per qualche motivo non reimposta i campi allo stato iniziale
+            setIsPublic(playlist.public)
+            onClose()
+            //setdescription
+        }
+        onClose()
+    }
 
     function onConfirmFunction() {
-        if (title==='') {
-            spotifyApi.createPlaylist('Titolo', { public: isPublic})
-            .then(data => {
-                alert("Playlist creata con Successo!")
-            })
-            .catch(e => {
-                console.log(e.response.status);
-                refreshToken()
-            })
+        if (title===''||title==null) {
+            setTitle(playlist.title)            //non funziona, per qualche motivo non reimposta i campi allo stato iniziale
+            setIsPublic(playlist.public)
+            alert("Le Modifiche non sono state attuate.")
+            onClose()
+            //setdescription
         }  else {
-            spotifyApi.createPlaylist(title, {description: description, public: isPublic})
-            .then(data => {
-                alert("Playlist creata con Successo!")
-            })
-            .catch(e => {
-                console.log( e.response.status);
-                refreshToken()
-            })
+            if (title!==playlist.title || isPublic!==playlist.public /*|| description==! playlist.description*/){           //anche questa condizione non viene verificata correttamente
+                spotifyApi.changePlaylistDetails(playlist.id, {name: title, description: description, public: isPublic})
+                .then(data => {
+                    alert("Playlist Modificata con Successo!")
+                })
+                .catch(e => {
+                    console.log( e.response.status);
+                    refreshToken()
+                })
+            } else {
+                alert("Playlist Modificata con Successo!")
+            }   
         }
     }
-
-    function onConfirmFunctionAndGo() {
-        if (title==='') {
-            spotifyApi.createPlaylist('Titolo', { public: isPublic})
-            .then(data => {
-                localStorage.setItem('createdPlaylist', JSON.stringify({
-                    title: data.body.name,
-                    id: data.body.id,
-                    image: data.body.images[0].url? data.body.images[0].url : null,
-                }))
-                window.location = '/navigate'
-            })
-            .catch(e => {
-                console.log(e.response.status);
-                refreshToken()
-            })
-        }  else {
-            spotifyApi.createPlaylist(title, {description: description, public: isPublic})
-            .then(data => {
-                localStorage.setItem('createdPlaylist', JSON.stringify({
-                    title: data.body.name,
-                    id: data.body.id,
-                    image: data.body.images[0].url? data.body.images[0].url : null,
-                }))
-                window.location = '/navigate'
-            })
-            .catch(e => {
-                console.log(e.response.status);
-                refreshToken()
-            })
-        }
-    }
-
 }
 
-export default ModalCreatePlaylist
+export default ModalModifyPlaylist

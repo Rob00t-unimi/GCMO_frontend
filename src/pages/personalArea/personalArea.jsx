@@ -12,10 +12,10 @@ import refreshToken from '../../util/refreshToken'
 import Playlist from "../../components/Playlist/playlist";
 
 //Test 
-/*
+import immagine from '../../assets/tests/exampleCopertina.jpg'
 import immagine2 from '../../assets/tests/exampleCopertina2.jpg'
-import immagine3 from '../../assets/tests/exampleCopertina3.jpg' */
-
+import immagine3 from '../../assets/tests/exampleCopertina3.jpg' 
+//
 
 
 const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4';
@@ -65,7 +65,7 @@ function PersonalArea() {
   const getAllPlaylist = () => {
   
   //TEST (inserisco 3 playlist fittizie)
-  /*
+  
   const playlistUno={
     image: immagine,
     id: "31123",
@@ -92,7 +92,7 @@ function PersonalArea() {
     public: true}
     
     setPlaylistResults([playlistUno, playlistDue, playlistTre])
-    setPlaylistFiltered([playlistUno, playlistDue, playlistTre]) */
+    setPlaylistFiltered([playlistUno, playlistDue, playlistTre]) //
 
     spotifyApi.getUserPlaylists({
       limit: limit

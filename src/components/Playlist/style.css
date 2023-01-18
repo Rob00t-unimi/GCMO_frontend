@@ -7,6 +7,11 @@
 }
 
 .followed, .private, .public{
-    margin-right: 1.7rem;
-    margin-top:1.7rem;
+    padding:1.5rem;
+}
+.action{
+    margin: 0.5rem;
+}
+.card div{
+    width:100%;
 }
