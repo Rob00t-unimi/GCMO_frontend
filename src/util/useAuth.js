@@ -9,8 +9,8 @@ export default function useAuth(code) {
    
 
     useEffect(() => {
-        if (!code) {return window.history.pushState({}, null,'/')
-}
+        if (!code) return window.history.pushState({}, null,'/')
+
         axios.post(`${SERVER_BASIC_URL}/login`, {
             code
         })

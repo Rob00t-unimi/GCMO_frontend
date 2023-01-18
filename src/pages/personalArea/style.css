@@ -21,11 +21,24 @@
     background-position-y: 70%;
 }
 
+.nomeUtente{
+    margin:auto;
+    font-size: 3rem;
+    position: relative;
+    right: 5.1%;
+}
+
+.benvenuto{
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
 .immagineProfilo {
     width: 15rem;
     height: 15rem;
     display: flex;
-    margin: auto;
+    margin-top:auto;
+    margin-bottom: auto;
     margin-left: 3rem;
 }
 
@@ -34,6 +47,18 @@
     width: 100%;
     height: auto;
     object-fit: cover;
+}
+
+.followers{
+    background-color: #429aaad0;
+    margin-top:1rem;
+    font-size: 1.2rem;
+    padding-left: 7px;
+    padding-right: 7px;
+    border-radius: 5px;
+    width: 9rem;
+    margin-right:auto;
+    margin-left:auto;
 }
 
 .contenuto {
@@ -55,3 +80,7 @@
     margin-right: 1rem;
 }
 
+
+.playlists{
+    padding-top: 2rem
+}

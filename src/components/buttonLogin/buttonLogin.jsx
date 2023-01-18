@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import spotifyLogo from '../../assets/SpotifyLogo02.png'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import useAuth from '../../util/useAuth';

@@ -9,7 +9,12 @@ import { Button, Container, Form, ListGroup, Modal } from 'react-bootstrap';
 import { PlusCircle } from 'react-bootstrap-icons';
 import ModalCreatePlaylist from "../../components/ModalCreatePlaylist/modalCreatePlaylist";
 import refreshToken from '../../util/refreshToken'
-//import Playlist from "../../components/playlist/Playlist";
+import Playlist from "../../components/Playlist/playlist";
+
+//Test 
+/*
+import immagine2 from '../../assets/tests/exampleCopertina2.jpg'
+import immagine3 from '../../assets/tests/exampleCopertina3.jpg' */
 
 
 
@@ -29,13 +34,14 @@ function PersonalArea() {
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("user")));   //dati attuali dell'utente
   const accessToken = localStorage.getItem('accessToken')   //estraggo il token dal local storage
 
+
 //______________________________________________________________________________________________________________________________________________________________________________________________________________________
 
   useEffect(() => {                 //quando cambia l'access token eseguo lo use effect
     if (!accessToken) return;
 
     spotifyApi.setAccessToken(accessToken);     //se l'access token non è nullo eseguo la richiesta di informazioni dell'utente e le salvo nel local storage
-    
+    console.log("1")
     spotifyApi.getMe()
         .then(result => {
             console.log(result)
@@ -44,11 +50,12 @@ function PersonalArea() {
                 id: result.body.id,
                 image: result.body.images[0].url? result.body.images[0].url : null,
                 followers: result.body.followers.total,
-                country: result.body.country,
+                //country: result.body.country,
             }))
         })
         .catch(err => {
             console.log(err)      //se ci sono stati errori refresho il token
+            console.log("a")
             refreshToken()
         })
 
@@ -56,6 +63,37 @@ function PersonalArea() {
 
   //funzione per ottenere le playlist
   const getAllPlaylist = () => {
+  
+  //TEST (inserisco 3 playlist fittizie)
+  /*
+  const playlistUno={
+    image: immagine,
+    id: "31123",
+    name: "Nome qualisasi 1",
+    ownerId: currentUser.id,
+    ownerName: currentUser.name,
+    public: false}
+  
+  const playlistDue={
+    image: immagine2,
+    id: "31323",
+    name: "Nome qualisasi 2",
+    ownerId: currentUser.id,
+    ownerName: currentUser.name,
+    public: true}
+  
+
+  const playlistTre={
+    image: immagine3,
+    id: "32123",
+    name: "Nome qualisasi 3",
+    ownerId: "dddd",
+    ownerName: "utenteACaso",
+    public: true}
+    
+    setPlaylistResults([playlistUno, playlistDue, playlistTre])
+    setPlaylistFiltered([playlistUno, playlistDue, playlistTre]) */
+
     spotifyApi.getUserPlaylists({
       limit: limit
     })
@@ -77,9 +115,15 @@ function PersonalArea() {
       })
       .catch(err => {
         console.log(err)
+        console.log("b")
         refreshToken()
       })
   }
+
+  useEffect(() => {  
+    console.log("2")   
+    getAllPlaylist()
+  }, []);
 
 //______________________________________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -130,9 +174,13 @@ function PersonalArea() {
     return(
       <>
       <NavigationBar/>
-      <div className="infoUser d-flex ">
-      {currentUser && <div className="immagineProfilo"><img src={currentUser.image} alt="immagine profilo"/></div> }
-        <div><p className="text-light text-align-center">scrivere qui tutte le variabili con le info etc... continuare da qui....</p></div>
+      <div className="infoUser d-flex flex-row">
+        {currentUser && <div className="immagineProfilo"><img src={currentUser.image} alt="immagine profilo"/></div> }
+        <div className="nomeUtente">
+          <div className="text-center" >{currentUser.name}</div>
+          <div className="benvenuto text-center">Benvenuto nella tua Area Personale</div>
+          <div className="followers text-light text-center">{"Followers: " + currentUser.followers} </div>
+        </div>
       </div>
       <div className="contenuto">
         <div className=" d-flex justify-content-end">
@@ -143,18 +191,17 @@ function PersonalArea() {
           <Form.Control className="search" type="search mb-3" placeholder="Cerca Playlist" />
           <Button className='btn-lg btn-success text-light' onClick={()=>setModal(true)}><PlusCircle/> Crea</Button>  {/*onlcick stato della modale = true quindi la apro*/}
         </div>   
+        <Container className="playlists">
+          <div>
+            {playlistFiltered.map(playlist => (                     //renderizzo ogni plaaylist nella lista filtered Playlist (simile forEach)
+              <Playlist playlist={playlist} key={playlist.id}/>
+            ))}
+          </div> 
+        </Container>
       </div>
 
       {/*passo lo stato di modal alla modale e la funzione per cambiarlo in false*/}
       <ModalCreatePlaylist show={modal} onClose={()=>{setModal(false)}}/>
-
-      <Container>
-        <div>
-          {/*playlistFiltered.map(playlist => (                     //renderizzo ogni plaaylist nella lista filtered Playlist
-            <Playlist playlist={playlist} key={playlist.id}/>
-          ))*/}
-        </div>
-      </Container>
 
       </>
     )

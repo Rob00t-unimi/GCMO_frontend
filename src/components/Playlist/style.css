@@ -1,0 +1,12 @@
+.card{
+    margin-top: 0.5rem;
+}
+.cardImg{
+    width: 6rem;
+    height: 6rem;
+}
+
+.followed, .private, .public{
+    margin-right: 1.7rem;
+    margin-top:1.7rem;
+}
