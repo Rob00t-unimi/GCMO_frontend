@@ -22,7 +22,7 @@ function ModalModifyPlaylist({show, onClose, playlist}) {
 
     const [isPublic, setIsPublic] = useState(playlist.public)
     const [title, setTitle] = useState(playlist.name)
-    const [description, setDescription] = useState('')
+    const [description, setDescription] = useState(playlist.description)
 
 
     return(
@@ -31,7 +31,7 @@ function ModalModifyPlaylist({show, onClose, playlist}) {
 
                 <Modal.Header className='bg-dark text-light' >
                     <Modal.Title>MODIFICA LA TUA PLAYLIST</Modal.Title>
-                    <Button className='btn-light' onClick={close}>Chiudi</Button>
+                    <Button className='btn-light' onClick={onClose}>Chiudi</Button>
                 </Modal.Header>
 
                 <Modal.Body className='bg-dark text-light'>
@@ -59,38 +59,23 @@ function ModalModifyPlaylist({show, onClose, playlist}) {
         </>
     )
 
-    function close(){
-        if (title===''||title==null) {
-            setTitle(playlist.title)            //non funziona, per qualche motivo non reimposta i campi allo stato iniziale
-            setIsPublic(playlist.public)
-            onClose()
-            //setdescription
-        }
-        onClose()
-    }
+
 
     function onConfirmFunction() {
-        if (title===''||title==null) {
-            setTitle(playlist.title)            //non funziona, per qualche motivo non reimposta i campi allo stato iniziale
+       
+        spotifyApi.changePlaylistDetails(playlist.id, {name: title, description: description, public: isPublic})
+        .then(data => {
+            setTitle(playlist.title)
             setIsPublic(playlist.public)
+            setDescription(playlist.description) 
+            alert("Playlist Modificata con Successo!")
+        })
+        .catch(e => {
             alert("Le Modifiche non sono state attuate.")
-            onClose()
-            //setdescription
-        }  else {
-            if (title!==playlist.title || isPublic!==playlist.public /*|| description==! playlist.description*/){           //anche questa condizione non viene verificata correttamente
-                spotifyApi.changePlaylistDetails(playlist.id, {name: title, description: description, public: isPublic})
-                .then(data => {
-                    alert("Playlist Modificata con Successo!")
-                })
-                .catch(e => {
-                    console.log( e.response.status);
-                    refreshToken()
-                })
-            } else {
-                alert("Playlist Modificata con Successo!")
-            }   
+            refreshToken()
+        })
         }
-    }
 }
+
 
 export default ModalModifyPlaylist
