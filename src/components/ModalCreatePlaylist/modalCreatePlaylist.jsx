@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
-import { Button, ListGroup, Modal} from 'react-bootstrap'
+import { Button, Modal} from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
 import  'bootstrap/dist/css/bootstrap.min.css' ;
 import './style.css';
@@ -92,6 +92,8 @@ console.log(image)
                     <Button className='btn-success btn-lg' onClick={async () => await onConfirmFunctionAndGo()}> Aggiungi brani </Button>
                 </Modal.Footer>
             </Modal>
+
+            
         </>
     )
 

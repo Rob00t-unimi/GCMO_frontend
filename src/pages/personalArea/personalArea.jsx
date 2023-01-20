@@ -5,7 +5,7 @@ import NavigationBar from '../../components/navigationBar/navigationBar'
 import ButtonLogin from '../../components/buttonLogin/buttonLogin'
 import SpotifyWebApi from 'spotify-web-api-node';
 
-import { Button, Container, Form, ListGroup, Modal } from 'react-bootstrap';
+import { Button, Container, Form, ListGroup, Modal, Row, Col } from 'react-bootstrap';
 import { PlusCircle } from 'react-bootstrap-icons';
 import ModalCreatePlaylist from "../../components/ModalCreatePlaylist/modalCreatePlaylist";
 import refreshToken from '../../util/refreshToken'
@@ -62,6 +62,10 @@ function PersonalArea() {
 
 //OTTENERE LE PLAYLIST____________________________________________________________________________________________________________________________________________________________________________________________________________________
 
+   useEffect(() => {  
+    getAllPlaylist()
+  }, []);
+  
   const getAllPlaylist = () => {
 
     spotifyApi.getUserPlaylists({
@@ -92,9 +96,6 @@ function PersonalArea() {
       })
   }
 
-  useEffect(() => {  
-    getAllPlaylist()
-  }, []);
 
 //FILTRARE LE PLAYLIST______________________________________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -163,11 +164,14 @@ const updatePlaylists = () => {
   //se non c'è il token restituisco un banner nella pagina personale altrimenti proseguo
   if (!accessToken){ return(
     <>
-    <NavigationBar/>
-    <div className="notLoggedBanner container bg-dark opacity-75 d-flex flex-column ">
-      <p className="text-light font-weight-bold text-center font-family-verdana text-lg">Attenzione! devi prima accedere a Spotify per visualizzare il contenuto di questa pagina.</p>
-    <ButtonLogin text="Accedi con Spotify"/>
+    <div className="wallpaper">
+      <NavigationBar/>
+        <div className="notLoggedBanner container bg-dark opacity-75 d-flex flex-column ">
+          <p className="text-light font-weight-bold text-center font-family-verdana text-lg">Attenzione! devi prima accedere a Spotify per visualizzare il contenuto di questa pagina.</p>
+          <ButtonLogin text="Accedi con Spotify"/>
+        </div>
     </div>
+    
     </>
   );}
 
@@ -177,23 +181,33 @@ const updatePlaylists = () => {
     return(
       <>
       <NavigationBar/>
-      <div className="infoUser d-flex flex-row">
-        {currentUser&&<div className="immagineProfilo"><img src={currentUser.image} alt="immagine profilo"/></div> }
-        <div className="nomeUtente">
-        {currentUser&&<div className="text-center" >{currentUser.name}</div>}
-          <div className="benvenuto text-center">Benvenuto nella tua Area Personale</div>
-          {currentUser&&<div className="followers text-light text-center">{"Followers: " + currentUser.followers} </div>}
-        </div>
-      </div>
-      <div className="contenuto">
-        <div className=" d-flex justify-content-end">
-          <Button className="filter btn-lg btn-light text-light" onClick={() => setFilterName("ALL")} style={{backgroundColor: `${filterName === 'ALL' ? '#429baa' : 'rgb(196, 199, 197)'}`}}>Tutte</Button>
-          <Button className="filter btn-lg btn-light text-light" onClick={() => setFilterName("PRIVATE")} style={{backgroundColor: `${filterName === 'PRIVATE' ? '#429baa' : 'rgb(196, 199, 197)'}`}}>Private</Button>
-          <Button className="filter btn-lg btn-light text-light" onClick={() => setFilterName("PUBLIC")} style={{backgroundColor: `${filterName === 'PUBLIC' ? '#429baa' : 'rgb(196, 199, 197)'}`}}>Pubblicate</Button>
-          <Button className="filter btn-lg btn-light text-light" onClick={() => setFilterName("FOLLOWED")} style={{backgroundColor: `${filterName === 'FOLLOWED' ? '#429baa' : 'rgb(196, 199, 197)'}`}}>Salvate</Button>
-          <Form.Control className="search" type="search mb-3" placeholder="Cerca Playlist" value={searchWord} onChange={(e)=>{setSearchWord(e.target.value)}}/>
-          <Button className='btn-lg btn-success text-light' onClick={()=>setModal(true)}><PlusCircle/> Crea</Button>  {/*onlcick stato della modale = true quindi la apro*/}
-        </div>   
+      <div className="info"><Row >
+        <Col>{currentUser&&<div className="immagineProfilo"><img className="img-fluid" src={currentUser.image} alt="immagine profilo"/></div> }</Col>
+        <Col className="text-center">
+          <div className="nomeUtente img-fluid">
+            {currentUser&&<div className="text-center" ><h1>{currentUser.name}</h1></div>}
+            <div className="benvenuto text-center">Benvenuto nella tua Area Personale</div>
+            {currentUser&&<div className="followers text-light text-center">{"Followers: " + currentUser.followers} </div>}
+          </div>
+        </Col>
+        <Col></Col>
+      </Row></div>
+      <div className="wallpaperInfo"></div>
+      <div  className="contenuto">
+        <Row>
+          <Col>
+            <Button className='crea btn-lg btn-success text-light' onClick={()=>setModal(true)}><PlusCircle/> Crea</Button>  {/*onlcick stato della modale = true quindi la apro*/}
+          </Col>
+          <Col className="text-center">
+            <Button className="filter btn-lg btn-light text-light" onClick={() => setFilterName("ALL")} style={{backgroundColor: `${filterName === 'ALL' ? '#429baa' : 'rgb(196, 199, 197)'}`}}>Tutte</Button>
+            <Button className="filter btn-lg btn-light text-light" onClick={() => setFilterName("PRIVATE")} style={{backgroundColor: `${filterName === 'PRIVATE' ? '#429baa' : 'rgb(196, 199, 197)'}`}}>Private</Button>
+            <Button className="filter btn-lg btn-light text-light" onClick={() => setFilterName("PUBLIC")} style={{backgroundColor: `${filterName === 'PUBLIC' ? '#429baa' : 'rgb(196, 199, 197)'}`}}>Pubblicate</Button>
+            <Button className="filter btn-lg btn-light text-light" onClick={() => setFilterName("FOLLOWED")} style={{backgroundColor: `${filterName === 'FOLLOWED' ? '#429baa' : 'rgb(196, 199, 197)'}`}}>Salvate</Button>
+          </Col>
+          <Col className="text-end">
+            <Form.Control className="search" type="search" placeholder="Cerca Playlist" value={searchWord} onChange={(e)=>{setSearchWord(e.target.value)}}/>
+          </Col>
+        </Row>   
         <Container className="playlists">
           {searchResult&&<div >
             <div>La ricerca ha prodotto i seguenti risultati:</div>

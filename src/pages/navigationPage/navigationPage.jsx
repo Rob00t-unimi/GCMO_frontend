@@ -111,10 +111,12 @@ function NavigationPage(){
     if (!(localStorage.getItem("accessToken"))||(localStorage.getItem("accessToken")==="undefined")) {
       return(
         <>
-        <NavigationBar/>
-        <div className="notLoggedBanner container bg-dark opacity-75 d-flex flex-column ">
-          <p className="text-light font-weight-bold text-center font-family-verdana text-lg">Attenzione! devi prima accedere a Spotify per visualizzare il contenuto di questa pagina.</p>
-          <ButtonLogin text="Accedi con Spotify"/>
+        <div className="wallpaper"> 
+          <NavigationBar/>
+            <div className="notLoggedBanner container bg-dark opacity-75 d-flex flex-column ">
+              <p className="text-light font-weight-bold text-center font-family-verdana text-lg">Attenzione! devi prima accedere a Spotify per visualizzare il contenuto di questa pagina.</p>
+              <ButtonLogin text="Accedi con Spotify"/>
+            </div>
         </div>
         </>
       )

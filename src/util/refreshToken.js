@@ -7,7 +7,7 @@ export default function refreshToken() {
     const refreshToken = localStorage.getItem('refreshToken')
 
     if (!refreshToken) {
-        window.location='/login';
+        window.location='/';
         return;
     }
     return axios.post(`${SERVER_BASIC_URL}/refresh`, {
