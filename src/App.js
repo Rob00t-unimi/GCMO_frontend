@@ -14,8 +14,8 @@ function App() {
         
           <Routes>
             <Route path="/" element={<IndexPage />} />
-            <Route path="personalArea" element ={<PersonalArea />} />
-            <Route path="navigate" element ={<NavigationPage />} />
+            <Route path="/personalArea" element ={<PersonalArea />} />
+            <Route path="/navigate" element ={<NavigationPage />} />
             
           </Routes>
 

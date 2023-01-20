@@ -3,10 +3,23 @@ import  'bootstrap/dist/css/bootstrap.min.css' ;
 import './style.css';
 import NavigationBar from '../../components/navigationBar/navigationBar'
 import ButtonLogin from '../../components/buttonLogin/buttonLogin'
+import Footer from "../../components/footer/footer";
 
 function PersonalArea() {
 
-    if ((localStorage.getItem("accessToken")==null)||(localStorage.getItem("accessToken")=="undefined")) {
+  
+    const [playlist, setPlaylist] = useState(JSON.parse(localStorage.getItem("createdPlaylist")));
+    const [showFooter, setShowFooter] = useState(false)
+
+  useEffect(() => {
+    if(playlist) {
+      setShowFooter(true)
+    }
+  }, [])
+  
+
+
+    if ((localStorage.getItem("accessToken")===null)||(localStorage.getItem("accessToken")==="undefined")) {
       return(
         <>
         <NavigationBar/>
@@ -21,8 +34,14 @@ function PersonalArea() {
     return(
         <>
        <NavigationBar/>
+          {showFooter&&<Footer playlist={playlist} show={showFooter} onClose={()=>{setShowFooter(false)}}></Footer>}
         </>
     )
 }
 
 export default PersonalArea;
+
+
+
+
+

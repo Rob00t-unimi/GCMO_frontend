@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { StarFill, Lock, Unlock, Trash3, Pencil} from 'react-bootstrap-icons';
 import './style.css'
 import PlaylistViewModal from '../playlistViewModal/playlistViewModal'
-import ModalDeletePlaylist from '../modalDeletePlaylist/modalDeletePlaylist';
+//import ModalDeletePlaylist from '../modalDeletePlaylist/modalDeletePlaylist';
 import ModalModifyPlaylist from '../modalModifyPlaylist/modalModifyPlaylist';
 import refreshToken from '../../util/refreshToken'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
@@ -24,7 +24,7 @@ function Playlist({playlist, updatePlaylists}){
     const [type, setType] = useState();
     const [modalShow, setModalShow] = useState(false);  //ci sarà una modale per aprire le informazioni relative ad una playlist
 
-    const [modalDeleteShow, setModalDeleteShow] = useState(false);
+//    const [modalDeleteShow, setModalDeleteShow] = useState(false);
     const [modalModifyShow, setModalModifyShow] = useState(false);
 
     const [image, setImage] = useState(playlistImage);
@@ -96,19 +96,19 @@ function Playlist({playlist, updatePlaylists}){
                     { 
                     type === 'FOLLOWED' ? 
                                 <div className= 'followed d-flex'>
-                                    <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button>
+                                    {/* <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button> */}
                                     <Button className='action'><StarFill/></Button>
                                 </div> :
                     type === 'PUBLIC' ? 
                                 <div className='public d-flex'>
                                     <Button className='action btn-light' onClick={() => { setModalModifyShow(true) }}><Pencil/></Button>
-                                    <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button>
+                                    {/* <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button> */}
                                     <Button className='btn-success action ' onClick={switchPublic}><Unlock/></Button> 
                                 </div> :
 
                                 <div className='private d-flex'>
                                     <Button className='action btn-light' onClick={() => { setModalModifyShow(true) }}><Pencil/></Button>
-                                    <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button>
+                                    {/* <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button> */}
                                     <Button className='btn-danger action' onClick={switchPublic}><Lock/></Button>
                                 </div>
                     }
@@ -116,7 +116,7 @@ function Playlist({playlist, updatePlaylists}){
             </Card>
             
             <PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} />
-            <ModalDeletePlaylist show={modalDeleteShow}  onClose={() => {setModalDeleteShow(false)}} playlist={playlist}/>
+            {/* <ModalDeletePlaylist show={modalDeleteShow}  onClose={() => {setModalDeleteShow(false)}} playlist={playlist}/> */}
             <ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist}/>
         </>
     )

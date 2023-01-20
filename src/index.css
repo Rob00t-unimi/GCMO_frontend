@@ -6,8 +6,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  background-image: url('./assets/wallpaper_16.9.jpg');
-  background-size: cover;
+
 }
 
 code {

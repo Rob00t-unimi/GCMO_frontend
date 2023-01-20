@@ -14,9 +14,11 @@ function IndexPage(){
 
     return (
         <>
-        <NavigationBar/>
-        <div className="container d-flex flex-column justify-content-center"><img src={fullLogo}></img>
-        <ButtonLogin text="Accedi con Spotify"/>
+        <div className="background">
+            <NavigationBar/>
+            <div className="container d-flex flex-column justify-content-center"><img src={fullLogo}></img>
+            <ButtonLogin text="Accedi con Spotify"/>
+            </div>
         </div>
         </>
     )

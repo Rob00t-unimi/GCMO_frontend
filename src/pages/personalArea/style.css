@@ -62,10 +62,8 @@
 }
 
 .contenuto {
-    background-color: rgb(195, 247, 229);
     padding: 2rem;
     width: 100%;
-    min-height: 70.1vh
 }
 
 .filter {

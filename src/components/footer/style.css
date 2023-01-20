@@ -1,0 +1,24 @@
+.card{
+    position: fixed;
+    width: 80%;
+    bottom: 0;
+    margin-left: 10%;
+    height: 10rem;
+    margin-bottom: 3rem;
+}
+
+.cardImg{
+    width: 10rem;
+    height: 10rem;
+    padding: 3px;
+}
+
+.action{
+    margin:auto;
+    margin-right: 1rem;
+}
+
+.scritta{
+    text-align: center;
+    padding-top: 2.5rem;
+}
