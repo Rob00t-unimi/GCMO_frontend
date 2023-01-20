@@ -16,7 +16,7 @@ const spotifyApi = new SpotifyWebApi({
 });
 
 
-function Playlist({playlist, updatePlaylists}){
+function Playlist({playlist, modificaPlaylist, indexPlaylist, updatePlaylists}){
 
     const userInfo = JSON.parse(localStorage.getItem('user'));  
     const accessToken = localStorage.getItem('accessToken');
@@ -117,7 +117,7 @@ function Playlist({playlist, updatePlaylists}){
             
             <PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} />
             {/* <ModalDeletePlaylist show={modalDeleteShow}  onClose={() => {setModalDeleteShow(false)}} playlist={playlist}/> */}
-            <ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist}/>
+            <ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist} modificaPlaylist={modificaPlaylist} indexPlaylist={indexPlaylist}/>
         </>
     )
 }

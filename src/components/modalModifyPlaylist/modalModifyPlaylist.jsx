@@ -11,7 +11,7 @@ const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID
 });
 
-function ModalModifyPlaylist({show, onClose, playlist}) {
+function ModalModifyPlaylist({show, onClose, playlist, modificaPlaylist, indexPlaylist}) {
 
     const accessToken = localStorage.getItem('accessToken');
 
@@ -23,6 +23,12 @@ function ModalModifyPlaylist({show, onClose, playlist}) {
     const [isPublic, setIsPublic] = useState(playlist.public)
     const [title, setTitle] = useState(playlist.name)
     const [description, setDescription] = useState(playlist.description)
+    const [image, setImage] = useState();
+
+    useEffect(() => {
+        if (playlist.image) 
+        setImage(playlist.image)
+    }, [playlist.public])
 
 
     return(
@@ -31,7 +37,7 @@ function ModalModifyPlaylist({show, onClose, playlist}) {
 
                 <Modal.Header className='bg-dark text-light' >
                     <Modal.Title>MODIFICA LA TUA PLAYLIST</Modal.Title>
-                    <Button className='btn-light' onClick={onClose}>Chiudi</Button>
+                    <Button className='btn-light' onClick={close}>Chiudi</Button>
                 </Modal.Header>
 
                 <Modal.Body className='bg-dark text-light'>
@@ -45,36 +51,130 @@ function ModalModifyPlaylist({show, onClose, playlist}) {
                             </select>
                         </div>
                     <hr />
-                        <div className=' d-flex justify-content-center flex-column bg-dark text-light' >
+                    <div className=' d-flex justify-content-center flex-column bg-dark text-light' >
                             <div  className='descrizione bg-dark text-light  '>Descrizione </div>
-                            <textarea className='bg-dark text-light ' type="text" placeholder={'Scrivi una descrizione..'} value={description} onChange={(e)=> {setDescription(e.target.value)}}/>
+                            <div className='d-flex flex-row'>
+                                <textarea className='bg-dark text-light ' type="text" placeholder={'Scrivi una descrizione..'} value={description} onChange={(e)=> {setDescription(e.target.value)}}/>
+                                {image&&<div className='copertina'><img src={image}></img></div>}
+                                {!image&&<div className='copertina text-center text-light'><div>Nessuna Immagine</div></div>}
+                            </div>
+                            <div className='d-flex justify-content-end'><div className='inputFoto'><input type="file" accept="image/jpeg" onChange={(event)=>{setImage(URL.createObjectURL(event.target.files[0]))}}/></div></div>    
                         </div>
                     </div>
                 </Modal.Body>
 
                 <Modal.Footer className='d-flex justify-content-center bg-dark text-light'>
                     <Button className='btn-light btn-lg' onClick={async () => await onConfirmFunction()}> Salva </Button>
+                    <Button className='btn-success btn-lg' onClick={async () => await onConfirmFunctionAndGo()}> Aggiungi brani </Button>
                 </Modal.Footer>
             </Modal>
         </>
     )
 
+//CHIUSURA_____________________________________________________________________________________________________________
 
+    function close(){           
+
+        setIsPublic(playlist.public)                //se chiudo senza salvare ripristino i valori su quelli precedenti
+        setTitle(playlist.name)
+        setDescription(playlist.description)
+        if (playlist.image){
+            setImage(playlist.image)
+        } else {
+            setImage()
+        }
+
+        onClose()
+    }
+
+
+//SALVA________________________________________________________________________________________________________________
 
     function onConfirmFunction() {
-       
+    
         spotifyApi.changePlaylistDetails(playlist.id, {name: title, description: description, public: isPublic})
         .then(data => {
-            setTitle(playlist.title)
-            setIsPublic(playlist.public)
-            setDescription(playlist.description) 
+
+            if(image) {
+
+                //spotifyApi.uploadCustomPlaylistCoverImage(playlist.id, ...)
+
+            }
+            const  newPlaylist = {
+                image: image ? image : null,    //se la modifica è andata a buon fine creo una playlist modificata senza richiederla di nuovo alle api
+                name: title,
+                description: description ? description : null,
+                id: playlist.id,
+                ownerId: playlist.ownerId,
+                ownerName: playlist.ownerName,
+                public: isPublic ? isPublic : null,
+            }
+
+            modificaPlaylist(indexPlaylist, newPlaylist)
+
             alert("Playlist Modificata con Successo!")
+
+            // setIsPublic(newPlaylist.public)             //imposto i valori = playlist dopo la modifica
+            // setTitle(newPlaylist.name)
+            // setDescription(newPlaylist.description)
+            // if (newPlaylist.image){
+            //     setImage(newPlaylist.image)
+            // } else {
+            //     setImage()
+            // }
+
+            onClose()   //chiudo modale
+
         })
         .catch(e => {
             alert("Le Modifiche non sono state attuate.")
             refreshToken()
         })
         }
+
+//SALVA e VAI AI BRANI______________________________________________________________________________________________________
+
+    function onConfirmFunctionAndGo() {
+    
+        spotifyApi.changePlaylistDetails(playlist.id, {name: title, description: description, public: isPublic})
+        .then(data => {
+
+            if(image) {
+
+                //spotifyApi.uploadCustomPlaylistCoverImage(playlist.id, ...)
+
+            }
+            const  newPlaylist = {
+                image: image ? image : null,
+                name: title,
+                description: description ? description : null,      //se la modifica è andata a buon fine creo una playlist modificata senza richiederla di nuovo alle api
+                id: playlist.id,
+                ownerId: playlist.ownerId,
+                ownerName: playlist.ownerName,
+                public: isPublic ? isPublic : null,
+            }
+
+            modificaPlaylist(indexPlaylist, newPlaylist)
+
+            // setIsPublic(newPlaylist.public)
+            // setTitle(newPlaylist.name)
+            // setDescription(newPlaylist.description)     //imposto i valori = playlist dopo la modifica
+            // if (newPlaylist.image){
+            //     setImage(newPlaylist.image)
+            // } else {
+            //     setImage()
+            // }
+
+            localStorage.setItem('createdPlaylist', JSON.stringify(newPlaylist) )       //inserisco la playlist nel local storage per prenderla dalla navigationPage
+
+            window.location = "http://localhost:3000/navigate"      //mando alla navigation page
+        })
+        .catch(e => {
+            alert("Le Modifiche non sono state attuate.")
+            refreshToken()
+        })
+    }
+    
 }
 
 

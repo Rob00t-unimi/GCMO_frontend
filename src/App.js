@@ -1,5 +1,5 @@
 import React from "react";
-import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom'
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 
 
 import PersonalArea from "./pages/personalArea/personalArea"
@@ -16,7 +16,6 @@ function App() {
             <Route path="/" element={<IndexPage />} />
             <Route path="/personalArea" element ={<PersonalArea />} />
             <Route path="/navigate" element ={<NavigationPage />} />
-            
           </Routes>
 
       </div>

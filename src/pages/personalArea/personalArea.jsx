@@ -93,7 +93,7 @@ function PersonalArea() {
 
   useEffect(() => {  
     getAllPlaylist()
-  }, []);
+  }, [playlistFiltered]);
 
 //FILTRARE LE PLAYLIST______________________________________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -151,6 +151,13 @@ useEffect(() => {
 }
 },[searchWord])
 
+//METODO PER MODIFICARE IN LOCALE UNA PLAYLIST________________________________________________________________________________________________________________________________________________________________________________
+
+const modifyPlaylist = (index, newPlaylist) => {
+  const newPlaylistFiltered = [...playlistFiltered];
+  newPlaylistFiltered[index] = newPlaylist;
+  setPlaylistFiltered(newPlaylistFiltered)
+}
 
 //BANNER______________________________________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -199,8 +206,8 @@ useEffect(() => {
             <hr/>
             </div>}
           <div>
-            {playlistFiltered.map(playlist => (                     //renderizzo ogni plaaylist nella lista filtered Playlist (simile forEach)
-              <Playlist playlist={playlist} /*updatePlaylists={()=>setUpdatePlaylists(!updatePlaylists)}*//>
+            {playlistFiltered.map((playlist, index) => (                     //renderizzo ogni plaaylist nella lista filtered Playlist (simile forEach)
+              <Playlist playlist={playlist} modificaPlaylist={modifyPlaylist} playlistIndex={index} /*updatePlaylists={()=>setUpdatePlaylists(!updatePlaylists)}*//>
             ))}
           </div>
         </Container>

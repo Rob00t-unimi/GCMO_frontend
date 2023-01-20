@@ -1,0 +1,10 @@
+.card{
+    margin-top: 0.5rem;
+}
+.cardImg{
+    width: 6rem;
+    height: 6rem;
+}
+.card div{
+    width:100%;
+}

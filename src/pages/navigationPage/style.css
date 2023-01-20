@@ -14,8 +14,16 @@
     font-size: 1.5rem;
 }
 
-.back {
-    background-color: rgb(195, 247, 229);
-    width:100%;
-    height:75vh;
+.search{
+    margin: auto;
+    margin-top:2rem;
+    width: 50%;
+}
+
+.searchForm{
+    width: 90%;
+}
+
+.search select {
+    width: 10%;
 }
