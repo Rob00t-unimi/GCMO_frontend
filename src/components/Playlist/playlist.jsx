@@ -16,53 +16,49 @@ const spotifyApi = new SpotifyWebApi({
 });
 
 
-function Playlist({playlist, modificaPlaylist, indexPlaylist, updatePlaylists}){
-
-    const userInfo = JSON.parse(localStorage.getItem('user'));  
-    const accessToken = localStorage.getItem('accessToken');
-
-    const [type, setType] = useState();
-    const [modalShow, setModalShow] = useState(false);  //ci sarà una modale per aprire le informazioni relative ad una playlist
-
-//    const [modalDeleteShow, setModalDeleteShow] = useState(false);
-    const [modalModifyShow, setModalModifyShow] = useState(false);
+function Playlist({playlist, updatePlaylists}){
 
     const [image, setImage] = useState(playlistImage);
 
-    useEffect(() => {
-    if (playlist.image) {
-        setImage(playlist.image)
-    }
-    }, [])
+    const userInfo = JSON.parse(localStorage.getItem('user'));  
+    const accessToken = localStorage.getItem('accessToken');
 
     useEffect(() => {
         if (!accessToken) return;
         spotifyApi.setAccessToken(accessToken);
     }, [accessToken])
 
+       useEffect(() => {
+    if (playlist.image) {
+        setImage(playlist.image)
+    }
+    }, [])
+    
+    const [type, setType] = useState();
+    const [modalShow, setModalShow] = useState(false);  //ci sarà una modale per aprire le informazioni relative ad una playlist
+
+//    const [modalDeleteShow, setModalDeleteShow] = useState(false);
+    const [modalModifyShow, setModalModifyShow] = useState(false);
+
     //controllo che tipo di playlist è 
     useEffect(() => {
         console.log(playlist)
         if (playlist.ownerId !== userInfo.id) {     
             setType('FOLLOWED')
-            return;
-        }
-        if (playlist.public) {
-            
+        } else if (playlist.public) {
             setType('PUBLIC')
-            return;
-        }
-
-        setType('PRIVATE')
+        } else {
+            setType('PRIVATE')
+        }       
     }, [])
+
 
     function switchPublic(){
         if (type === 'PUBLIC') {
             spotifyApi.changePlaylistDetails(playlist.id, {public: false})
             .then(data => {
-                //updatePlaylists() 
                 setType('PRIVATE')
-                console.log("now private")
+                updatePlaylists()
             })
             .catch(e => {
                 console.log( e.response.status);
@@ -71,12 +67,11 @@ function Playlist({playlist, modificaPlaylist, indexPlaylist, updatePlaylists}){
         } else if (type === 'PRIVATE'){
             spotifyApi.changePlaylistDetails(playlist.id, {public: true})
             .then(data => {
-                //updatePlaylists()
                 setType('PUBLIC')
-                console.log("now public")
+                updatePlaylists()
             })
             .catch(e => {
-                console.log( e.response.status);
+                console.log(e.response.status);
                 refreshToken()
             })
         }
@@ -117,7 +112,7 @@ function Playlist({playlist, modificaPlaylist, indexPlaylist, updatePlaylists}){
             
             <PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} />
             {/* <ModalDeletePlaylist show={modalDeleteShow}  onClose={() => {setModalDeleteShow(false)}} playlist={playlist}/> */}
-            <ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist} modificaPlaylist={modificaPlaylist} indexPlaylist={indexPlaylist}/>
+            <ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist} updatePlaylists={updatePlaylists}/>
         </>
     )
 }

@@ -11,7 +11,7 @@ const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID
 });
 
-function ModalModifyPlaylist({show, onClose, playlist, modificaPlaylist, indexPlaylist}) {
+function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
 
     const accessToken = localStorage.getItem('accessToken');
 
@@ -110,18 +110,9 @@ function ModalModifyPlaylist({show, onClose, playlist, modificaPlaylist, indexPl
                 public: isPublic ? isPublic : null,
             }
 
-            modificaPlaylist(indexPlaylist, newPlaylist)
+            updatePlaylists()
 
             alert("Playlist Modificata con Successo!")
-
-            // setIsPublic(newPlaylist.public)             //imposto i valori = playlist dopo la modifica
-            // setTitle(newPlaylist.name)
-            // setDescription(newPlaylist.description)
-            // if (newPlaylist.image){
-            //     setImage(newPlaylist.image)
-            // } else {
-            //     setImage()
-            // }
 
             onClose()   //chiudo modale
 
@@ -154,16 +145,7 @@ function ModalModifyPlaylist({show, onClose, playlist, modificaPlaylist, indexPl
                 public: isPublic ? isPublic : null,
             }
 
-            modificaPlaylist(indexPlaylist, newPlaylist)
-
-            // setIsPublic(newPlaylist.public)
-            // setTitle(newPlaylist.name)
-            // setDescription(newPlaylist.description)     //imposto i valori = playlist dopo la modifica
-            // if (newPlaylist.image){
-            //     setImage(newPlaylist.image)
-            // } else {
-            //     setImage()
-            // }
+            updatePlaylists()
 
             localStorage.setItem('createdPlaylist', JSON.stringify(newPlaylist) )       //inserisco la playlist nel local storage per prenderla dalla navigationPage
 

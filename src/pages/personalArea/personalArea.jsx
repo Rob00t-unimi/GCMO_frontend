@@ -30,7 +30,7 @@ function PersonalArea() {
   const [playlistResult, setPlaylistResults] = useState([])     //risultato alla chiamata per ottenere le playlist
   const [playlistFiltered, setPlaylistFiltered] = useState([])  //playlist filtrate in base al filtro attuale
   const [limit, setLimit] = useState(50)                        //limite di quante playlist max posso chiedere 
-  //const [updatePlaylists, setUpdatePlaylists] = useState(false)
+  const [update, setUpdate] = useState(false)
   
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("user")));   //dati attuali dell'utente
   const accessToken = localStorage.getItem('accessToken')   //estraggo il token dal local storage
@@ -83,6 +83,7 @@ function PersonalArea() {
         })
         setPlaylistResults(playlists)
         setPlaylistFiltered(playlists)   //inserisco tutte le playlist nella sezione playlist filtered (non sono ancora filtrate)
+        setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano
       })
       .catch(err => {
         console.log("ciao")
@@ -93,7 +94,7 @@ function PersonalArea() {
 
   useEffect(() => {  
     getAllPlaylist()
-  }, [playlistFiltered]);
+  }, []);
 
 //FILTRARE LE PLAYLIST______________________________________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -120,7 +121,7 @@ function PersonalArea() {
       default:
         break;
     }
-  }, [filterName])
+  }, [filterName, update])  //se cambia il filtro selezionato o il booleano update devo filtrare le playlist
 
 //RICERCA PLAYLIST_________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -151,12 +152,10 @@ useEffect(() => {
 }
 },[searchWord])
 
-//METODO PER MODIFICARE IN LOCALE UNA PLAYLIST________________________________________________________________________________________________________________________________________________________________________________
+//METODO PER AGGIORNARE LE PLAYLIST________________________________________________________________________________________________________________________________________________________________________________
 
-const modifyPlaylist = (index, newPlaylist) => {
-  const newPlaylistFiltered = [...playlistFiltered];
-  newPlaylistFiltered[index] = newPlaylist;
-  setPlaylistFiltered(newPlaylistFiltered)
+const updatePlaylists = () => {
+  getAllPlaylist()                  //passo la funzione agli altri livelli, quando un livello la chiama vengono richieste le playlist nuove, all'interno di getAllPlaylist viene cambiato update quindi vengono anche filtrate 
 }
 
 //BANNER______________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -207,7 +206,7 @@ const modifyPlaylist = (index, newPlaylist) => {
             </div>}
           <div>
             {playlistFiltered.map((playlist, index) => (                     //renderizzo ogni plaaylist nella lista filtered Playlist (simile forEach)
-              <Playlist playlist={playlist} modificaPlaylist={modifyPlaylist} playlistIndex={index} /*updatePlaylists={()=>setUpdatePlaylists(!updatePlaylists)}*//>
+              <Playlist playlist={playlist} updatePlaylists={updatePlaylists} /*updatePlaylists={()=>setUpdatePlaylists(!updatePlaylists)}*//>
             ))}
           </div>
         </Container>
