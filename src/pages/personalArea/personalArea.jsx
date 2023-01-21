@@ -18,12 +18,22 @@ import Playlist from "../../components/Playlist/playlist";
 //
 
 
-const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4';
+
+//INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID_______________________________________________________________________________________________
+const CLIENT_ID = '238334b666894f049d233d6c1bb3c3fc' //'61e53419c8a547eabe2729e093b43ae4';
 const spotifyApi = new SpotifyWebApi({
   clientId: CLIENT_ID
 });
 
+
+
+
+
+
+
 function PersonalArea() {
+
+//INIZIALIZZO UN PO' DI STATI______________________________________________________________________________________________________________________
 
   const [filterName, setFilterName] = useState('ALL')   //nome dei filtri dei button nella pagina personale
   const [modal, setModal] = useState(false)             //impostiamo uno stato iniziale alla modale --> false chiusa, true aperta
@@ -36,7 +46,7 @@ function PersonalArea() {
   const accessToken = localStorage.getItem('accessToken')   //estraggo il token dal local storage
 
 
-//OTTENERE INFO UTENTE______________________________________________________________________________________________________________________________________________________________________________________________________________________
+//OTTENERE INFO UTENTE________________________________________________________________________________________________________________________________________
 
   useEffect(() => {                 //quando cambia l'access token eseguo lo use effect
     if (!accessToken) return;
@@ -53,10 +63,12 @@ function PersonalArea() {
                 //country: result.body.country,
             }))
         })
-        .catch(err => {
-            console.log(err)      //se ci sono stati errori refresho il token
-            refreshToken()
-        })
+        .catch(e => {
+          console.log( e.response.status);
+          if (e.response.status === 401 || e.response.status === 403) {
+              refreshToken()
+          }
+      })
 
   }, [accessToken])
 
@@ -89,11 +101,12 @@ function PersonalArea() {
         setPlaylistFiltered(playlists)   //inserisco tutte le playlist nella sezione playlist filtered (non sono ancora filtrate)
         setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano
       })
-      .catch(err => {
-        console.log("ciao")
-        console.log(err)
-        refreshToken()
-      })
+      .catch(e => {
+        console.log( e.response.status);
+        if (e.response.status === 401 || e.response.status === 403) {
+            refreshToken()
+        }
+    })
   }
 
 
@@ -172,7 +185,7 @@ const updatePlaylists = () => {
   getAllPlaylist()                  //passo la funzione agli altri livelli, quando un livello la chiama vengono richieste le playlist nuove, all'interno di getAllPlaylist viene cambiato update quindi vengono anche filtrate 
 }
 
-//BANNER______________________________________________________________________________________________________________________________________________________________________________________________________________________
+//RENDERIZZO IL BANNER__________________________________________________________________________________________________________________________________________________________________________________________________________
 
   //se non c'è il token restituisco un banner nella pagina personale altrimenti proseguo
   if (!accessToken){ return(
@@ -188,7 +201,7 @@ const updatePlaylists = () => {
     </>
   );}
 
-//PERSONAL AREA_________________________________________________________________________________________________________________________________________________________________________________________________________________
+//RENDERIZZO PERSONAL AREA_________________________________________________________________________________________________________________________________________________________________________________________________________________
 
   //restituisco la pagina Personale
     return(

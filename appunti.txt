@@ -18,7 +18,9 @@
 
 - track                         (bisogna aggiungere i pulsanti per aggiungere la canzone ad una playlist)
 
-- navigation page               (bisogna creare un componente playlist nuovo a parte per le playlist che non sono quelle dell'utente, questo componente ha solo il tasto per salvare le playlist)
+- navigation page               (se importo il componente footer per motivi ignoti crea disastri nella personalArea)
+
+-playlist-2                     (manca la funzione per salvare o rimuovere le playlist, rivedere la chiamata per vedere se la playlist è salvata, questo componente ha "rotto" la ricerca)
 
 
 

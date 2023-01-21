@@ -26,6 +26,8 @@ function NavigationBar() {
     }   
 
 
+//SE SONO LOGGATO__________________________________________________________________________________________________________________________
+
     if (localStorage.getItem('accessToken')!==null && localStorage.getItem('accessToken')!==undefined){
         return(
         <Navbar className='bg-dark'>
@@ -42,6 +44,8 @@ function NavigationBar() {
         </Navbar>
         )
     }
+
+//SE NON SONO LOGGATO______________________________________________________________________________________________________________________
 
     return(
         <Navbar className='bg-dark'>

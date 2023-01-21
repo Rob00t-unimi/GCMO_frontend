@@ -8,12 +8,24 @@ import refreshToken from '../../util/refreshToken'
 
 //import imageCompression from 'browser-image-compression';   //libreria per comprimere immagini
 
-const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4';
+
+//INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
+
+const CLIENT_ID = '238334b666894f049d233d6c1bb3c3fc' //'61e53419c8a547eabe2729e093b43ae4';
 const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID
 });
 
+
+
+
+
+
+
+
 function ModalCreatePlaylist({show, onClose}) {
+
+//CONTROLLO IL TOKEN E LO AGGIUNGO ALL'OGGETTO SPOTIFYAPI____________________________
 
     const accessToken = localStorage.getItem('accessToken');
 
@@ -22,7 +34,7 @@ function ModalCreatePlaylist({show, onClose}) {
         spotifyApi.setAccessToken(accessToken);
     }, [accessToken])
 
-
+//INIZIALIZZO UN PO' DI STATI_________________________________________________________
 
     const [isPublic, setIsPublic] = useState(false)
     const [title, setTitle] = useState('')
@@ -53,7 +65,6 @@ function ModalCreatePlaylist({show, onClose}) {
 
 //____________________________________________________________________________________
 
-console.log(image)
 
     return(
         <>
@@ -107,6 +118,7 @@ console.log(image)
         }
 
         let id = null
+        //MODIFICA DETTAGLI
             spotifyApi.createPlaylist(title, {description: description, public: isPublic})
             .then(data => {
                 console.log(data)
@@ -118,12 +130,15 @@ console.log(image)
                     reader.readAsDataURL(image);
                     reader.onloadend = async () => {
                         const base64 = reader.result.split(',')[1];
+                        //UPLOAD IMMAGINE DI COPERTINA
                         spotifyApi.uploadCustomPlaylistCoverImage(id, base64)
                         .then(data => {})
                         .catch(e => {
-                            alert("Non è stato Possibile caricare l'immagine della playlist")
                             console.log( e.response.status);
-                            refreshToken()
+                            alert("Non è stato Possibile caricare l'immagine della playlist")
+                            if (e.response.status === 401 || e.response.status === 403) {
+                                refreshToken()
+                            }
                         })
                     }
                 }
@@ -131,9 +146,11 @@ console.log(image)
                 alert("Playlist creata con Successo!")
             })
             .catch(e => {
-                alert("Non è stato Possibile Creare la playlist")
                 console.log( e.response.status);
-                refreshToken()
+                alert("Non è stato Possibile Creare la playlist")
+                if (e.response.status === 401 || e.response.status === 403) {
+                    refreshToken()
+                }
             })
     }
 
@@ -146,6 +163,7 @@ console.log(image)
         }
 
         let id = null
+        //MODIFICA DEI DETTAGLI
             spotifyApi.createPlaylist(title, {description: description, public: isPublic})
             .then(item => {
                 console.log(item)
@@ -157,17 +175,21 @@ console.log(image)
                     reader.readAsDataURL(image);
                     reader.onloadend = async () => {
                         const base64 = reader.result.split(',')[1];
+                        //UPLOAD IMMAGINE DI COPERTINA
                         spotifyApi.uploadCustomPlaylistCoverImage(id, base64)
                         .then(data => {})
                         .catch(e => {
-                            alert("Non è stato Possibile caricare l'immagine della playlist")
                             console.log( e.response.status);
-                            refreshToken()
+                            alert("Non è stato Possibile caricare l'immagine della playlist")
+                            if (e.response.status === 401 || e.response.status === 403) {
+                                refreshToken()
+                            }
                         })
                     }
                     
                 }
 
+                //CREO E SALVO NEL LOCAL STORAGE LA NUOVA PLAYLIST 
                 const createdPlaylist = {
                     image: item.body.images && item.body.images.length > 0 ? item.body.images[0].url : null,
                     name: item.body.name,
@@ -180,13 +202,16 @@ console.log(image)
 
                 localStorage.setItem('createdPlaylist', JSON.stringify(createdPlaylist) )
 
+                //REINDIRIZZO ALLA PAGINA DI NAVIGAZIONE PER AGGIUNGERE LE CANZONI
                 window.location = "http://localhost:3000/navigate" 
                 
             })
             .catch(e => {
-                alert("Non è stato Possibile Creare la playlist")
                 console.log( e.response.status);
-                refreshToken()
+                alert("Non è stato Possibile Creare la playlist")
+                if (e.response.status === 401 || e.response.status === 403) {
+                    refreshToken()
+                }
             })
     }
 }

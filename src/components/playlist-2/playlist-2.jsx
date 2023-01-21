@@ -2,8 +2,8 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import { Button, Card, Container } from 'react-bootstrap';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { StarFill, Lock, Unlock, Trash3, Pencil} from 'react-bootstrap-icons';
-import './style.css'
+import { StarFill, Star} from 'react-bootstrap-icons';
+//import './style.css'
 import PlaylistViewModal from '../playlistViewModal/playlistViewModal'
 //import ModalDeletePlaylist from '../modalDeletePlaylist/modalDeletePlaylist';
 import ModalModifyPlaylist from '../modalModifyPlaylist/modalModifyPlaylist';
@@ -27,7 +27,7 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-function Playlist({playlist, updatePlaylists}){
+function Playlist2({playlist, updatePlaylists}){
 
 //INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
@@ -49,7 +49,7 @@ function Playlist({playlist, updatePlaylists}){
     if (playlist.image) {
         setImage(playlist.image)
     }
-    }, [playlist])
+    }, [])
     
 //CONTROLLO IL TIPO DI UNA PLAYLIST__________________________________________________________________________________________________
 
@@ -61,41 +61,33 @@ function Playlist({playlist, updatePlaylists}){
 
     //controllo che tipo di playlist è 
     useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'))
+        let callback
+        spotifyApi.areFollowingPlaylist(user.id, playlist.id)
+        .then(res =>{
+            console.log(res.body)
+            callback = res.body[0]
+        })
+        .catch((e)=>{
+            console.log(e.status)
+        })
         console.log(playlist)
-        if (playlist.ownerId !== userInfo.id) {     
+        if ((playlist.ownerId !== userInfo.id)&&callback===true) {     
             setType('FOLLOWED')
-        } else if (playlist.public) {
-            setType('PUBLIC')
-        } else {
-            setType('PRIVATE')
+        } else if ((playlist.ownerId !== userInfo.id)&&callback===false) {
+            setType('NOTFOLLOWED')
+        } else if (playlist.ownerId === userInfo.id){
+            setType('MINE')
         }       
-    }, [playlist])
+    }, [])
 
 //INVERTE IL TIPO DELLA PLAYLIST__________________________________________________________________________________________________
 
-    function switchPublic(){
-        if (type === 'PUBLIC') {
-            spotifyApi.changePlaylistDetails(playlist.id, {public: false})
-            .then(data => {
-                updatePlaylists()
-            })
-            .catch(e => {
-                console.log( e.response.status);
-                if (e.response.status === 401 || e.response.status === 403) {
-                    refreshToken()
-                }
-            })
-        } else if (type === 'PRIVATE'){
-            spotifyApi.changePlaylistDetails(playlist.id, {public: true})
-            .then(data => {
-                updatePlaylists()
-            })
-            .catch(e => {
-                console.log( e.response.status);
-                if (e.response.status === 401 || e.response.status === 403) {
-                    refreshToken()
-                }
-            })
+    function switchFollow(){
+        if (type === 'FOLLOWED') {
+            //chiamata per smettere di seguire      //--> da implementare anche nella personalArea
+        } else if (type === 'NOTFOLLOWED'){
+            //chiamata per seguire 
         }
     }
 
@@ -113,22 +105,14 @@ function Playlist({playlist, updatePlaylists}){
                 </div>
                 <Card.Text>
                     { 
-                    type === 'FOLLOWED' ? 
-                                <div className= 'followed d-flex'>
-                                    {/* <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button> */}
-                                    <Button className='action'><StarFill/></Button>
+                    type === 'MINE' ? 
+                                <div></div> :
+                    type === 'FOLLOW' ? 
+                                <div className='follow d-flex'>
+                                    <Button className='btn-success action ' onClick={switchFollow}><StarFill/></Button> 
                                 </div> :
-                    type === 'PUBLIC' ? 
-                                <div className='public d-flex'>
-                                    <Button className='action btn-light' onClick={() => { setModalModifyShow(true) }}><Pencil/></Button>
-                                    {/* <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button> */}
-                                    <Button className='btn-success action ' onClick={switchPublic}><Unlock/></Button> 
-                                </div> :
-
-                                <div className='private d-flex'>
-                                    <Button className='action btn-light' onClick={() => { setModalModifyShow(true) }}><Pencil/></Button>
-                                    {/* <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button> */}
-                                    <Button className='btn-danger action' onClick={switchPublic}><Lock/></Button>
+                                <div className='notFollow d-flex'>
+                                    <Button className='btn-danger action' onClick={switchFollow}><Star/></Button>
                                 </div>
                     }
                 </Card.Text>
@@ -141,4 +125,4 @@ function Playlist({playlist, updatePlaylists}){
     )
 }
 
-export default Playlist
+export default Playlist2

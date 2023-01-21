@@ -7,6 +7,8 @@ import playlistImage from '../../assets/generalPlaylistImage.jpg'
 
 function FooterElement(playlist){
 
+//INIZIALIZZO L'IMMAGINE di copertina_____________________________________________________________________________________________________
+
     const [image, setImage] = useState(playlistImage);
 
     useEffect(() => {
@@ -15,10 +17,14 @@ function FooterElement(playlist){
         }
         }, [])
 
+//FUNZIONE DI CHIUSURA DEL FOOTER_________________________________________________________________________________________________________
+
     function close(){
-        localStorage.removeItem('createdPlaylist')
+        localStorage.removeItem('createdPlaylist')          //il footer compare solo se nel local storage c'è createdPlaylist (ho preferito scrivere questo controllo nel padre)
         //setPlaylist()
     }
+
+//RENDER COMPONENTE________________________________________________________________________________________________________________________
     
         return (
             <>

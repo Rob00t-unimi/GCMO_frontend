@@ -6,19 +6,32 @@ import  'bootstrap/dist/css/bootstrap.min.css' ;
 import '../ModalCreatePlaylist/style.css'
 import refreshToken from '../../util/refreshToken'
 
-const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4';
+//INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
+
+const CLIENT_ID = '238334b666894f049d233d6c1bb3c3fc' //'61e53419c8a547eabe2729e093b43ae4';
 const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID
 });
 
+
+
+
+
+
+
+
 function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
 
-    const accessToken = localStorage.getItem('accessToken');
+//CONTROLLO IL TOKEN E LO AGGIUNGO ALL'OGGETTO SPOTIFYAPI____________________________
 
-    useEffect(() => {
-        if (!accessToken) return;
-        spotifyApi.setAccessToken(accessToken);
-    }, [accessToken])
+const accessToken = localStorage.getItem('accessToken');
+
+useEffect(() => {
+    if (!accessToken) return;
+    spotifyApi.setAccessToken(accessToken);
+}, [accessToken])
+
+//INIZIALIZZO UN PO' DI STATI_________________________________________________________
 
     const [isPublic, setIsPublic] = useState(playlist.public)
     const [title, setTitle] = useState(playlist.name)
@@ -30,7 +43,7 @@ function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
         setImage({url: playlist.image})
     }, [playlist.public])
 
-    //IMPOSTA IMMAGINE_________________________________________________________
+//IMPOSTA IMMAGINE___________________________________________________________________
 
     function impostaImmagine(immagine){
         const immagineUrl = URL.createObjectURL(immagine)
@@ -40,6 +53,7 @@ function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
         })
     }
 
+//RENDERING____________________________________________________________________________________________________________________________________________________________________________________________________________
     return(
         <>
             <Modal className='modal' show={show} size='xl' centered >
@@ -100,7 +114,8 @@ function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
 //SALVA________________________________________________________________________________________________________________
 
     function onConfirmFunction() {
-    
+        
+        //MODIFICA DETTAGLI
         spotifyApi.changePlaylistDetails(playlist.id, {name: title, description: description, public: isPublic})
         .then(data => {
 
@@ -110,12 +125,15 @@ function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
                     reader.readAsDataURL(image.immagine);
                     reader.onloadend = async () => {
                         const base64 = reader.result.split(',')[1];
+                        //UPLOAD COVER
                         spotifyApi.uploadCustomPlaylistCoverImage(playlist.id, base64)
                         .then(data => {})
                         .catch(e => {
-                            alert("Non è stato Possibile caricare l'immagine della playlist")
                             console.log( e.response.status);
-                            refreshToken()
+                            alert("Non è stato Possibile caricare l'immagine della playlist")
+                            if (e.response.status === 401 || e.response.status === 403) {
+                                refreshToken()
+                            }
                         })
                     }
 
@@ -137,15 +155,19 @@ function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
 
         })
         .catch(e => {
+            console.log( e.response.status);
             alert("Le Modifiche non sono state attuate.")
-            refreshToken()
+            if (e.response.status === 401 || e.response.status === 403) {
+                refreshToken()
+            }
         })
-        }
+    }
 
 //SALVA e VAI AI BRANI______________________________________________________________________________________________________
 
     function onConfirmFunctionAndGo() {
     
+        //MODIFICA DETTAGLI
         spotifyApi.changePlaylistDetails(playlist.id, {name: title, description: description, public: isPublic})
         .then(data => {
 
@@ -155,12 +177,15 @@ function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
                     reader.readAsDataURL(image.immagine);
                     reader.onloadend = async () => {
                         const base64 = reader.result.split(',')[1];
+                        //UPLOAD COVER
                         spotifyApi.uploadCustomPlaylistCoverImage(playlist.id, base64)
                         .then(data => {})
                         .catch(e => {
-                            alert("Non è stato Possibile caricare l'immagine della playlist")
                             console.log( e.response.status);
-                            refreshToken()
+                            alert("Non è stato Possibile caricare l'immagine della playlist")
+                            if (e.response.status === 401 || e.response.status === 403) {
+                                refreshToken()
+                            }
                         })
                     }
 
@@ -168,7 +193,10 @@ function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
             updatePlaylists()
         })
         .catch(e => {
-            refreshToken()
+            console.log( e.response.status);
+            if (e.response.status === 401 || e.response.status === 403) {
+                refreshToken()
+            }
         })
 
         const  newPlaylist = {
@@ -192,3 +220,4 @@ function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
 
 
 export default ModalModifyPlaylist
+

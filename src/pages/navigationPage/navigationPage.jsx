@@ -6,17 +6,27 @@ import NavigationBar from '../../components/navigationBar/navigationBar'
 import ButtonLogin from '../../components/buttonLogin/buttonLogin'
 import { Form, Container} from "react-bootstrap";
 import SpotifyWebApi from 'spotify-web-api-node';
-import Playlist from "../../components/Playlist/playlist"
+import Playlist2 from "../../components/playlist-2/playlist-2"
 import Track from "../../components/Track/track";
+import refreshToken from "../../util/refreshToken";
 
 
-const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4';
+
+//INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID_______________________________________________________________________________________
+const CLIENT_ID = '238334b666894f049d233d6c1bb3c3fc' //'61e53419c8a547eabe2729e093b43ae4';
 const spotifyApi = new SpotifyWebApi({
   clientId: CLIENT_ID
 });
 
 
+
+
+
+
+
 function NavigationPage(){
+
+//CONTROLLO IL TOKEN e lo passo all'oggetto spotifyApi____________________________________________________________________________________
 
   const accessToken = localStorage.getItem('accessToken');
 
@@ -87,6 +97,12 @@ function NavigationPage(){
                 console.log(searchResultPlaylists)
                 console.log(searchResultTracks)
               })
+              .catch(e => {
+                console.log( e.response.status);
+                if (e.response.status === 401 || e.response.status === 403) {
+                    refreshToken()
+                }
+            })
               
             //   break;
                 
@@ -113,6 +129,7 @@ function NavigationPage(){
   },[searchWord])
 
 
+//RENDERIZZO IL BANNER____________________________________________________________________________________________________________________________________________________________________________________
 
     if (!(localStorage.getItem("accessToken"))||(localStorage.getItem("accessToken")==="undefined")) {
       return(
@@ -127,6 +144,8 @@ function NavigationPage(){
         </>
       )
     }
+
+//RENDERIZZO LA PAGINA____________________________________________________________________________________________________________________________________________________________________________________
 
     return(
       <>
@@ -154,7 +173,7 @@ function NavigationPage(){
             <div>La ricerca delle Playlist ha prodotto i seguenti risultati:</div>
               <div>
                 {searchResultPlaylists.map(playlist => (                    
-                  <Playlist playlist={playlist}/>
+                  <Playlist2 playlist={playlist}/>
                 ))}
               </div>
             <hr/>

@@ -1,16 +1,12 @@
 import React from "react";
 import './style.css';
 
-import ButtonLogin from '../../components/buttonLogin/buttonLogin';
-
 import fullLogo from '../../assets/logoGCMO_fullSize.png'
-
+import ButtonLogin from '../../components/buttonLogin/buttonLogin';
 import NavigationBar from '../../components/navigationBar/navigationBar'
 
 
 function IndexPage(){
-
-    
 
     return (
         <>

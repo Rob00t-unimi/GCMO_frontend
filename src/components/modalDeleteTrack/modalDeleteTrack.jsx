@@ -3,7 +3,7 @@ import {Modal, Button } from 'react-bootstrap'
 import { useEffect } from 'react';
 import refreshToken from '../../util/refreshToken';
 
-const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4';
+const CLIENT_ID = '238334b666894f049d233d6c1bb3c3fc' //'61e53419c8a547eabe2729e093b43ae4';
 const spotifyApi = new SpotifyWebApi({
   clientId: CLIENT_ID
 });
@@ -22,12 +22,13 @@ function ModalDeletePlaylist({show, onClose, playlistId, trackUri}) {
         .then (
             onClose()
         )
-        .catch(err => {
+        .catch(e => {
+            console.log( e.response.status);
             alert('La traccia non è stata rimossa')
-            console.log(err)
-            refreshToken();
-        })
-        
+            if (e.response.status === 401 || e.response.status === 403) {
+                refreshToken()
+            }
+        })        
     }
 
 

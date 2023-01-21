@@ -1,16 +1,31 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Card, Modal, ModalHeader, Pagination, Table } from 'react-bootstrap'
+import { Button, Card, Modal, Pagination, Table } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
 import refreshToken from '../../util/refreshToken';
 import'./style.css'
-import { PlusCircle } from 'react-bootstrap-icons';
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
 
+
+
+
+//INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
+
+const CLIENT_ID = '238334b666894f049d233d6c1bb3c3fc' //'61e53419c8a547eabe2729e093b43ae4';
 const spotifyApi = new SpotifyWebApi({
-    clientId: '61e53419c8a547eabe2729e093b43ae4'
+    clientId: CLIENT_ID
 });
 
+
+
+
+
+
+
+
+
 const ModalPlaylistDetail = ({ show, onClose, playlist }) => {
+
+//IMPOSTO L'IMMAGINE_________________________________________________________________________________________________________________
 
     const [image, setImage] = useState(playlistImage);
     useEffect(() => {
@@ -19,6 +34,7 @@ const ModalPlaylistDetail = ({ show, onClose, playlist }) => {
         }
         }, [])
 
+//CONTROLLO IL TOKEN________________________________________________________________________________________________________________
 
  const accessToken = localStorage.getItem('accessToken');
 
@@ -28,6 +44,8 @@ const ModalPlaylistDetail = ({ show, onClose, playlist }) => {
     }, [accessToken])
 
 //PAGINAZIONE________________________________________________________________________________________________________________________
+
+const[deletedTrack, setDeletedTrack] = useState(false)
 
     const [page, setPage] = useState({
         data: [],
@@ -65,12 +83,14 @@ const ModalPlaylistDetail = ({ show, onClose, playlist }) => {
                 data: tracks
             }))
         })
-        .catch(err => {
-            console.log(err)
-            refreshToken();
+        .catch(e => {
+            console.log( e.response.status);
+            if (e.response.status === 401 || e.response.status === 403) {
+                refreshToken()
+            }
         })
 
-    }, [page.activePage])
+    }, [page.activePage, deletedTrack])
 
 
 
@@ -82,14 +102,17 @@ const ModalPlaylistDetail = ({ show, onClose, playlist }) => {
     }
     
 //REMOVE TRACK_______________________________________________________________________________________________________________________
+
 function removeTrack(trackUri){
     spotifyApi.removeTracksFromPlaylist(playlist.id, [{uri: trackUri}])
-    .then({
-        
+    .then( ()=>{
+        setDeletedTrack(!deletedTrack)
     })
-    .catch(err => {
-        console.log(err)
-        refreshToken();
+    .catch(e => {
+        alert("Le Modifiche non sono state attuate.")
+        if (e.response.status === 401 || e.response.status === 403) {
+            refreshToken()
+        }
     })
 }
 
