@@ -27,9 +27,18 @@ function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
 
     useEffect(() => {
         if (playlist.image) 
-        setImage(playlist.image)
+        setImage({url: playlist.image})
     }, [playlist.public])
 
+    //IMPOSTA IMMAGINE_________________________________________________________
+
+    function impostaImmagine(immagine){
+        const immagineUrl = URL.createObjectURL(immagine)
+        setImage({
+            immagine: immagine,
+            url: immagineUrl
+        })
+    }
 
     return(
         <>
@@ -55,10 +64,10 @@ function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
                             <div  className='descrizione bg-dark text-light  '>Descrizione </div>
                             <div className='d-flex flex-row'>
                                 <textarea className='bg-dark text-light ' type="text" placeholder={'Scrivi una descrizione..'} value={description} onChange={(e)=> {setDescription(e.target.value)}}/>
-                                {image&&<div className='copertina'><img src={image}></img></div>}
+                                {image&&<div className='copertina'><img src={image.url}></img></div>}
                                 {!image&&<div className='copertina text-center text-light'><div>Nessuna Immagine</div></div>}
                             </div>
-                            <div className='d-flex justify-content-end'><div className='inputFoto'><input type="file" accept="image/jpeg" onChange={(event)=>{setImage(URL.createObjectURL(event.target.files[0]))}}/></div></div>    
+                            <div className='d-flex justify-content-end'><div className='inputFoto'><input type="file" accept="image/jpeg" onChange={(event)=>{impostaImmagine(event.target.files[0])}}/></div></div>    
                         </div>
                     </div>
                 </Modal.Body>
@@ -97,11 +106,22 @@ function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
 
             if(image) {
 
-                //spotifyApi.uploadCustomPlaylistCoverImage(playlist.id, ...)
+                const reader = new FileReader();            //l'immagine è richiesta in base64, la converto con l'oggetto reader
+                    reader.readAsDataURL(image.immagine);
+                    reader.onloadend = async () => {
+                        const base64 = reader.result.split(',')[1];
+                        spotifyApi.uploadCustomPlaylistCoverImage(playlist.id, base64)
+                        .then(data => {})
+                        .catch(e => {
+                            alert("Non è stato Possibile caricare l'immagine della playlist")
+                            console.log( e.response.status);
+                            refreshToken()
+                        })
+                    }
 
             }
             const  newPlaylist = {
-                image: image ? image : null,    //se la modifica è andata a buon fine creo una playlist modificata senza richiederla di nuovo alle api
+                image: image ? image.url : null,    //se la modifica è andata a buon fine creo una playlist modificata senza richiederla di nuovo alle api
                 name: title,
                 description: description ? description : null,
                 id: playlist.id,
@@ -111,9 +131,8 @@ function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
             }
 
             updatePlaylists()
-
             alert("Playlist Modificata con Successo!")
-
+            
             onClose()   //chiudo modale
 
         })
@@ -132,29 +151,41 @@ function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
 
             if(image) {
 
-                //spotifyApi.uploadCustomPlaylistCoverImage(playlist.id, ...)
+                const reader = new FileReader();            //l'immagine è richiesta in base64, la converto con l'oggetto reader
+                    reader.readAsDataURL(image.immagine);
+                    reader.onloadend = async () => {
+                        const base64 = reader.result.split(',')[1];
+                        spotifyApi.uploadCustomPlaylistCoverImage(playlist.id, base64)
+                        .then(data => {})
+                        .catch(e => {
+                            alert("Non è stato Possibile caricare l'immagine della playlist")
+                            console.log( e.response.status);
+                            refreshToken()
+                        })
+                    }
 
             }
-            const  newPlaylist = {
-                image: image ? image : null,
-                name: title,
-                description: description ? description : null,      //se la modifica è andata a buon fine creo una playlist modificata senza richiederla di nuovo alle api
-                id: playlist.id,
-                ownerId: playlist.ownerId,
-                ownerName: playlist.ownerName,
-                public: isPublic ? isPublic : null,
-            }
-
             updatePlaylists()
-
-            localStorage.setItem('createdPlaylist', JSON.stringify(newPlaylist) )       //inserisco la playlist nel local storage per prenderla dalla navigationPage
-
-            window.location = "http://localhost:3000/navigate"      //mando alla navigation page
         })
         .catch(e => {
-            alert("Le Modifiche non sono state attuate.")
             refreshToken()
         })
+
+        const  newPlaylist = {
+            image: image ? image.url : null,
+            name: title,
+            description: description ? description : null,      //se la modifica è andata a buon fine creo una playlist modificata senza richiederla di nuovo alle api
+            id: playlist.id,
+            ownerId: playlist.ownerId,
+            ownerName: playlist.ownerName,
+            public: isPublic ? isPublic : null,
+        }
+
+
+        localStorage.setItem('createdPlaylist', JSON.stringify(newPlaylist) )       //inserisco la playlist nel local storage per prenderla dalla navigationPage
+
+        window.location = "http://localhost:3000/navigate"      //mando alla navigation page
+
     }
     
 }

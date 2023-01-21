@@ -1,3 +1,4 @@
+//import FooterElement from "../../components/footerElement/footerElement";
 import React, { useState, useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.min.css' ;
 import './style.css';
@@ -7,7 +8,7 @@ import { Form, Container} from "react-bootstrap";
 import SpotifyWebApi from 'spotify-web-api-node';
 import Playlist from "../../components/Playlist/playlist"
 import Track from "../../components/Track/track";
-//import Footer from "../../components/footer/footer";
+
 
 const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4';
 const spotifyApi = new SpotifyWebApi({
@@ -24,22 +25,27 @@ function NavigationPage(){
     spotifyApi.setAccessToken(accessToken);
   }, [accessToken])
 
+//SHOW FOOTER______________________________________________________________________________________________________________________________
   
-  //   const [playlist, setPlaylist] = useState(JSON.parse(localStorage.getItem("createdPlaylist")));
-  //   const [showFooter, setShowFooter] = useState(false)
+     const [playlist, setPlaylist] = useState();
 
-  // useEffect(() => {
-  //   if(playlist) {
-  //     setShowFooter(true)
-  //   }
-  // }, [])
-  
+     useEffect(() => {
+      if(localStorage.getItem("createdPlaylist")) {
+        setPlaylist(JSON.parse(localStorage.getItem("createdPlaylist")))
+      } else {
+        setPlaylist(null)
+      }
+    }, [playlist])
+
+//GET TOP PLAYLIST_____________________________________________________________________________________________________________
 
   const [topTracks, setTopTracks] = useState()
 
   function getTop() {
 
   }
+
+ //RICERCA______________________________________________________________________________________________________________________
 
 
   const [searchFilter, setSearchFilter] =useState('TITLE')
@@ -124,7 +130,7 @@ function NavigationPage(){
 
     return(
       <>
-      <NavigationBar></NavigationBar>
+      <NavigationBar/>
         <div className="search d-flex flex-row">
           <Form.Control className="searchForm" type="search mb-3" placeholder="Cerca Playlist o Traccia musicale" value={searchWord} onChange={(e)=>{setSearchWord(e.target.value)}}/>
           <select name="visibility" value={searchFilter} onChange={(e)=> {setSearchFilter(e.target.value)}}>
@@ -155,7 +161,7 @@ function NavigationPage(){
           </div>}
         </Container>
         
-          {/*showFooter&&<Footer playlist={playlist} show={showFooter} onClose={()=>{setShowFooter(false)}}></Footer>*/}
+          {/* {playlist&&<FooterElement playlist={playlist}></FooterElement>} */}
       </>
     )
 }

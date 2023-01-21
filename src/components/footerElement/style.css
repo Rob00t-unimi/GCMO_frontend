@@ -1,0 +1,28 @@
+.footer-hide{
+    display:none;
+  }
+
+.card{
+    position: fixed;
+    width: 80%;
+    bottom: 0;
+    height: 13vh;
+    margin-bottom: 3vh;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cardImg{
+    width: 13vh;
+    height: 13vh;
+    padding: 3px;
+}
+
+.action{
+    margin-top:4.5vh;
+    margin-right: 1vh;
+}
+
+.text{
+    margin-top: 2.5vh;
+}

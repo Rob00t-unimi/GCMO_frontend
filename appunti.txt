@@ -1,29 +1,26 @@
 - button login                  (OK) 
 
-- footer                        (ha creato dei disastri --> da sistemare)
-
-- modal create playlist         (manca solo il capire come fare la chiamata per impostare la foto e sostituire gli alert con qualcosa di più bello)
-
-- modal create playlist         (non serve, da eliminare)
-
-- modal delete track            (ho preferito non usarla)
-
-- modal modify playlist         (manca solo il capire come fare la chiamata per impostare la foto e sostituire gli alert con qualcosa di più bello)
-
 - navigation bar                (OK)
-
-
-- Playlist                      (   uno di questi 2 crea problemi, ci sono sovrapposizioni tra playlist con filtri differenti   )
-- PersonalArea                  (   la ricerca nella personal area deve essere ristretta alle sole playlist dell'utente         )                                                                                            )
-
-
-- playlist view modal           (OK, se c'è tempo si può aggiungere una modale per vedere il brano specifico)
-
-- track                         (bisogna aggiungere i pulsanti per aggiungere la canzone ad una playlist)
 
 - index page                    (OK)
 
+- playlist view modal           (OK, se c'è tempo si può aggiungere una modale per vedere il brano specifico)
+
+- footer                        (ha creato dei disastri --> da sistemare)
+
+- modal create playlist         (rivedere inserimento foto di copertina, sostituire gli alert con qualcosa di più bello)
+
+- modal modify playlist         (manca solo il capire come fare la chiamata per impostare la foto e sostituire gli alert con qualcosa di più bello)
+
+- Playlist                      (   uno di questi 2 crea problemi, ci sono sovrapposizioni tra playlist con filtri differenti   )
+- PersonalArea                  (                                                                                               )
+
+
+- track                         (bisogna aggiungere i pulsanti per aggiungere la canzone ad una playlist)
+
 - navigation page               (bisogna creare un componente playlist nuovo a parte per le playlist che non sono quelle dell'utente, questo componente ha solo il tasto per salvare le playlist)
+
+
 
 
 
@@ -34,3 +31,13 @@ cose da fare:
 - ricerca tramite tag, artista o canzoni interne alla playlist
 - vedere tag e genere delle canzoni
 - aggiungere tag nelle playlist
+- modificare info utente
+- eliminare account utente (o revocare le autorizzazioni)
+
+
+
+
+
+- modal delete playlist         (non serve, da eliminare)
+
+- modal delete track            (ho preferito non usarla)

@@ -113,9 +113,19 @@ console.log(image)
                 id = data.body.id
 
                 if (image) {
-                   
-                    //spotifyApi.uploadCustomPlaylistCoverImage(id, ...)
-                    
+
+                    const reader = new FileReader();            //l'immagine è richiesta in base64, la converto con l'oggetto reader
+                    reader.readAsDataURL(image);
+                    reader.onloadend = async () => {
+                        const base64 = reader.result.split(',')[1];
+                        spotifyApi.uploadCustomPlaylistCoverImage(id, base64)
+                        .then(data => {})
+                        .catch(e => {
+                            alert("Non è stato Possibile caricare l'immagine della playlist")
+                            console.log( e.response.status);
+                            refreshToken()
+                        })
+                    }
                 }
 
                 alert("Playlist creata con Successo!")
@@ -143,7 +153,18 @@ console.log(image)
 
                 if (image) {
 
-                    //spotifyApi.uploadCustomPlaylistCoverImage(id, ...)
+                    const reader = new FileReader();            //l'immagine è richiesta in base64, la converto con l'oggetto reader
+                    reader.readAsDataURL(image);
+                    reader.onloadend = async () => {
+                        const base64 = reader.result.split(',')[1];
+                        spotifyApi.uploadCustomPlaylistCoverImage(id, base64)
+                        .then(data => {})
+                        .catch(e => {
+                            alert("Non è stato Possibile caricare l'immagine della playlist")
+                            console.log( e.response.status);
+                            refreshToken()
+                        })
+                    }
                     
                 }
 

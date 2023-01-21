@@ -124,34 +124,47 @@ function PersonalArea() {
     }
   }, [filterName, update])  //se cambia il filtro selezionato o il booleano update devo filtrare le playlist
 
-//RICERCA PLAYLIST_________________________________________________________________________________________________________________________________________________________________________________________________________________________
+//RICERCA PLAYLIST (solo tra le playlist dell'utente, in locale)_________________________________________________________________________________________________________________________________________________________________
 
 const [searchWord, setSearchWord] = useState('')
 const [searchResult, setSearchResult] = useState()
 
 useEffect(() => {
-  if (searchWord && searchWord!=='') {
-     spotifyApi.searchPlaylists(searchWord, {limit: 5})
-     .then(result => {
-      console.log(result)
-      const list = result.body.playlists.items.map(item => {   //ricevo e ciclo su una map di items
-        return {
-          image: item.images && item.images.length > 0 ? item.images[0].url : null,
-          name: item.name,
-          description: item.description ? item.description : null,
-          id: item.id,
-          ownerId: item.owner.id,
-          ownerName: item.owner.display_name,
-          public: item.public ? item.public : null,
-        }
-      })
-      setSearchResult(list)
-      console.log(list)
-  })
-} else {
-  setSearchResult(null)
-}
-},[searchWord])
+  if (searchWord && searchWord !== "") {
+    const filteredPlaylists = playlistResult.filter(playlist => {
+      return playlist.name.toLowerCase().includes(searchWord.toLowerCase());
+    });
+    setSearchResult(filteredPlaylists);
+  } else {
+       setSearchResult(null)
+    }
+}, [searchWord]);
+
+
+// useEffect(() => {
+//   if (searchWord && searchWord!=='') {
+//      spotifyApi.searchPlaylists(searchWord, {limit: 5})
+//      .then(result => {
+//       console.log(result)
+//       const list = result.body.playlists.items.map(item => {   //ricevo e ciclo su una map di items
+//         return {
+//           image: item.images && item.images.length > 0 ? item.images[0].url : null,
+//           name: item.name,
+//           description: item.description ? item.description : null,
+//           id: item.id,
+//           ownerId: item.owner.id,
+//           ownerName: item.owner.display_name,
+//           public: item.public ? item.public : null,
+//         }
+//       })
+//       setSearchResult(list)
+//       console.log(list)
+//   })
+// } else {
+//   setSearchResult(null)
+// }
+// },[searchWord])
+
 
 //METODO PER AGGIORNARE LE PLAYLIST________________________________________________________________________________________________________________________________________________________________________________
 
