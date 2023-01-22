@@ -31,7 +31,7 @@ function Playlist({playlist, updatePlaylists}){
 
 //INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
-    const [image, setImage] = useState(playlistImage);
+    const [image, setImage] = useState();
 
     const userInfo = JSON.parse(localStorage.getItem('user'));  
     const accessToken = localStorage.getItem('accessToken');
@@ -43,14 +43,6 @@ function Playlist({playlist, updatePlaylists}){
         spotifyApi.setAccessToken(accessToken);
     }, [accessToken])
 
-//IMPOSTO L'IMMAGINE________________________________________________________________________________________________________________
-
-    useEffect(() => {
-    if (playlist.image) {
-        setImage(playlist.image)
-    }
-    }, [playlist])
-    
 //CONTROLLO IL TIPO DI UNA PLAYLIST__________________________________________________________________________________________________
 
     const [type, setType] = useState();
@@ -69,6 +61,17 @@ function Playlist({playlist, updatePlaylists}){
         } else {
             setType('PRIVATE')
         }       
+    }, [playlist])
+
+
+//IMPOSTO L'IMMAGINE________________________________________________________________________________________________________________
+
+useEffect(() => {
+    if (playlist.image) {
+        setImage(playlist.image)
+    } else {
+        setImage(playlistImage)
+    }
     }, [playlist])
 
 //INVERTE IL TIPO DELLA PLAYLIST__________________________________________________________________________________________________
@@ -98,7 +101,7 @@ function Playlist({playlist, updatePlaylists}){
             })
         }
     }
-
+    
 //RENDERING_______________________________________________________________________________________________________________________________________
 
     return(

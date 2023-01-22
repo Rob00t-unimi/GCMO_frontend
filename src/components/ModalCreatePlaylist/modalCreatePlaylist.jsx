@@ -23,7 +23,7 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-function ModalCreatePlaylist({show, onClose}) {
+function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
 
 //CONTROLLO IL TOKEN E LO AGGIUNGO ALL'OGGETTO SPOTIFYAPI____________________________
 
@@ -39,14 +39,16 @@ function ModalCreatePlaylist({show, onClose}) {
     const [isPublic, setIsPublic] = useState(false)
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
-    const [image, setImage] = useState();
+    const [image, setImage] = useState(null);
 
 //CHIUDI MODALE_______________________________________________________________________
 
-    function close() {      
-        setIsPublic(false);
+    function close() {  
+        
+        setIsPublic(false)
         setTitle('')
         setDescription('')
+        setImage(null)    
         onClose();
     }
 
@@ -132,7 +134,11 @@ function ModalCreatePlaylist({show, onClose}) {
                         const base64 = reader.result.split(',')[1];
                         //UPLOAD IMMAGINE DI COPERTINA
                         spotifyApi.uploadCustomPlaylistCoverImage(id, base64)
-                        .then(data => {})
+                        .then(data => {
+                            alert("Playlist creata con Successo!")
+                            updatePlaylists()
+                            close()
+                        })
                         .catch(e => {
                             console.log( e.response.status);
                             alert("Non è stato Possibile caricare l'immagine della playlist")
@@ -141,9 +147,11 @@ function ModalCreatePlaylist({show, onClose}) {
                             }
                         })
                     }
+                } else {
+                    alert("Playlist creata con Successo!")
+                    updatePlaylists()
+                    close()
                 }
-
-                alert("Playlist creata con Successo!")
             })
             .catch(e => {
                 console.log( e.response.status);

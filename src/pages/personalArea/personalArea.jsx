@@ -37,7 +37,7 @@ function PersonalArea() {
 
   const [filterName, setFilterName] = useState('ALL')   //nome dei filtri dei button nella pagina personale
   const [modal, setModal] = useState(false)             //impostiamo uno stato iniziale alla modale --> false chiusa, true aperta
-  const [playlistResult, setPlaylistResults] = useState([])     //risultato alla chiamata per ottenere le playlist
+  const [playlistResults, setPlaylistResults] = useState([])     //risultato alla chiamata per ottenere le playlist
   const [playlistFiltered, setPlaylistFiltered] = useState([])  //playlist filtrate in base al filtro attuale
   const [limit, setLimit] = useState(50)                        //limite di quante playlist max posso chiedere 
   const [update, setUpdate] = useState(false)
@@ -115,27 +115,27 @@ function PersonalArea() {
   useEffect( () => {          //verifico a cosa è uguale filtername e filtro di conseguenza le playlist per mostrare quelle corrette
     switch (filterName) {
       case 'ALL':
-        getAllPlaylist()    //le richiedo tutte 
+        setPlaylistFiltered(playlistResults)
         break;
       case 'PUBLIC':
-        setPlaylistFiltered(playlistResult.filter(item => {                 //prendo da playlistResult solo le playlist che rispettano il filtro e le inserisco in playlistFiltered
+        setPlaylistFiltered(playlistResults.filter(item => {                 //prendo da playlistResult solo le playlist che rispettano il filtro e le inserisco in playlistFiltered
           return item.public === true && item.ownerId === currentUser.id
         }));
         break;
       case 'PRIVATE':
-        setPlaylistFiltered(playlistResult.filter(item => {
+        setPlaylistFiltered(playlistResults.filter(item => {
           return item.public === false && item.ownerId === currentUser.id
         }));
         break;
       case 'FOLLOWED':
-        setPlaylistFiltered(playlistResult.filter(item => {
+        setPlaylistFiltered(playlistResults.filter(item => {
           return item.ownerId !== currentUser.id
         }));
         break;
       default:
         break;
     }
-  }, [filterName, update])  //se cambia il filtro selezionato o il booleano update devo filtrare le playlist
+  }, [filterName,  update])  //se cambia il filtro selezionato o il booleano update devo filtrare le playlist
 
 //RICERCA PLAYLIST (solo tra le playlist dell'utente, in locale)_________________________________________________________________________________________________________________________________________________________________
 
@@ -144,7 +144,7 @@ const [searchResult, setSearchResult] = useState()
 
 useEffect(() => {
   if (searchWord && searchWord !== "") {
-    const filteredPlaylists = playlistResult.filter(playlist => {
+    const filteredPlaylists = playlistResults.filter(playlist => {
       return playlist.name.toLowerCase().includes(searchWord.toLowerCase());
     });
     setSearchResult(filteredPlaylists);
@@ -222,7 +222,7 @@ const updatePlaylists = () => {
       <div  className="contenuto">
         <Row>
           <Col>
-            <Button className='crea btn-lg btn-success text-light' onClick={()=>setModal(true)}><PlusCircle/> Crea</Button>  {/*onlcick stato della modale = true quindi la apro*/}
+            <Button className='crea btn-lg btn-success text-light' onClick={()=>setModal(true)} ><PlusCircle/> Crea</Button>  {/*onlcick stato della modale = true quindi la apro*/}
           </Col>
           <Col className="text-center">
             <Button className="filter btn-lg btn-light text-light" onClick={() => setFilterName("ALL")} style={{backgroundColor: `${filterName === 'ALL' ? '#429baa' : 'rgb(196, 199, 197)'}`}}>Tutte</Button>
@@ -245,15 +245,15 @@ const updatePlaylists = () => {
             <hr/>
             </div>}
           <div>
-            {playlistFiltered.map((playlist, index) => (                     //renderizzo ogni plaaylist nella lista filtered Playlist (simile forEach)
-              <Playlist playlist={playlist} updatePlaylists={updatePlaylists} /*updatePlaylists={()=>setUpdatePlaylists(!updatePlaylists)}*//>
+            {playlistFiltered.map((playlist) => (                     //renderizzo ogni plaaylist nella lista filtered Playlist (simile forEach)
+              <Playlist playlist={playlist} updatePlaylists={updatePlaylists}/>
             ))}
           </div>
         </Container>
       </div>
 
       {/*passo lo stato di modal alla modale e la funzione per cambiarlo in false*/}
-      <ModalCreatePlaylist show={modal} onClose={()=>{setModal(false)}}/>
+      <ModalCreatePlaylist show={modal} onClose={()=>{setModal(false)}} updatePlaylists={updatePlaylists}/>
 
       </>
     )
