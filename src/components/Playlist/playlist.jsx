@@ -74,6 +74,7 @@ useEffect(() => {
     }
     }, [playlist])
 
+
 //INVERTE IL TIPO DELLA PLAYLIST__________________________________________________________________________________________________
 
     function switchPublic(){
@@ -139,7 +140,7 @@ useEffect(() => {
             
             <PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} />
             {/* <ModalDeletePlaylist show={modalDeleteShow}  onClose={() => {setModalDeleteShow(false)}} playlist={playlist}/> */}
-            <ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist} updatePlaylists={updatePlaylists}/>
+            {modalModifyShow&&<ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist} updatePlaylists={updatePlaylists}/>}
         </>
     )
 }

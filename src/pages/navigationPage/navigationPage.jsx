@@ -1,4 +1,4 @@
-//import FooterElement from "../../components/footerElement/footerElement";
+import FooterElement from "../../components/footerElement/footerElement";
 import React, { useState, useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.min.css' ;
 import './style.css';
@@ -37,15 +37,21 @@ function NavigationPage(){
 
 //SHOW FOOTER______________________________________________________________________________________________________________________________
   
-     const [playlist, setPlaylist] = useState();
+     const [showFooter, setShowFooter] = useState();
 
      useEffect(() => {
       if(localStorage.getItem("createdPlaylist")) {
-        setPlaylist(JSON.parse(localStorage.getItem("createdPlaylist")))
-      } else {
-        setPlaylist(null)
+        setShowFooter(true)
       }
-    }, [playlist])
+    }, [])
+
+//REMOVE CREATED PLAYLIST FROM LOCAL STORAGE_______________________________________________________________________________________________
+
+useEffect(() => {
+  if(showFooter==false) {
+    localStorage.removeItem('createdPlaylist')
+  }
+}, [showFooter])
 
 //GET TOP PLAYLIST_____________________________________________________________________________________________________________
 
@@ -70,7 +76,7 @@ function NavigationPage(){
 
               spotifyApi.search(searchWord, ['track', 'playlist'], { limit : 5})
               .then(result => {
-                //console.log(result)
+                console.log('result', result)
                 const playlists = result.body.playlists.items.map(item => {   //ricevo e ciclo su una map di items
                   return {
                     image: item.images && item.images.length > 0 ? item.images[0].url : null,
@@ -98,7 +104,7 @@ function NavigationPage(){
                 console.log(searchResultTracks)
               })
               .catch(e => {
-                console.log( e.response.status);
+                console.log("entrato", JSON.stringify(e));
                 if (e.response.status === 401 || e.response.status === 403) {
                     refreshToken()
                 }
@@ -180,7 +186,7 @@ function NavigationPage(){
           </div>}
         </Container>
         
-          {/* {playlist&&<FooterElement playlist={playlist}></FooterElement>} */}
+           {showFooter&&<FooterElement close={()=>setShowFooter(false)}></FooterElement>}
       </>
     )
 }

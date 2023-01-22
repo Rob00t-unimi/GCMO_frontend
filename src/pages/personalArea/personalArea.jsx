@@ -144,7 +144,7 @@ const [searchResult, setSearchResult] = useState()
 
 useEffect(() => {
   if (searchWord && searchWord !== "") {
-    const filteredPlaylists = playlistResults.filter(playlist => {
+    const filteredPlaylists = playlistFiltered.filter(playlist => {
       return playlist.name.toLowerCase().includes(searchWord.toLowerCase());
     });
     setSearchResult(filteredPlaylists);
@@ -200,6 +200,8 @@ const updatePlaylists = () => {
     
     </>
   );}
+
+//
 
 //RENDERIZZO PERSONAL AREA_________________________________________________________________________________________________________________________________________________________________________________________________________________
 

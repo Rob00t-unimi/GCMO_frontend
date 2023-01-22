@@ -5,50 +5,32 @@ import { useState, useEffect } from 'react';
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
 
 
-function FooterElement(playlist){
+function FooterElement({close}){
 
-//INIZIALIZZO L'IMMAGINE di copertina_____________________________________________________________________________________________________
+//SET PLAYLIST
+const [playlist, setPlaylist] = useState(JSON.parse(localStorage.getItem('createdPlaylist')))   //posso fare direttamente cosi perchè il componente esiste solo se la playlist è nel local storage
 
-    const [image, setImage] = useState(playlistImage);
-
-    useEffect(() => {
-        if (playlist.image) {
-            setImage(playlist.image)
-        }
-        }, [])
-
-//FUNZIONE DI CHIUSURA DEL FOOTER_________________________________________________________________________________________________________
-
-    function close(){
-        localStorage.removeItem('createdPlaylist')          //il footer compare solo se nel local storage c'è createdPlaylist (ho preferito scrivere questo controllo nel padre)
-        //setPlaylist()
-    }
 
 //RENDER COMPONENTE________________________________________________________________________________________________________________________
     
         return (
-            <>
-           
-                <Card className='card bg-dark text-light' >
+            <Container className='footer' >
+                <Card className='bg-dark text-light' >
                     <Row>
-                        <Col className='text-start'>
-                            <Card.Img className='cardImg' src={image}/>
-                            <Card.Body className='cardbody'>
-                                <h1>{playlist.name}</h1>
-                                <h5>{playlist.ownerName}</h5>
+                        <Col className='text-start d-flex flex-row'>
+                            <Card.Img className='footerImg' src={playlist.image ? playlist.image : playlistImage}/>
+                            <Card.Body className='footer-body'>
+                               <h1>{playlist.name}</h1>
+                               <h5>{playlist.ownerName}</h5>
                             </Card.Body>
                         </Col>
-                        <Col className='text-center'>
-                            <h1 className='text'>Aggiungi delle Tracce alla playlist selezionata</h1>
-                        </Col>
                         <Col className='text-end'>
-                            <Button className='action btn-light' onClick={close}>Chiudi</Button>
+                            <Card.Body className='footer-text'><h2 >Aggiungi delle Tracce alla playlist</h2></Card.Body>
+                            <Button className='footer-button btn-light' onClick={close}>Chiudi</Button>
                         </Col>
                     </Row>
                 </Card>
-
-        
-            </>
+            </Container>
         )
     
 }

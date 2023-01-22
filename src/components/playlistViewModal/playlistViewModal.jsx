@@ -25,14 +25,6 @@ const spotifyApi = new SpotifyWebApi({
 
 const ModalPlaylistDetail = ({ show, onClose, playlist }) => {
 
-//IMPOSTO L'IMMAGINE_________________________________________________________________________________________________________________
-
-    const [image, setImage] = useState(playlistImage);
-    useEffect(() => {
-        if (playlist.image) {
-            setImage(playlist.image)
-        }
-        }, [])
 
 //CONTROLLO IL TOKEN________________________________________________________________________________________________________________
 
@@ -125,7 +117,7 @@ function removeTrack(trackUri){
         <Modal show={show} size="xl" centered>
             <Modal.Header className='bg-dark'>
                 <Card className="header d-flex flex-row bg-dark text-light"  >
-                    <Card.Img className="img" src={image} />
+                    <Card.Img className="img" src={playlist.image?playlist.image:playlistImage} />
                     <Card.Body>
                         <Card.Title> {playlist.name} </Card.Title>
                         <Card.Text> {playlist.ownerName} </Card.Text>

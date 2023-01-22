@@ -1,10 +1,7 @@
-.footer-hide{
-    display:none;
-  }
-
-.card{
+.footer{
     position: fixed;
-    width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
     bottom: 0;
     height: 13vh;
     margin-bottom: 3vh;
@@ -12,17 +9,20 @@
     margin-right: auto;
 }
 
-.cardImg{
-    width: 13vh;
-    height: 13vh;
-    padding: 3px;
+.footerImg{
+    height:fit-content;
+    width: 12.8vh;
 }
 
-.action{
-    margin-top:4.5vh;
-    margin-right: 1vh;
+.footer-body{
+    margin-top: 2vh;
 }
 
-.text{
-    margin-top: 2.5vh;
+.footer-button {
+    width: 50%;
 }
+
+.footer-text {
+    margin-top: 1vh;
+}
+

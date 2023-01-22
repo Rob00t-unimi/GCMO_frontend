@@ -135,8 +135,8 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                         //UPLOAD IMMAGINE DI COPERTINA
                         spotifyApi.uploadCustomPlaylistCoverImage(id, base64)
                         .then(data => {
-                            alert("Playlist creata con Successo!")
                             updatePlaylists()
+                            alert("Playlist creata con Successo!")
                             close()
                         })
                         .catch(e => {
@@ -148,8 +148,8 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                         })
                     }
                 } else {
-                    alert("Playlist creata con Successo!")
                     updatePlaylists()
+                    alert("Playlist creata con Successo!")
                     close()
                 }
             })
@@ -185,7 +185,9 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                         const base64 = reader.result.split(',')[1];
                         //UPLOAD IMMAGINE DI COPERTINA
                         spotifyApi.uploadCustomPlaylistCoverImage(id, base64)
-                        .then(data => {})
+                        .then(data => {
+                            finish()
+                        })
                         .catch(e => {
                             console.log( e.response.status);
                             alert("Non è stato Possibile caricare l'immagine della playlist")
@@ -195,25 +197,39 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                         })
                     }
                     
+                } else {
+                    finish()
                 }
 
-                //CREO E SALVO NEL LOCAL STORAGE LA NUOVA PLAYLIST 
-                const createdPlaylist = {
-                    image: item.body.images && item.body.images.length > 0 ? item.body.images[0].url : null,
-                    name: item.body.name,
-                    description: item.body.description ? item.body.description : null,
-                    id: item.body.id,
-                    ownerId: item.body.owner.id,
-                    ownerName: item.body.owner.display_name,
-                    public: item.body.public,
-                }
+              const finish = () => {  //CREO E SALVO NEL LOCAL STORAGE LA NUOVA PLAYLIST 
 
-                localStorage.setItem('createdPlaylist', JSON.stringify(createdPlaylist) )
+                spotifyApi.getPlaylist(id)
+                .then(item =>{
+                    const createdPlaylist =  {
+                        image: item.body.images && item.body.images.length > 0 ? item.body.images[0].url : null,
+                        name: item.body.name,
+                        description: item.body.description ? item.body.description : null,
+                        id: item.body.id,
+                        ownerId: item.body.owner.id,
+                        ownerName: item.body.owner.display_name,
+                        public: item.body.public,
+                      }
+                      console.log("createdplaylist", createdPlaylist)
 
-                close()
+                       localStorage.setItem('createdPlaylist', JSON.stringify(createdPlaylist) )
 
-                //REINDIRIZZO ALLA PAGINA DI NAVIGAZIONE PER AGGIUNGERE LE CANZONI
-                window.location = "http://localhost:3000/navigate" 
+                       close()
+
+                        //REINDIRIZZO ALLA PAGINA DI NAVIGAZIONE PER AGGIUNGERE LE CANZONI
+                        window.location = "http://localhost:3000/navigate" 
+                })
+                .catch(e => {
+                    console.log( e.response.status);
+                    if (e.response.status === 401 || e.response.status === 403) {
+                        refreshToken()
+                    }
+                })
+            }
                 
             })
             .catch(e => {
