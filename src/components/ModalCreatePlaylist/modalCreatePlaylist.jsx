@@ -210,6 +210,8 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
 
                 localStorage.setItem('createdPlaylist', JSON.stringify(createdPlaylist) )
 
+                close()
+
                 //REINDIRIZZO ALLA PAGINA DI NAVIGAZIONE PER AGGIUNGERE LE CANZONI
                 window.location = "http://localhost:3000/navigate" 
                 

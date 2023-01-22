@@ -237,6 +237,7 @@ const updatePlaylists = () => {
         <Container className="playlists">
           {searchResult&&<div >
             <div>La ricerca ha prodotto i seguenti risultati:</div>
+            {(searchResult.length===0)&&<div className="text-center">Nessun Risultato</div>}
             <div>
             {searchResult.map(playlist => (                    
               <Playlist playlist={playlist}/>
