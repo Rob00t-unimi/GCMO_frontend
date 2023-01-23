@@ -11,7 +11,7 @@ import refreshToken from '../../util/refreshToken'
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
 
-const CLIENT_ID = '238334b666894f049d233d6c1bb3c3fc' //'61e53419c8a547eabe2729e093b43ae4';
+const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4' //238334b666894f049d233d6c1bb3c3fc
 const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID
 });

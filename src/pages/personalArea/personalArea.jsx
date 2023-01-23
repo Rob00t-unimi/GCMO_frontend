@@ -20,7 +20,7 @@ import Playlist from "../../components/Playlist/playlist";
 
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID_______________________________________________________________________________________________
-const CLIENT_ID = '238334b666894f049d233d6c1bb3c3fc' //'61e53419c8a547eabe2729e093b43ae4';
+const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4' //238334b666894f049d233d6c1bb3c3fc
 const spotifyApi = new SpotifyWebApi({
   clientId: CLIENT_ID
 });
@@ -42,7 +42,7 @@ function PersonalArea() {
   const [limit, setLimit] = useState(50)                        //limite di quante playlist max posso chiedere 
   const [update, setUpdate] = useState(false)
   
-  const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("user")));   //dati attuali dell'utente
+  const [currentUser, setCurrentUser] = useState();   //dati attuali dell'utente
   const accessToken = localStorage.getItem('accessToken')   //estraggo il token dal local storage
 
 
@@ -51,6 +51,11 @@ function PersonalArea() {
   useEffect(() => {                 //quando cambia l'access token eseguo lo use effect
     if (!accessToken) return;
 
+    if(localStorage.getItem('user')) {
+      setCurrentUser(JSON.parse(localStorage.getItem('user')))
+      return
+    }
+
     spotifyApi.setAccessToken(accessToken);     //se l'access token non è nullo eseguo la richiesta di informazioni dell'utente e le salvo nel local storage
     spotifyApi.getMe()
         .then(result => {
@@ -58,13 +63,14 @@ function PersonalArea() {
             localStorage.setItem('user', JSON.stringify({
                 name: result.body.display_name? result.body.display_name : 'user',
                 id: result.body.id,
-                image: result.body.images[0].url ? result.body.images[0].url : null,
+                image: result.body.images.length[0] ? result.body.images[0].url : null,
                 followers: result.body.followers.total,
                 country: result.body.country,
             }))
+            setCurrentUser(JSON.parse(localStorage.getItem('user')))
         })
         .catch(e => {
-          console.log( e.response.status);
+          console.log( e);
           if (e.response.status === 401 || e.response.status === 403) {
               refreshToken()
           }
@@ -80,9 +86,7 @@ function PersonalArea() {
   
   const getAllPlaylist = () => {
 
-    spotifyApi.getUserPlaylists({
-      limit: limit
-    })
+    spotifyApi.getUserPlaylists({limit: limit})
     .then(result => {
       console.log(result)
         const playlists = result.body.items.map(item => {   //ricevo e ciclo su una map di items
@@ -210,7 +214,7 @@ const updatePlaylists = () => {
       <>
       <NavigationBar/>
       <div className="info"><Row >
-        <Col>{currentUser&&<div className="immagineProfilo"><img className="img-fluid" src={currentUser.image} alt="immagine profilo"/></div> }</Col>
+        <Col>{currentUser&&currentUser.image&&<div className="immagineProfilo"><img className="img-fluid" src={currentUser.image} alt="immagine profilo"/></div> }</Col>
         <Col className="text-center">
           <div className="nomeUtente img-fluid">
             {currentUser&&<div className="text-center" ><h1>{currentUser.name}</h1></div>}
@@ -242,14 +246,14 @@ const updatePlaylists = () => {
             {(searchResult.length===0)&&<div className="text-center">Nessun Risultato</div>}
             <div>
             {searchResult.map(playlist => (                    
-              <Playlist playlist={playlist}/>
+              <Playlist playlist={playlist} userInfo={currentUser}/>
             ))}
             </div>
             <hr/>
             </div>}
           <div>
             {playlistFiltered.map((playlist) => (                     //renderizzo ogni plaaylist nella lista filtered Playlist (simile forEach)
-              <Playlist playlist={playlist} updatePlaylists={updatePlaylists}/>
+              <Playlist playlist={playlist} updatePlaylists={updatePlaylists} userInfo={currentUser}/>
             ))}
           </div>
         </Container>

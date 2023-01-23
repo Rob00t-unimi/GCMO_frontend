@@ -16,7 +16,7 @@ import FiltriRicerca from "../../components/filtriRicerca/filtriRicerca";
 
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID_______________________________________________________________________________________
-const CLIENT_ID = '238334b666894f049d233d6c1bb3c3fc' //'61e53419c8a547eabe2729e093b43ae4';
+const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4' //238334b666894f049d233d6c1bb3c3fc
 const spotifyApi = new SpotifyWebApi({
   clientId: CLIENT_ID
 });
@@ -163,7 +163,6 @@ useEffect(() => {
   //per ottenere i brani più popolari non c'è una chiamata specifica, quindi chiedo i primi 5 brani della playlist top 50 italia oppure se l'utente non è italiano uso top 50 globale
   spotifyApi.getPlaylistTracks('37i9dQZEVXbMDoHDwVN2tF', {limit: 5, offset: 0})
   .then(res => {
-    console.log("ciao", res)
     const currentTopTracks = res.body.items.map((item, index) => {
       return {
         image: item.track.album.images[0].url,
@@ -191,8 +190,40 @@ useEffect(() => {
     getTop()
     console.log('top tracks', topTracks)
     console.log('top playlist', topPlaylists)
+    getMyTopTracksFunction()
+    console.log('my top', myTopTracks)
   }
 }, [searchWord])
+
+//GET MY TOP TRACKS_______________________________________________________________________________________________________________________________________________________________________________________
+
+const [myTopTracks, setMyTopTracks] = useState()
+
+function getMyTopTracksFunction() {
+  spotifyApi.getMyTopTracks({limit: 5, offset: 0})
+  .then(res => {
+    console.log("MY TOP", res)
+    const myCurrentTopTracks = res.body.items.map((item, index) => {
+      return {
+        image: item.album.images[0].url,
+        name: item.name,
+        album: item.album.name,
+        id: item.id,
+        releaseDate: item.album.release_date,
+        artists: item.artists.map(artist => artist.name),
+        uri: item.uri,
+        index: index+1
+      }})
+      setMyTopTracks(myCurrentTopTracks)
+      
+    }) 
+  .catch(e => {
+    console.log("errore", e)
+    if (e.response.status === 401 || e.response.status === 403) {
+        refreshToken()
+    }
+  })
+}
 
 
 //RENDERIZZO IL BANNER____________________________________________________________________________________________________________________________________________________________________________________
@@ -221,6 +252,15 @@ useEffect(() => {
         </Container>
 
           <FiltriRicerca></FiltriRicerca>
+        {myTopTracks&&(!searchWord||searchWord=="")&&<Container fluid className="cardsTop" >
+          <hr/>
+            <div><h3>My Top Tracks</h3></div>
+            <Row>
+              {myTopTracks.map(myCurrentTrack => (                    
+                  <Col><Track2 currentTrack={myCurrentTrack} key={myCurrentTrack.id}/></Col>
+                ))}
+            </Row>
+        </Container>}
 
         {topTracks&&topPlaylists&&(!searchWord||searchWord=="")&&<Container fluid className="cardsTop" >
           <hr/>

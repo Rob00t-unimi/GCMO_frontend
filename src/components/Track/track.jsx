@@ -5,12 +5,12 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import refreshToken from '../../util/refreshToken'
-import { StarFill, Star, Plus, ArrowLeftShort} from 'react-bootstrap-icons';
+import { HeartFill, Heart, Plus, ArrowLeftShort} from 'react-bootstrap-icons';
 
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
 
-const CLIENT_ID = '238334b666894f049d233d6c1bb3c3fc' //'61e53419c8a547eabe2729e093b43ae4';
+const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4' //238334b666894f049d233d6c1bb3c3fc
 const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID
 });
@@ -125,10 +125,10 @@ function addTrack(){
                 {addBtn&&<div className="d-flex"><Button className="action btn-success" onClick={addTrack}><Plus></Plus></Button></div>}
                 {type  ? 
                     <div className=' d-flex'>
-                        <Button className='action ' onClick={switchFollow}><StarFill/></Button> 
+                        <Button className='action ' onClick={switchFollow}><HeartFill/></Button> 
                     </div> :
                     <div className=' d-flex'>
-                        <Button className='action' onClick={switchFollow}><Star/></Button>
+                        <Button className='action' onClick={switchFollow}><Heart/></Button>
                     </div>
                 }
                 </Card.Text>

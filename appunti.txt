@@ -34,7 +34,7 @@ cose da fare:
 - aggiungere tag nelle playlist
 - modificare info utente
 - eliminare account utente (o revocare le autorizzazioni)
-
+- sistemare gestione errori
 
 
 

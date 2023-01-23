@@ -14,7 +14,7 @@ import playlistImage from '../../assets/generalPlaylistImage.jpg'
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
 
-const CLIENT_ID = '238334b666894f049d233d6c1bb3c3fc' //'61e53419c8a547eabe2729e093b43ae4';
+const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4' //238334b666894f049d233d6c1bb3c3fc
 const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID
 });
@@ -27,13 +27,12 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-function Playlist({playlist, updatePlaylists}){
+function Playlist({playlist, updatePlaylists, userInfo}){
 
 //INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
     const [image, setImage] = useState();
 
-    const userInfo = JSON.parse(localStorage.getItem('user'));  
     const accessToken = localStorage.getItem('accessToken');
 
 //CONTROLLO IL TOKEN_______________________________________________________________________________________________________________
@@ -53,6 +52,7 @@ function Playlist({playlist, updatePlaylists}){
 
     //controllo che tipo di playlist è 
     useEffect(() => {
+
         console.log(playlist)
         if (playlist.ownerId !== userInfo.id) {     
             setType('FOLLOWED')
@@ -156,7 +156,7 @@ function unfollowPlaylist(){
                 </Card.Text>
             </Card>
             
-            <PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} />
+            <PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} currentUser={userInfo}/>
             {/* <ModalDeletePlaylist show={modalDeleteShow}  onClose={() => {setModalDeleteShow(false)}} playlist={playlist}/> */}
             {modalModifyShow&&<ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist} updatePlaylists={updatePlaylists}/>}
         </>
