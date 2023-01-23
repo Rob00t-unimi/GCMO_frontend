@@ -103,6 +103,24 @@ useEffect(() => {
         }
     }
     
+
+//UNFOLLOW__________________________________________________________________________________________________
+
+function unfollowPlaylist(){
+    if (type === 'FOLLOWED') {
+        //chiamata per smettere di seguire      
+        spotifyApi.unfollowPlaylist(playlist.id)
+        .then(res=>{
+            updatePlaylists()
+        })
+        .catch(e=>{
+            if (e.response.status === 401 || e.response.status === 403) {
+                refreshToken()
+            }
+        })
+    }
+}
+
 //RENDERING_______________________________________________________________________________________________________________________________________
 
     return(
@@ -120,7 +138,7 @@ useEffect(() => {
                     type === 'FOLLOWED' ? 
                                 <div className= 'followed d-flex'>
                                     {/* <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button> */}
-                                    <Button className='action'><StarFill/></Button>
+                                    <Button className='action' onClick={unfollowPlaylist}><StarFill/></Button>
                                 </div> :
                     type === 'PUBLIC' ? 
                                 <div className='public d-flex'>

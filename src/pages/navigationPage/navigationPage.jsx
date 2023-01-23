@@ -89,22 +89,20 @@ useEffect(() => {
                   }
                 })
                 setSearchResultPlaylists(playlists)
-                const tracks = result.body.tracks.items.map(item => {   //ricevo e ciclo su una map di items
+                const tracks = result.body.tracks.items.map(item => {
                   return {
                     image: item.album.images[0].url,
                     name: item.name,
                     album: item.album.name,
-                    artists: item.artists,
                     id: item.id,
                     releaseDate: item.album.release_date,
+                    genres: item.genres,
+                    artists: item.artists.map(artist => artist.name)
                   }
-                })
+                })                
                 setSearchResultTracks(tracks)
-                console.log(searchResultPlaylists)
-                console.log(searchResultTracks)
               })
               .catch(e => {
-                console.log("entrato", JSON.stringify(e));
                 if (e.response.status === 401 || e.response.status === 403) {
                     refreshToken()
                 }
@@ -169,8 +167,8 @@ useEffect(() => {
           {searchResultTracks&&<div >
             <div>La ricerca delle Tracce ha prodotto i seguenti risultati:</div>
               <div>
-                {searchResultTracks.map(track => (                    
-                  <Track track={track}/>
+                {searchResultTracks.map(currentTrack => (                    
+                  <Track currentTrack={currentTrack} key={currentTrack.id}/>
                 ))}
               </div>
             <hr/>
@@ -178,8 +176,8 @@ useEffect(() => {
           {searchResultPlaylists&&<div >
             <div>La ricerca delle Playlist ha prodotto i seguenti risultati:</div>
               <div>
-                {searchResultPlaylists.map(playlist => (                    
-                  <Playlist2 playlist={playlist}/>
+                {searchResultPlaylists.map(currentPlaylist => (                    
+                  <Playlist2 playlist={currentPlaylist} key={currentPlaylist.id}/>
                 ))}
               </div>
             <hr/>

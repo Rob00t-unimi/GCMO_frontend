@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import { StarFill, Star} from 'react-bootstrap-icons';
 //import './style.css'
 import PlaylistViewModal from '../playlistViewModal/playlistViewModal'
-//import ModalDeletePlaylist from '../modalDeletePlaylist/modalDeletePlaylist';
 import ModalModifyPlaylist from '../modalModifyPlaylist/modalModifyPlaylist';
 import refreshToken from '../../util/refreshToken'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
@@ -27,11 +26,9 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-function Playlist2({playlist, updatePlaylists}){
+function Playlist2({playlist}){
 
 //INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
-
-    const [image, setImage] = useState(playlistImage);
 
     const userInfo = JSON.parse(localStorage.getItem('user'));  
     const accessToken = localStorage.getItem('accessToken');
@@ -43,13 +40,6 @@ function Playlist2({playlist, updatePlaylists}){
         spotifyApi.setAccessToken(accessToken);
     }, [accessToken])
 
-//IMPOSTO L'IMMAGINE________________________________________________________________________________________________________________
-
-    useEffect(() => {
-    if (playlist.image) {
-        setImage(playlist.image)
-    }
-    }, [])
     
 //CONTROLLO IL TIPO DI UNA PLAYLIST__________________________________________________________________________________________________
 
@@ -61,33 +51,49 @@ function Playlist2({playlist, updatePlaylists}){
 
     //controllo che tipo di playlist è 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user'))
-        let callback
-        spotifyApi.areFollowingPlaylist(user.id, playlist.id)
+        spotifyApi.areFollowingPlaylist(playlist.ownerId, playlist.id, [userInfo.id])
         .then(res =>{
-            console.log(res.body)
-            callback = res.body[0]
-        })
+            if ((playlist.ownerId !== userInfo.id)&&res.body[0]) {     
+                setType('FOLLOWED')
+            } else if ((playlist.ownerId !== userInfo.id)&&!res.body[0]) {
+                setType('NOTFOLLOWED')
+            } else if (playlist.ownerId === userInfo.id){
+                setType('MINE')
+            }       
+         })
         .catch((e)=>{
-            console.log(e.status)
+            if (e.response.status === 401 || e.response.status === 403) {
+                refreshToken()
+            }
         })
-        console.log(playlist)
-        if ((playlist.ownerId !== userInfo.id)&&callback===true) {     
-            setType('FOLLOWED')
-        } else if ((playlist.ownerId !== userInfo.id)&&callback===false) {
-            setType('NOTFOLLOWED')
-        } else if (playlist.ownerId === userInfo.id){
-            setType('MINE')
-        }       
-    }, [])
+        console.log(playlist.name,type)
+    }, [playlist])
 
 //INVERTE IL TIPO DELLA PLAYLIST__________________________________________________________________________________________________
 
     function switchFollow(){
         if (type === 'FOLLOWED') {
-            //chiamata per smettere di seguire      //--> da implementare anche nella personalArea
+            //chiamata per smettere di seguire     
+            spotifyApi.unfollowPlaylist(playlist.id)
+            .then(res=>{
+                setType('NOTFOLLOWED')
+            })
+            .catch(e=>{
+                if (e.response.status === 401 || e.response.status === 403) {
+                    refreshToken()
+                }
+            })
         } else if (type === 'NOTFOLLOWED'){
             //chiamata per seguire 
+            spotifyApi.followPlaylist(playlist.id)
+            .then(res=>{
+                setType('FOLLOWED')
+            })
+            .catch(e=>{
+                if (e.response.status === 401 || e.response.status === 403) {
+                    refreshToken()
+                }
+            })
         }
     }
 
@@ -97,7 +103,7 @@ function Playlist2({playlist, updatePlaylists}){
         <>
             <Card className='card d-flex flex-row bg-dark text-light' >
                 <div className='btn btn-dark d-flex flex-row text-light text-start' onClick={() => { setModalShow(true) }}>
-                    <Card.Img className='cardImg' src={image}/>
+                    <Card.Img className='cardImg' src={playlist.image ? playlist.image : playlistImage}/>
                     <Card.Body>
                         <Card.Title>{playlist.name}</Card.Title>
                         <Card.Text>{playlist.ownerName}</Card.Text>
@@ -107,12 +113,12 @@ function Playlist2({playlist, updatePlaylists}){
                     { 
                     type === 'MINE' ? 
                                 <div></div> :
-                    type === 'FOLLOW' ? 
+                    type === 'FOLLOWED' ? 
                                 <div className='follow d-flex'>
-                                    <Button className='btn-success action ' onClick={switchFollow}><StarFill/></Button> 
+                                    <Button className='action ' onClick={switchFollow}><StarFill/></Button> 
                                 </div> :
                                 <div className='notFollow d-flex'>
-                                    <Button className='btn-danger action' onClick={switchFollow}><Star/></Button>
+                                    <Button className='action' onClick={switchFollow}><Star/></Button>
                                 </div>
                     }
                 </Card.Text>
@@ -120,7 +126,7 @@ function Playlist2({playlist, updatePlaylists}){
             
             <PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} />
             {/* <ModalDeletePlaylist show={modalDeleteShow}  onClose={() => {setModalDeleteShow(false)}} playlist={playlist}/> */}
-            <ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist} updatePlaylists={updatePlaylists}/>
+            <ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist}/>
         </>
     )
 }

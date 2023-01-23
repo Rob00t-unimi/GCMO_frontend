@@ -1,17 +1,106 @@
 import React from "react";
-import {Card} from 'react-bootstrap'
+import {Card, Button} from 'react-bootstrap'
 import './style.css'
+import SpotifyWebApi from 'spotify-web-api-node';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import refreshToken from '../../util/refreshToken'
+import { StarFill, Star, Plus} from 'react-bootstrap-icons';
 
-function Track(track){
+
+//INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
+
+const CLIENT_ID = '238334b666894f049d233d6c1bb3c3fc' //'61e53419c8a547eabe2729e093b43ae4';
+const spotifyApi = new SpotifyWebApi({
+    clientId: CLIENT_ID
+});
+
+
+
+
+
+
+
+
+
+function Track({currentTrack}){
+
+
+
+    const accessToken = localStorage.getItem('accessToken');
+
+    useEffect(() => {
+        if (!accessToken) return;
+        spotifyApi.setAccessToken(accessToken);
+    }, [accessToken])
+
+    const [type, setType] = useState();
+
+
+//controllo che tipo di traccia è ______________________________________________________________
+    useEffect(() => {
+
+        spotifyApi.containsMySavedTracks([currentTrack.id])
+        .then(res =>{
+            console.log('risposta', res)
+            setType(res.body[0])
+            })
+        .catch((e)=>{
+            if (e.response.status === 401 || e.response.status === 403) {
+                refreshToken()
+            }
+        })
+    }, [currentTrack])
+
+
+//INVERTE IL TIPO DELLA PLAYLIST__________________________________________________________________________________________________
+
+function switchFollow(){
+    if (type) {
+        //chiamata per smettere di seguire     
+        spotifyApi.addToMySavedTracks([currentTrack.id])
+        .then(res=>{
+            setType(false)
+        })
+        .catch(e=>{
+            if (e.response.status === 401 || e.response.status === 403) {
+                refreshToken()
+            }
+        })
+    } else {
+        //chiamata per seguire 
+        spotifyApi.removeFromMySavedTracks([currentTrack.id])
+        .then(res=>{
+            setType(true)
+        })
+        .catch(e=>{
+            if (e.response.status === 401 || e.response.status === 403) {
+                refreshToken()
+            }
+        })
+    }
+}
+
+//_____________________________________________________________________________________________
 
     return(
-        <Card className='card d-flex flex-row bg-dark text-light' >
-                    <Card.Img className='cardImg' src={track.image}/>
+        <Card className='card d-flex flex-row bg-dark text-light' style={} >
+                    <Card.Img className='cardImg' src={currentTrack.image}/>
                     <Card.Body>
-                        <Card.Title>{track.name}</Card.Title>
-                        <Card.Text>{track.artists}</Card.Text>
+                        <Card.Title>{currentTrack.name}</Card.Title>
+                        <Card.Text>{currentTrack.artists.join(', ')}</Card.Text>
                     </Card.Body>
-                <Card.Text></Card.Text>
+                <Card.Text className="d-flex flex-row">
+                {type  ? 
+                    <div className='follow d-flex'>
+                        <Button className='action ' onClick={switchFollow}><StarFill/></Button> 
+                    </div> :
+                    <div className='notFollow d-flex'>
+                        <Button className='action' onClick={switchFollow}><Star/></Button>
+                    </div>
+                }
+                {localStorage.getItem('createdPlaylist')&&<div><Button className="btn-success"><Plus></Plus></Button></div>}
+                </Card.Text>
         </Card>
     )
 }
