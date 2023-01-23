@@ -114,20 +114,22 @@ function addTrack(){
 //___________________________________________________________________________________________________________________________
 
     return(
-        <Card className='card d-flex flex-row bg-dark text-light' >
-                    <Card.Img className='cardImg' src={currentTrack.image}/>
+        <Card className='cardTraccia bg-dark text-light' >
+            
+                    <Card.Img src={currentTrack.image}/>
+                    <div className="numberTop"><h3>{currentTrack.index}</h3></div>
                     <Card.Body>
                         <Card.Title>{currentTrack.name}</Card.Title>
                         <Card.Text>{currentTrack.artists.join(', ')}</Card.Text>
                         {/* <Card.Text>{currentTrack.genres.join(', ')}</Card.Text> */}
                     </Card.Body>
-                <Card.Text className="d-flex flex-row">
-                {addBtn&&<div className="d-flex"><Button className="action btn-success" onClick={addTrack}><Plus></Plus></Button></div>}
+                <Card.Text >
+                {addBtn&&<div className="d-flex actionDiv"><Button className="action btn-success" onClick={addTrack}><Plus></Plus></Button></div>}
                 {type  ? 
-                    <div className=' d-flex'>
+                    <div className=' d-flex actionDiv'>
                         <Button className='action ' onClick={switchFollow}><StarFill/></Button> 
                     </div> :
-                    <div className=' d-flex'>
+                    <div className=' d-flex actionDiv'>
                         <Button className='action' onClick={switchFollow}><Star/></Button>
                     </div>
                 }

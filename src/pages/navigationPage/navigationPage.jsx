@@ -4,11 +4,14 @@ import  'bootstrap/dist/css/bootstrap.min.css' ;
 import './style.css';
 import NavigationBar from '../../components/navigationBar/navigationBar'
 import ButtonLogin from '../../components/buttonLogin/buttonLogin'
-import { Form, Container} from "react-bootstrap";
+import { Form, Container, Row, Col} from "react-bootstrap";
 import SpotifyWebApi from 'spotify-web-api-node';
 import Playlist2 from "../../components/playlist-2/playlist-2"
+import Playlist3 from "../../components/playlist-3/playlist-3"
 import Track from "../../components/Track/track";
+import Track2 from "../../components/track2/track2";
 import refreshToken from "../../util/refreshToken";
+import FiltriRicerca from "../../components/filtriRicerca/filtriRicerca";
 
 
 
@@ -48,18 +51,12 @@ function NavigationPage(){
 //REMOVE CREATED PLAYLIST FROM LOCAL STORAGE_______________________________________________________________________________________________
 
 useEffect(() => {
-  if(showFooter==false) {
+  if(showFooter===false) {
     localStorage.removeItem('createdPlaylist')
   }
 }, [showFooter])
 
-//GET TOP PLAYLIST_____________________________________________________________________________________________________________
 
-  const [topTracks, setTopTracks] = useState()
-
-  function getTop() {
-
-  }
 
  //RICERCA______________________________________________________________________________________________________________________
 
@@ -85,7 +82,6 @@ useEffect(() => {
                     id: item.id,
                     ownerId: item.owner.id,
                     ownerName: item.owner.display_name,
-                    public: item.public ? item.public : null,
                   }
                 })
                 setSearchResultPlaylists(playlists)
@@ -96,11 +92,11 @@ useEffect(() => {
                     album: item.album.name,
                     id: item.id,
                     releaseDate: item.album.release_date,
-                    genres: item.genres,
                     artists: item.artists.map(artist => artist.name),
                     uri: item.uri,
                   }
-                })                
+                })
+                console.log("traccia", tracks)                
                 setSearchResultTracks(tracks)
               })
               .catch(e => {
@@ -134,6 +130,71 @@ useEffect(() => {
   },[searchWord, showFooter])
 
 
+  //GET TOP PLAYLIST_____________________________________________________________________________________________________________
+
+  const [topPlaylists, setTopPlaylists] = useState()
+  const [topTracks, setTopTracks] = useState()
+    
+
+  function getTop() {
+    const currentUser = JSON.parse(localStorage.getItem('user'))
+    spotifyApi.getFeaturedPlaylists({ limit: 5, offset: 0, country: currentUser.country })
+    .then(result => {
+      const topPlaylists = result.body.playlists.items.map(item => {   //ricevo e ciclo su una map di items
+        return {
+          image: item.images && item.images.length > 0 ? item.images[0].url : null,
+          name: item.name,
+          description: item.description ? item.description : null,
+          id: item.id,
+          ownerId: item.owner.id,
+          ownerName: item.owner.display_name,
+          
+        }
+      })
+      setTopPlaylists(topPlaylists)
+    })
+    .catch(e => {
+      if (e.response.status === 401 || e.response.status === 403) {
+          refreshToken()
+      }
+    })
+
+
+  //per ottenere i brani più popolari non c'è una chiamata specifica, quindi chiedo i primi 5 brani della playlist top 50 italia oppure se l'utente non è italiano uso top 50 globale
+  spotifyApi.getPlaylistTracks('37i9dQZEVXbMDoHDwVN2tF', {limit: 5, offset: 0})
+  .then(res => {
+    console.log("ciao", res)
+    const currentTopTracks = res.body.items.map((item, index) => {
+      return {
+        image: item.track.album.images[0].url,
+        name: item.track.name,
+        album: item.track.album.name,
+        id: item.track.id,
+        releaseDate: item.track.album.release_date,
+        artists: item.track.artists.map(artist => artist.name),
+        uri: item.track.uri,
+        index: index+1
+      }})
+      setTopTracks(currentTopTracks)
+      
+    }) 
+  .catch(e => {
+    if (e.response.status === 401 || e.response.status === 403) {
+        refreshToken()
+    }
+  })
+ 
+}
+
+useEffect(() => {
+  if (searchWord === "" || !searchWord) {
+    getTop()
+    console.log('top tracks', topTracks)
+    console.log('top playlist', topPlaylists)
+  }
+}, [searchWord])
+
+
 //RENDERIZZO IL BANNER____________________________________________________________________________________________________________________________________________________________________________________
 
     if (!(localStorage.getItem("accessToken"))||(localStorage.getItem("accessToken")==="undefined")) {
@@ -155,18 +216,33 @@ useEffect(() => {
     return(
       <>
       <NavigationBar/>
-        <div className="search d-flex flex-row">
-          <Form.Control className="searchForm" type="search mb-3" placeholder="Cerca Playlist o Traccia musicale" value={searchWord} onChange={(e)=>{setSearchWord(e.target.value)}}/>
-          <select name="visibility" value={searchFilter} onChange={(e)=> {setSearchFilter(e.target.value)}}>
-              <option className="text-center" value={"TITLE"}> Titolo </option>
-              <option className="text-center" value={"ARTIST"}> Artista </option>
-              <option className="text-center" value={"TAG"}> Tag </option>
-              <option className="text-center" value={"GENERE"}> Genere </option>
-            </select>
-        </div>
+        <Container className="search d-flex flex-row">
+          <Form.Control className="width-100" type="search mb-3" placeholder="Cerca Playlist o Traccia musicale" value={searchWord} onChange={(e)=>{setSearchWord(e.target.value)}}/>
+        </Container>
+
+          <FiltriRicerca></FiltriRicerca>
+
+        {topTracks&&topPlaylists&&(!searchWord||searchWord=="")&&<Container fluid className="cardsTop" >
+          <hr/>
+            <div><h3>Top 5 Spotify Playlist's</h3></div>
+            <Row>
+              {topPlaylists.map(currentPlaylist => (                    
+                  <Col><Playlist3 playlist={currentPlaylist} key={currentPlaylist.id}/></Col>
+                ))}
+            </Row>
+            <hr/>
+            <div><h3>Top 5 Spotify Tracks'</h3></div>
+            <Row>
+              {topTracks.map(currentTrack => (                    
+                  <Col><Track2 currentTrack={currentTrack} key={currentTrack.id}/></Col>
+                ))}
+            </Row>
+        </Container>}
+        
         <Container style={{marginBottom: localStorage.getItem('createdPlaylist') ? "25vh" : 0}}>
           {searchResultTracks&&<div >
-            <div>La ricerca delle Tracce ha prodotto i seguenti risultati:</div>
+            <hr/>
+            <h4>La ricerca delle Tracce ha prodotto i seguenti risultati:</h4>
               <div>
                 {searchResultTracks.map(currentTrack => (                    
                   <Track currentTrack={currentTrack} key={currentTrack.id}/>
@@ -175,7 +251,7 @@ useEffect(() => {
             <hr/>
           </div>}
           {searchResultPlaylists&&<div >
-            <div>La ricerca delle Playlist ha prodotto i seguenti risultati:</div>
+            <h4>La ricerca delle Playlist ha prodotto i seguenti risultati:</h4>
               <div>
                 {searchResultPlaylists.map(currentPlaylist => (                    
                   <Playlist2 playlist={currentPlaylist} key={currentPlaylist.id}/>

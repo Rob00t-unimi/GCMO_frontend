@@ -26,7 +26,7 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-function Playlist2({playlist}){
+function Playlist3({playlist}){
 
 //INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
@@ -101,9 +101,9 @@ function Playlist2({playlist}){
 
     return(
         <>
-            <Card className='card d-flex flex-row bg-dark text-light' >
-                <div className='btn btn-dark d-flex flex-row text-light text-start' onClick={() => { setModalShow(true) }}>
-                    <Card.Img className='cardImg' src={playlist.image ? playlist.image : playlistImage}/>
+            <Card className='card bg-dark text-light' >
+                <div className='btn btn-dark text-light text-start' onClick={() => { setModalShow(true) }}>
+                    <Card.Img src={playlist.image ? playlist.image : playlistImage}/>
                     <Card.Body>
                         <Card.Title>{playlist.name}</Card.Title>
                         <Card.Text>{playlist.ownerName}</Card.Text>
@@ -114,10 +114,10 @@ function Playlist2({playlist}){
                     type === 'MINE' ? 
                                 <div></div> :
                     type === 'FOLLOWED' ? 
-                                <div className='d-flex'>
+                                <div className='d-flex actionDiv'>
                                     <Button className='action ' onClick={switchFollow}><StarFill/></Button> 
                                 </div> :
-                                <div className='d-flex'>
+                                <div className='d-flex actionDiv'>
                                     <Button className='action' onClick={switchFollow}><Star/></Button>
                                 </div>
                     }
@@ -131,4 +131,4 @@ function Playlist2({playlist}){
     )
 }
 
-export default Playlist2
+export default Playlist3

@@ -60,7 +60,7 @@ function PersonalArea() {
                 id: result.body.id,
                 image: result.body.images[0].url ? result.body.images[0].url : null,
                 followers: result.body.followers.total,
-                //country: result.body.country,
+                country: result.body.country,
             }))
         })
         .catch(e => {

@@ -1,0 +1,17 @@
+.colonna {
+    position: absolute;
+    padding-left: 3vh;
+    width: 20vh;
+}
+
+.select{
+    max-width: 4vh;
+}
+
+.switchFilter {
+    margin-left: 3vh;
+}
+
+.cercaPer {
+    margin-right: 6%;
+}

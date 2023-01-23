@@ -16,11 +16,11 @@
 
 - modal modify playlist         (attenzione quando si passa ad aggiungere le canzoni, rivedere)
 
-- track                         (bisogna aggiungere i pulsanti per aggiungere la canzone ad una playlist)
+- track                         ( OK, aggiungere genere, tag e modale)
 
-- navigation page               
+- navigation page               (raffinare la ricerca con i vari filtri)
 
--playlist-2                     (manca la funzione per salvare o rimuovere le playlist, rivedere la chiamata per vedere se la playlist è salvata, questo componente ha "rotto" la ricerca)
+-playlist-2                     ( OK, aggiungere tags)
 
 
 
@@ -29,7 +29,6 @@
 
 cose da fare: 
 - aggiungere canzoni
-- rimuovere playlist salvata (se possibile)
 - ricerca tramite tag, artista o canzoni interne alla playlist
 - vedere tag e genere delle canzoni
 - aggiungere tag nelle playlist

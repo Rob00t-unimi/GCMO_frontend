@@ -1,0 +1,26 @@
+.cardTraccia {
+    height: 100%;
+}
+.action {
+    width: 100%;
+}
+
+.actionDiv {
+    margin-bottom: 1vh;
+}
+
+.numberTop {
+    background-color:rgb(11, 156, 161);
+    text-align: center;
+    max-width: 3.5vh;
+    height: 3.5vh;
+    border-style: 1px;
+    border-radius: 50%;
+    margin-left: 1vh;
+    z-index: 1;
+    transform: translateY(-4vh);
+}
+
+.numberTop h3 {
+    margin-top: 0.4vh;
+}

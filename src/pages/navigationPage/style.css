@@ -22,15 +22,9 @@
 }
 
 .search{
-    margin: auto;
     margin-top:5vh;
-    width: 50%;
 }
 
-.searchForm{
-    width: 90%;
-}
-
-.search select {
-    width: 10%;
+.cardsTop {
+    width: 65%
 }
