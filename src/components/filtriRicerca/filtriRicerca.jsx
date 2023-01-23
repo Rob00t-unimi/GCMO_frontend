@@ -3,7 +3,8 @@ import  'bootstrap/dist/css/bootstrap.min.css' ;
 import { Container, Form, Col, Row } from "react-bootstrap";
 import './style.css';
 
-export default function FiltriRicerca(){
+export default function FiltriRicerca({changeLimit}){
+
 
     return(
     <Col className="colonna">
@@ -23,9 +24,12 @@ export default function FiltriRicerca(){
               <option className="text-center" value={"TITLE"}> Nome </option>
               <option className="text-center" value={"GENERE"}> Genere </option>
               <option className="text-center" value={"ARTIST"}> Artista </option>
-              <option className="text-center" value={"TAG"}> #Tag </option>
+              <option className="text-center" value={"TAG"} > #Tag </option>
         </select>
         </Container>
+        <hr />
+        <h6 className="text-center" >Numero di risultati:</h6>
+        <Row><input className="text-center" type="number" min={5} max={25} placeholder={5} onChange={(e)=>{changeLimit(e.target.value)}}></input></Row>
     </Col>
     )
 }

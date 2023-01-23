@@ -71,7 +71,7 @@ useEffect(() => {
       // switch (searchFilter) {
       //       case 'TITLE': 
 
-              spotifyApi.search(searchWord, ['track', 'playlist'], { limit : 10})
+              spotifyApi.search(searchWord, ['track', 'playlist'], { limit : searchLimit})
               .then(result => {
                 console.log('result', result)
                 const playlists = result.body.playlists.items.map(item => {   //ricevo e ciclo su una map di items
@@ -225,6 +225,10 @@ function getMyTopTracksFunction() {
   })
 }
 
+//LIMITE DI RICERCA_______________________________________________________________________________________________________________________________________________________________________________________
+
+const [searchLimit, setSearchLimit] = useState(5)
+
 
 //RENDERIZZO IL BANNER____________________________________________________________________________________________________________________________________________________________________________________
 
@@ -251,7 +255,7 @@ function getMyTopTracksFunction() {
           <Form.Control className="width-100" type="search mb-3" placeholder="Cerca Playlist o Traccia musicale" value={searchWord} onChange={(e)=>{setSearchWord(e.target.value)}}/>
         </Container>
 
-          <FiltriRicerca></FiltriRicerca>
+          <FiltriRicerca changeLimit={(childNumber)=>setSearchLimit(childNumber)}></FiltriRicerca>
         {myTopTracks&&(!searchWord||searchWord=="")&&<Container fluid className="cardsTop" >
           <hr/>
             <div><h3>My Top Tracks</h3></div>
