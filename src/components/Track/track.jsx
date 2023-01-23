@@ -5,7 +5,7 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import refreshToken from '../../util/refreshToken'
-import { StarFill, Star, Plus} from 'react-bootstrap-icons';
+import { StarFill, Star, Plus, ArrowLeftShort} from 'react-bootstrap-icons';
 
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
@@ -81,25 +81,55 @@ function switchFollow(){
     }
 }
 
-//_____________________________________________________________________________________________
+
+//AGGIUNGERE TRACCIA A PLAYLIST SELEZIONATA_________________________________________________________________________________
+
+const [addBtn, setAddBtn] = useState()
+
+useEffect(() => {
+  
+    if(localStorage.getItem('createdPlaylist')) {
+        setAddBtn(true)
+    } else {
+        setAddBtn(false)
+    }
+}, [])
+
+
+function addTrack(){
+    const currentPlaylist = localStorage.getItem('createdPlaylist')
+    spotifyApi.addTracksToPlaylist(currentPlaylist.id, [currentTrack.uri])
+    .then(res=>{
+        setAddBtn(false)
+        alert("Playlist aggiunta correttamente")
+    })
+    .catch(e=>{
+        if (e.response.status === 401 || e.response.status === 403) {
+            refreshToken()
+        }
+    })
+}
+
+
+//___________________________________________________________________________________________________________________________
 
     return(
-        <Card className='card d-flex flex-row bg-dark text-light' style={} >
+        <Card className='card d-flex flex-row bg-dark text-light' >
                     <Card.Img className='cardImg' src={currentTrack.image}/>
                     <Card.Body>
                         <Card.Title>{currentTrack.name}</Card.Title>
                         <Card.Text>{currentTrack.artists.join(', ')}</Card.Text>
                     </Card.Body>
                 <Card.Text className="d-flex flex-row">
+                {addBtn&&<div className="d-flex"><Button className="action btn-success" onClick={addTrack}><Plus></Plus></Button></div>}
                 {type  ? 
-                    <div className='follow d-flex'>
+                    <div className=' d-flex'>
                         <Button className='action ' onClick={switchFollow}><StarFill/></Button> 
                     </div> :
-                    <div className='notFollow d-flex'>
+                    <div className=' d-flex'>
                         <Button className='action' onClick={switchFollow}><Star/></Button>
                     </div>
                 }
-                {localStorage.getItem('createdPlaylist')&&<div><Button className="btn-success"><Plus></Plus></Button></div>}
                 </Card.Text>
         </Card>
     )

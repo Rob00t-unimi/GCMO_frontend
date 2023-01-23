@@ -14,8 +14,8 @@ const [playlist, setPlaylist] = useState(JSON.parse(localStorage.getItem('create
 //RENDER COMPONENTE________________________________________________________________________________________________________________________
     
         return (
-            <Container className='footer' >
-                <Card className='bg-dark text-light' >
+            <Container fluid className='footer' >
+                <Card className='bg-dark opacity-75 text-light footerCard' >
                     <Row>
                         <Col className='text-start d-flex flex-row'>
                             <Card.Img className='footerImg' src={playlist.image ? playlist.image : playlistImage}/>

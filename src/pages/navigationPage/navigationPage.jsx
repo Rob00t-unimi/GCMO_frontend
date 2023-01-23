@@ -74,7 +74,7 @@ useEffect(() => {
       // switch (searchFilter) {
       //       case 'TITLE': 
 
-              spotifyApi.search(searchWord, ['track', 'playlist'], { limit : 5})
+              spotifyApi.search(searchWord, ['track', 'playlist'], { limit : 10})
               .then(result => {
                 console.log('result', result)
                 const playlists = result.body.playlists.items.map(item => {   //ricevo e ciclo su una map di items
@@ -97,7 +97,8 @@ useEffect(() => {
                     id: item.id,
                     releaseDate: item.album.release_date,
                     genres: item.genres,
-                    artists: item.artists.map(artist => artist.name)
+                    artists: item.artists.map(artist => artist.name),
+                    uri: item.uri,
                   }
                 })                
                 setSearchResultTracks(tracks)
@@ -130,7 +131,7 @@ useEffect(() => {
       setSearchResultTracks(null)
     }
     
-  },[searchWord])
+  },[searchWord, showFooter])
 
 
 //RENDERIZZO IL BANNER____________________________________________________________________________________________________________________________________________________________________________________
@@ -163,7 +164,7 @@ useEffect(() => {
               <option className="text-center" value={"GENERE"}> Genere </option>
             </select>
         </div>
-        <Container>
+        <Container style={{marginBottom: localStorage.getItem('createdPlaylist') ? "25vh" : 0}}>
           {searchResultTracks&&<div >
             <div>La ricerca delle Tracce ha prodotto i seguenti risultati:</div>
               <div>
@@ -183,6 +184,7 @@ useEffect(() => {
             <hr/>
           </div>}
         </Container>
+        
         
            {showFooter&&<FooterElement close={()=>setShowFooter(false)}></FooterElement>}
       </>

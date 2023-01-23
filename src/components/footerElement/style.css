@@ -1,4 +1,5 @@
 .footer{
+    width: 80%;
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
@@ -8,6 +9,8 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+
 
 .footerImg{
     height:fit-content;
@@ -20,6 +23,7 @@
 
 .footer-button {
     width: 50%;
+    background-color: #429aaa;
 }
 
 .footer-text {

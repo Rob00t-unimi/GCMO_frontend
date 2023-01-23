@@ -8,3 +8,8 @@
 .card div{
     width:100%;
 }
+
+.action {
+    margin-bottom: auto;
+    margin-top: auto;
+}
