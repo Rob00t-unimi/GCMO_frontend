@@ -4,7 +4,7 @@ import  'bootstrap/dist/css/bootstrap.min.css' ;
 import './style.css';
 import NavigationBar from '../../components/navigationBar/navigationBar'
 import ButtonLogin from '../../components/buttonLogin/buttonLogin'
-import { Form, Container, Row, Col} from "react-bootstrap";
+import { Form, Container, Row, Col, Carousel} from "react-bootstrap";
 import SpotifyWebApi from 'spotify-web-api-node';
 import Playlist2 from "../../components/playlist-2/playlist-2"
 import Playlist3 from "../../components/playlist-3/playlist-3"
@@ -161,7 +161,7 @@ useEffect(() => {
 
 
   //per ottenere i brani più popolari non c'è una chiamata specifica, quindi chiedo i primi 5 brani della playlist top 50 italia oppure se l'utente non è italiano uso top 50 globale
-  spotifyApi.getPlaylistTracks('37i9dQZEVXbMDoHDwVN2tF', {limit: 5, offset: 0})
+  spotifyApi.getPlaylistTracks('37i9dQZEVXbMDoHDwVN2tF', {limit: 10, offset: 0})
   .then(res => {
     const currentTopTracks = res.body.items.map((item, index) => {
       return {
@@ -200,7 +200,7 @@ useEffect(() => {
 const [myTopTracks, setMyTopTracks] = useState()
 
 function getMyTopTracksFunction() {
-  spotifyApi.getMyTopTracks({limit: 5, offset: 0})
+  spotifyApi.getMyTopTracks({limit: 10, offset: 0})
   .then(res => {
     console.log("MY TOP", res)
     const myCurrentTopTracks = res.body.items.map((item, index) => {
@@ -259,28 +259,55 @@ const [searchLimit, setSearchLimit] = useState(5)
         {myTopTracks&&(!searchWord||searchWord=="")&&<Container fluid className="cardsTop" >
           <hr/>
             <div><h3>My Top Tracks</h3></div>
-            <Row>
-              {myTopTracks.map(myCurrentTrack => (                    
-                  <Col><Track2 currentTrack={myCurrentTrack} key={myCurrentTrack.id}/></Col>
-                ))}
-            </Row>
+            <Carousel>
+              <Carousel.Item interval={5000}>
+                <Row>
+                    {myTopTracks.map((myCurrentTrack, index) => (                    
+                      index<5 ? <Col><Track2 currentTrack={myCurrentTrack} key={myCurrentTrack.id}/></Col> : null
+                    ))}
+                </Row>
+              </Carousel.Item>
+              <Carousel.Item interval={4000}>
+              <Row>
+                    {myTopTracks.map((myCurrentTrack, index) => (                    
+                      index>=5 ? <Col><Track2 currentTrack={myCurrentTrack} key={myCurrentTrack.id}/></Col> : null
+                    ))}
+                </Row>
+              </Carousel.Item>
+            </Carousel>
+            
         </Container>}
 
-        {topTracks&&topPlaylists&&(!searchWord||searchWord=="")&&<Container fluid className="cardsTop" >
-          <hr/>
-            <div><h3>Top 5 Spotify Playlist's</h3></div>
-            <Row>
-              {topPlaylists.map(currentPlaylist => (                    
-                  <Col><Playlist3 playlist={currentPlaylist} key={currentPlaylist.id}/></Col>
-                ))}
-            </Row>
+        {topTracks&&(!searchWord||searchWord=="")&&<Container fluid className="cardsTop" >
+           <hr/>
+           <div><h3>Top 10 Spotify Tracks'</h3></div>
+            <Carousel>
+              <Carousel.Item interval={4000}>
+                <Row>
+                  {topTracks.map((currentTrack, index) => (                    
+                      index<5 ? <Col><Track2 currentTrack={currentTrack} key={currentTrack.id}/></Col> : null
+                    ))}
+                </Row>
+              </Carousel.Item>
+              <Carousel.Item interval={5000}>
+                <Row>
+                  {topTracks.map((currentTrack, index) => (                    
+                      index>=5 ? <Col><Track2 currentTrack={currentTrack} key={currentTrack.id}/></Col> : null
+                    ))}
+                </Row>
+              </Carousel.Item>
+            </Carousel>
+          </Container>}
+
+
+        {topPlaylists&&(!searchWord||searchWord=="")&&<Container fluid className="cardsTop" >
             <hr/>
-            <div><h3>Top 5 Spotify Tracks'</h3></div>
-            <Row>
-              {topTracks.map(currentTrack => (                    
-                  <Col><Track2 currentTrack={currentTrack} key={currentTrack.id}/></Col>
-                ))}
-            </Row>
+            <div><h3>Top 5 Spotify Playlist's</h3></div>
+              <Row>
+                {topPlaylists.map(currentPlaylist => (                    
+                    <Col><Playlist3 playlist={currentPlaylist} key={currentPlaylist.id}/></Col>
+                  ))}
+              </Row>
         </Container>}
         
         <Container style={{marginBottom: localStorage.getItem('createdPlaylist') ? "25vh" : 0}}>
