@@ -5,9 +5,9 @@ import { useEffect } from 'react';
 import { StarFill, Star} from 'react-bootstrap-icons';
 import './style.css'
 import PlaylistViewModal from '../playlistViewModal/playlistViewModal'
-import ModalModifyPlaylist from '../modalModifyPlaylist/modalModifyPlaylist';
 import refreshToken from '../../util/refreshToken'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
+import AlbumViewModal from '../albumViewModal/albumViewModal';
 
 
 
@@ -26,7 +26,7 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-function Playlist2({playlist}){
+export default function Album({currentAlbum}){
 
 //INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
@@ -41,61 +41,56 @@ function Playlist2({playlist}){
     }, [accessToken])
 
     
-//CONTROLLO IL TIPO DI UNA PLAYLIST__________________________________________________________________________________________________
+
 
     const [type, setType] = useState();
     const [modalShow, setModalShow] = useState(false);  //ci sarà una modale per aprire le informazioni relative ad una playlist
 
-//    const [modalDeleteShow, setModalDeleteShow] = useState(false);
     const [modalModifyShow, setModalModifyShow] = useState(false);
 
-    //controllo che tipo di playlist è 
-    useEffect(() => {
-        spotifyApi.areFollowingPlaylist(playlist.ownerId, playlist.id, [userInfo.id])
-        .then(res =>{
-            if ((playlist.ownerId !== userInfo.id)&&res.body[0]) {     
-                setType('FOLLOWED')
-            } else if ((playlist.ownerId !== userInfo.id)&&!res.body[0]) {
-                setType('NOTFOLLOWED')
-            } else if (playlist.ownerId === userInfo.id){
-                setType('MINE')
-            }       
-         })
-        .catch((e)=>{
+
+//controllo che tipo di album è  (salvato o no)______________________________________________________________
+useEffect(() => {
+
+    spotifyApi.containsMySavedAlbums([currentAlbum.id])
+    .then(res =>{
+        console.log('risposta', res)
+        setType(res.body[0])
+        })
+    .catch((e)=>{
+        if (e.response.status === 401 || e.response.status === 403) {
+            refreshToken()
+        }
+    })
+}, [currentAlbum])
+
+
+//INVERTE IL TIPO DELL'ALBUM________________________________________________________________________________________________________________________
+function switchFollow(){
+    if (type) {
+        //chiamata per smettere di seguire     
+        spotifyApi.addToMySavedAlbums([currentAlbum.id])
+        .then(res=>{
+            setType(false)
+        })
+        .catch(e=>{
             if (e.response.status === 401 || e.response.status === 403) {
                 refreshToken()
             }
         })
-        console.log(playlist.name,type)
-    }, [playlist])
-
-//INVERTE IL TIPO DELLA PLAYLIST__________________________________________________________________________________________________
-
-    function switchFollow(){
-        if (type === 'FOLLOWED') {
-            //chiamata per smettere di seguire     
-            spotifyApi.unfollowPlaylist(playlist.id)
-            .then(res=>{
-                setType('NOTFOLLOWED')
-            })
-            .catch(e=>{
-                if (e.response.status === 401 || e.response.status === 403) {
-                    refreshToken()
-                }
-            })
-        } else if (type === 'NOTFOLLOWED'){
-            //chiamata per seguire 
-            spotifyApi.followPlaylist(playlist.id)
-            .then(res=>{
-                setType('FOLLOWED')
-            })
-            .catch(e=>{
-                if (e.response.status === 401 || e.response.status === 403) {
-                    refreshToken()
-                }
-            })
-        }
+    } else {
+        //chiamata per seguire 
+        spotifyApi.removeFromMySavedTracks([currentAlbum.id])
+        .then(res=>{
+            setType(true)
+        })
+        .catch(e=>{
+            if (e.response.status === 401 || e.response.status === 403) {
+                refreshToken()
+            }
+        })
     }
+}
 
 //RENDERING_______________________________________________________________________________________________________________________________________
 
@@ -103,16 +98,14 @@ function Playlist2({playlist}){
         <>
             <Card className='card d-flex flex-row bg-dark text-light' >
                 <div className='btn btn-dark d-flex flex-row text-light text-start' onClick={() => { setModalShow(true) }}>
-                    <Card.Img className='cardImg' src={playlist.image ? playlist.image : playlistImage}/>
+                    <Card.Img className='cardImg' src={currentAlbum.image ? currentAlbum.image : playlistImage}/>
                     <Card.Body>
-                        <Card.Title>{playlist.name}</Card.Title>
-                        <Card.Text>{playlist.ownerName}</Card.Text>
+                        <Card.Title>{currentAlbum.name}</Card.Title>
+                        <Card.Text>{currentAlbum.artists.join(', ')}</Card.Text>
                     </Card.Body>
                 </div>
                 <Card.Text>
                     { 
-                    type === 'MINE' ? 
-                                <div></div> :
                     type === 'FOLLOWED' ? 
                                 <div className='d-flex'>
                                     <Button className='action ' onClick={switchFollow}><StarFill/></Button> 
@@ -124,10 +117,8 @@ function Playlist2({playlist}){
                 </Card.Text>
             </Card>
             
-            <PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} />
+            <AlbumViewModal show={modalShow} album={currentAlbum} onClose={() => { setModalShow(false) }} />
 
         </>
     )
 }
-
-export default Playlist2

@@ -12,6 +12,8 @@ import Track from "../../components/Track/track";
 import Track2 from "../../components/track2/track2";
 import refreshToken from "../../util/refreshToken";
 import FiltriRicerca from "../../components/filtriRicerca/filtriRicerca";
+import Album from "../../components/album/album";
+import Artist from "../../components/artist/artist";
 
 
 
@@ -58,76 +60,201 @@ useEffect(() => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  //RICERCA______________________________________________________________________________________________________________________
 
-
+ //cosa cercare
+  const [filterArr, setFilterArr] = useState([true, true, true, true])  //questo serve per contenere un array di 4 posizioni booleane, 0 canzoni, 1 playlists, 2 albums, 3 artists. TRUE per cercare, FALSE per non cercare
+//come cercare
   const [searchFilter, setSearchFilter] =useState('TITLE')
+
   const [searchWord, setSearchWord] = useState('')
   const [searchResultPlaylists, setSearchResultPlaylists] = useState()
+  const [searchResultAlbums, setSearchResultAlbums] = useState()
+  const [searchResultArtists, setSearchResultArtists] = useState()
   const [searchResultTracks, setSearchResultTracks] = useState()
 
   useEffect(() => {
     if (searchWord && searchWord!=='') {
-      // switch (searchFilter) {
-      //       case 'TITLE': 
-
-              spotifyApi.search(searchWord, ['track', 'playlist'], { limit : searchLimit})
-              .then(result => {
-                console.log('result', result)
-                const playlists = result.body.playlists.items.map(item => {   //ricevo e ciclo su una map di items
-                  return {
-                    image: item.images && item.images.length > 0 ? item.images[0].url : null,
-                    name: item.name,
-                    description: item.description ? item.description : null,
-                    id: item.id,
-                    ownerId: item.owner.id,
-                    ownerName: item.owner.display_name,
-                  }
-                })
-                setSearchResultPlaylists(playlists)
-                const tracks = result.body.tracks.items.map(item => {
-                  return {
-                    image: item.album.images[0].url,
-                    name: item.name,
-                    album: item.album.name,
-                    id: item.id,
-                    releaseDate: item.album.release_date,
-                    artists: item.artists.map(artist => artist.name),
-                    uri: item.uri,
-                  }
-                })
-                console.log("traccia", tracks)                
-                setSearchResultTracks(tracks)
-              })
-              .catch(e => {
-                if (e.response.status === 401 || e.response.status === 403) {
-                    refreshToken()
-                }
-            })
-              
-            //   break;
+       switch (searchFilter) {
+             case 'TITLE': 
+                ricercaPerNome()
+              break;
                 
-            // case 'ARTIST':
-              
-            //   break;
+            case 'ARTIST':
+                //ricercaPerArtista()
+                
+              break;
 
-            // case 'TAG':
-              
-            //   break;
+            case 'TAG':
+                //ricercaPerTag()
+              break;
 
-            // case 'GENERE':
-              
-            //   break;
+            case 'GENERE':
+                //ricercaPerGenere()
+              break;
           
-            // default:
-            //   break;
-          // }
+            default:
+              break;
+          }
     } else {
-      setSearchResultPlaylists(null)
-      setSearchResultTracks(null)
+      setSearchResultPlaylists(null)  
+      setSearchResultTracks(null)       //se la searchWord si svuota riporto a null
+      setSearchResultAlbums(null)
+      setSearchResultArtists(null)
     }
-    
   },[searchWord, showFooter])
+
+
+
+//RICERCA PER NOME_______
+
+function ricercaPerNome(){
+  //ricerca canzoni
+  if(filterArr[0]) {
+    spotifyApi.searchTracks(searchWord, { limit : searchLimit})
+    .then(result => {
+      console.log("result1", result)
+      const tracks = result.body.tracks.items.map(item => {
+        return {
+          image: item.album.images[0].url,
+          name: item.name,
+          album: item.album.name,
+          id: item.id,
+          releaseDate: item.album.release_date,                                 //ricerca canzoni 
+          artists: item.artists.map(artist => artist.name),
+          uri: item.uri,
+        }
+      })
+      console.log("traccia", tracks)                
+      setSearchResultTracks(tracks)
+    })
+    .catch(e => {
+      if (e.response.status === 401 || e.response.status === 403) {
+          refreshToken()
+      }
+    })
+  }       
+  //ricerca playlist
+  if(filterArr[1]) {
+    spotifyApi.searchPlaylists(searchWord, { limit : searchLimit})
+    .then(result => {
+      console.log("result2", result)
+      const playlists = result.body.playlists.items.map(item => {                                       //ricerca playlist
+        return {
+          image: item.images && item.images.length > 0 ? item.images[0].url : null,
+          name: item.name,
+          description: item.description ? item.description : null,
+          id: item.id,
+          ownerId: item.owner.id,
+          ownerName: item.owner.display_name,
+        }
+      })
+      console.log("playlists", playlists)  
+      setSearchResultPlaylists(playlists)
+    })
+    .catch(e => {
+      if (e.response.status === 401 || e.response.status === 403) {
+          refreshToken()
+      }
+    })
+  }
+  //ricerca album
+  if (filterArr[2]) {
+    spotifyApi.searchAlbums(searchWord, { limit : searchLimit})
+    .then(result => {
+      const albums = result.body.albums.items.map(item => {                                       
+        return {
+          image: item.images && item.images.length > 0 ? item.images[0].url : null,
+          name: item.name,
+          id: item.id,
+          releaseDate: item.release_date,
+          artists: item.artists.map(artist => artist.name),                                       //ricerca album
+          uri: item.uri,    
+        }
+      })
+      console.log("albums", albums)
+      setSearchResultAlbums(albums)       
+    })
+    .catch(e => {                             
+      if (e.response.status === 401 || e.response.status === 403) {
+          refreshToken()
+      }
+    })
+  }
+  //ricerca Artisti
+  if (filterArr[3]) {
+
+    let newLimit
+    searchLimit%5===0 ? newLimit=searchLimit :  newLimit = Math.ceil(searchLimit/5)*5   //divido per 5, arrotondo per eccesso, moltiplico per 5 per avere un numero di pagine con pagine sempre complete (ad esempio se searchLimit è 24 lo faccio diventare 25)
+                                                                                        //lo faccio per mantenere il carosello semnza buchi sempre pieno 
+    spotifyApi.searchArtists(searchWord, { limit : newLimit})
+    .then(result => {
+      const artists = result.body.artists.items.map(item => {                                     //ricerca artisti  
+        return {
+          image: item.images && item.images.length > 0 ? item.images[0].url : null,
+          name: item.name,
+          id: item.id,
+          releaseDate: item.release_date,
+          followers: item.followers.total,
+          uri: item.uri,    
+          genres: item.genres,
+        }
+      })
+      console.log("artists", artists)
+      
+      let newArtists = []
+      while (artists.length > 0) {
+        newArtists.push(artists.slice(0, 5))    //divido artist 5 elementi alla volta e li pusho nell'array newartists per creare un array di array
+        artists.splice(0, 5)
+      }
+
+      setSearchResultArtists(newArtists)
+
+    })                                                                 
+    .catch(e => {
+      if (e.response.status === 401 || e.response.status === 403) {
+          refreshToken()
+      }
+    })
+  } 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   //GET TOP PLAYLIST_____________________________________________________________________________________________________________
@@ -138,7 +265,7 @@ useEffect(() => {
 
   function getTop() {
     const currentUser = JSON.parse(localStorage.getItem('user'))
-    spotifyApi.getFeaturedPlaylists({ limit: 5, offset: 0, country: currentUser.country })
+    spotifyApi.getFeaturedPlaylists({ limit: 10, offset: 0, country: currentUser.country })
     .then(result => {
       const topPlaylists = result.body.playlists.items.map(item => {   //ricevo e ciclo su una map di items
         return {
@@ -160,8 +287,14 @@ useEffect(() => {
     })
 
 
-  //per ottenere i brani più popolari non c'è una chiamata specifica, quindi chiedo i primi 5 brani della playlist top 50 italia oppure se l'utente non è italiano uso top 50 globale
-  spotifyApi.getPlaylistTracks('37i9dQZEVXbMDoHDwVN2tF', {limit: 10, offset: 0})
+  //per ottenere i brani più popolari non c'è una chiamata specifica, quindi chiedo i primi 10 brani della playlist top 50 italia oppure se l'utente non è italiano uso top 50 globale
+  let playlistOfTop50 = null
+  if (currentUser.country === 'IT') {
+    playlistOfTop50 = '37i9dQZEVXbIQnj7RRhdSX'  //id playlist top 50 italia
+  } else {
+    playlistOfTop50 = '37i9dQZEVXbMDoHDwVN2tF'  //id playlist top 50 global
+  }
+  spotifyApi.getPlaylistTracks(playlistOfTop50, {limit: 10, offset: 0})
   .then(res => {
     const currentTopTracks = res.body.items.map((item, index) => {
       return {
@@ -214,6 +347,7 @@ function getMyTopTracksFunction() {
         uri: item.uri,
         index: index+1
       }})
+
       setMyTopTracks(myCurrentTopTracks)
       
     }) 
@@ -227,7 +361,7 @@ function getMyTopTracksFunction() {
 
 //LIMITE DI RICERCA_______________________________________________________________________________________________________________________________________________________________________________________
 
-const [searchLimit, setSearchLimit] = useState(5)
+const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il componente filtri di ricerca
 
 
 //RENDERIZZO IL BANNER____________________________________________________________________________________________________________________________________________________________________________________
@@ -251,16 +385,21 @@ const [searchLimit, setSearchLimit] = useState(5)
     return(
       <>
       <NavigationBar/>
+
+      {/* FORM DI RICERCA */}
         <Container className="search d-flex flex-row">
           <Form.Control className="width-100" type="search mb-3" placeholder="Cerca Playlist o Traccia musicale" value={searchWord} onChange={(e)=>{setSearchWord(e.target.value)}}/>
         </Container>
 
-          <FiltriRicerca changeLimit={(childNumber)=>setSearchLimit(childNumber)}></FiltriRicerca>
+      {/* FILTRI DI RICERCA */}
+        <FiltriRicerca changeLimit={(childNumber)=>setSearchLimit(childNumber)} filterArr={filterArr} cosaCercare={(filtriAttivi)=>setFilterArr(filtriAttivi)} comeCercare={(filtro)=>setSearchFilter(filtro)}></FiltriRicerca>
+
+        {/* CAROSELLO MY TOP TRACK */}
         {myTopTracks&&(!searchWord||searchWord=="")&&<Container fluid className="cardsTop" >
           <hr/>
             <div><h3>My Top Tracks</h3></div>
             <Carousel>
-              <Carousel.Item interval={5000}>
+              <Carousel.Item interval={6000}>
                 <Row>
                     {myTopTracks.map((myCurrentTrack, index) => (                    
                       index<5 ? <Col><Track2 currentTrack={myCurrentTrack} key={myCurrentTrack.id}/></Col> : null
@@ -275,21 +414,21 @@ const [searchLimit, setSearchLimit] = useState(5)
                 </Row>
               </Carousel.Item>
             </Carousel>
-            
         </Container>}
 
+        {/* CAROSELLO TOP 10 TRACKS SPOTIFY */}
         {topTracks&&(!searchWord||searchWord=="")&&<Container fluid className="cardsTop" >
            <hr/>
            <div><h3>Top 10 Spotify Tracks'</h3></div>
             <Carousel>
-              <Carousel.Item interval={4000}>
+              <Carousel.Item interval={6000}>
                 <Row>
                   {topTracks.map((currentTrack, index) => (                    
                       index<5 ? <Col><Track2 currentTrack={currentTrack} key={currentTrack.id}/></Col> : null
                     ))}
                 </Row>
               </Carousel.Item>
-              <Carousel.Item interval={5000}>
+              <Carousel.Item interval={4000}>
                 <Row>
                   {topTracks.map((currentTrack, index) => (                    
                       index>=5 ? <Col><Track2 currentTrack={currentTrack} key={currentTrack.id}/></Col> : null
@@ -299,19 +438,50 @@ const [searchLimit, setSearchLimit] = useState(5)
             </Carousel>
           </Container>}
 
-
+        {/* CAROSELLO TOP 10 PLAYLIST SPOTIFY */}
         {topPlaylists&&(!searchWord||searchWord=="")&&<Container fluid className="cardsTop" >
             <hr/>
-            <div><h3>Top 5 Spotify Playlist's</h3></div>
-              <Row>
-                {topPlaylists.map(currentPlaylist => (                    
-                    <Col><Playlist3 playlist={currentPlaylist} key={currentPlaylist.id}/></Col>
-                  ))}
-              </Row>
+            <div><h3>Top 10 Spotify Playlist's</h3></div>
+            <Carousel>
+              <Carousel.Item interval={5000}>
+                  <Row>
+                    {topPlaylists.map((currentPlaylist, index) => (                    
+                        index<5 ? <Col><Playlist3 playlist={currentPlaylist} key={currentPlaylist.id}/></Col> : null
+                      ))}
+                  </Row>
+                </Carousel.Item>
+              <Carousel.Item interval={5000}>
+                  <Row>
+                    {topPlaylists.map((currentPlaylist, index) => (                    
+                        index>=5 ? <Col><Playlist3 playlist={currentPlaylist} key={currentPlaylist.id}/></Col> : null
+                      ))}
+                  </Row>
+              </Carousel.Item>
+            </Carousel>
         </Container>}
         
+
+        {/* RISULTATI DI RICERCA */}
         <Container style={{marginBottom: localStorage.getItem('createdPlaylist') ? "25vh" : 0}}>
-          {searchResultTracks&&<div >
+          {/* ARTISTS */}
+          {filterArr[3] && searchResultArtists && 
+            <div>
+                <h4>La ricerca degli Artisti ha prodotto i seguenti risultati:</h4>
+                <Carousel>
+                    {searchResultArtists.map((currentPageArtists, index) => (         
+                        <Carousel.Item interval={5000} key={index}>
+                            <Row>
+                                {currentPageArtists.map((currentArtist) => (
+                                    <Col key={currentArtist.id}><Artist artist={currentArtist}/></Col>
+                                ))}
+                            </Row>
+                        </Carousel.Item>
+                    ))}
+                </Carousel>
+            </div>
+        }
+          {/* TRACKS */}
+          {filterArr[0]&&searchResultTracks&&<div >
             <hr/>
             <h4>La ricerca delle Tracce ha prodotto i seguenti risultati:</h4>
               <div>
@@ -321,7 +491,8 @@ const [searchLimit, setSearchLimit] = useState(5)
               </div>
             <hr/>
           </div>}
-          {searchResultPlaylists&&<div >
+          {/* PLAYLISTS */}
+          {filterArr[1]&&searchResultPlaylists&&<div >
             <h4>La ricerca delle Playlist ha prodotto i seguenti risultati:</h4>
               <div>
                 {searchResultPlaylists.map(currentPlaylist => (                    
@@ -330,9 +501,20 @@ const [searchLimit, setSearchLimit] = useState(5)
               </div>
             <hr/>
           </div>}
+          {/* ALBUMS */}
+          {filterArr[2]&&searchResultAlbums&&<div >
+            <h4>La ricerca degli Album ha prodotto i seguenti risultati:</h4>
+              <div>
+                {searchResultAlbums.map(currentAlbum => (                    
+                  <Album currentAlbum={currentAlbum} key={currentAlbum.id}/>
+                ))}
+              </div>
+            <hr/>
+          </div>}
+        
         </Container>
         
-        
+        {/* FOOTER AGGIUNTA CANZONI A PLAYLIST */}
            {showFooter&&<FooterElement close={()=>setShowFooter(false)}></FooterElement>}
       </>
     )

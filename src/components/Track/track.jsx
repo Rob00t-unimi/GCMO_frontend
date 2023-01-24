@@ -52,7 +52,7 @@ function Track({currentTrack}){
     }, [currentTrack])
 
 
-//INVERTE IL TIPO DELLA PLAYLIST__________________________________________________________________________________________________
+//INVERTE IL TIPO DELLA TRACCIA__________________________________________________________________________________________________
 
 function switchFollow(){
     if (type) {

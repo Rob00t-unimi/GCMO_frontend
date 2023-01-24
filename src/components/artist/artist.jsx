@@ -22,7 +22,7 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-function Track({currentTrack}){
+function Artist({artist}){
 
 
     
@@ -36,10 +36,10 @@ function Track({currentTrack}){
     const [type, setType] = useState();
 
 
-//controllo che tipo di traccia è ______________________________________________________________
+//controllo che tipo di artista è (tra i preferiti o no)____________________________________________________
     useEffect(() => {
 
-        spotifyApi.containsMySavedTracks([currentTrack.id])
+        spotifyApi.isFollowingArtists([artist.id])
         .then(res =>{
             console.log('risposta', res)
             setType(res.body[0])
@@ -49,15 +49,15 @@ function Track({currentTrack}){
                 refreshToken()
             }
         })
-    }, [currentTrack])
+    }, [artist])
 
 
-//INVERTE IL TIPO DELLA PLAYLIST__________________________________________________________________________________________________
+//INVERTE IL TIPO DELL'artista________________________________________________________________________________
 
 function switchFollow(){
     if (type) {
         //chiamata per smettere di seguire     
-        spotifyApi.removeFromMySavedTracks([currentTrack.id])
+        spotifyApi.unfollowArtists([artist.id])
         .then(res=>{
             setType(false)
         })
@@ -68,7 +68,7 @@ function switchFollow(){
         })
     } else {
         //chiamata per seguire 
-        spotifyApi.addToMySavedTracks([currentTrack.id])
+        spotifyApi.followArtists([artist.id])
         .then(res=>{
             setType(true)
         })
@@ -81,50 +81,21 @@ function switchFollow(){
 }
 
 
-//AGGIUNGERE TRACCIA A PLAYLIST SELEZIONATA_________________________________________________________________________________
-
-const [addBtn, setAddBtn] = useState()
-
-useEffect(() => {
-  
-    if(localStorage.getItem('createdPlaylist')) {
-        setAddBtn(true)
-    } else {
-        setAddBtn(false)
-    }
-}, [])
-
-
-function addTrack(){
-    const currentPlaylist = JSON.parse(localStorage.getItem("createdPlaylist"))
-    spotifyApi.addTracksToPlaylist(currentPlaylist.id, [currentTrack.uri])
-    .then(res=>{
-        console.log("added",res)
-        setAddBtn(false)
-        alert("Playlist aggiunta correttamente")
-    })
-    .catch(e=>{
-        if (e.response.status === 401 || e.response.status === 403) {
-            refreshToken()
-        }
-    })
-}
-
 
 //___________________________________________________________________________________________________________________________
 
     return(
-        <Card className='cardTraccia bg-dark text-light' >
+        <Card className='cardArtist bg-dark text-light' >
             
-                    <Card.Img src={currentTrack.image}/>
-                    <div className="numberTop"><h3>{currentTrack.index}</h3></div>
+                    <Card.Img className="cardImmagine" src={artist.image}/>
+                    {/* <div className="numberTop"><h3>{artist.position}</h3></div> */}
                     <Card.Body>
-                        <Card.Title>{currentTrack.name}</Card.Title>
-                        <Card.Text>{currentTrack.artists.join(', ')}</Card.Text>
-                        {/* <Card.Text>{currentTrack.genres.join(', ')}</Card.Text> */}
+                        <Card.Title>{artist.name}</Card.Title>
+                        <Card.Text>{artist.genres.join(', ')}</Card.Text>
+                        <div>Followers: {artist.followers}</div>
                     </Card.Body>
                 <Card.Text >
-                {addBtn&&<div className="d-flex actionDiv"><Button className="action btn-success" onClick={addTrack}><Plus></Plus></Button></div>}
+
                 {type  ? 
                     <div className=' d-flex actionDiv'>
                         <Button className='action ' onClick={switchFollow}><HeartFill/></Button> 
@@ -138,4 +109,4 @@ function addTrack(){
     )
 }
 
-export default Track
+export default Artist
