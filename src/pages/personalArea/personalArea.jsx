@@ -6,10 +6,12 @@ import ButtonLogin from '../../components/buttonLogin/buttonLogin'
 import SpotifyWebApi from 'spotify-web-api-node';
 
 import { Button, Container, Form, ListGroup, Modal, Row, Col } from 'react-bootstrap';
-import { PlusCircle } from 'react-bootstrap-icons';
+import { Pencil, PlusCircle } from 'react-bootstrap-icons';
 import ModalCreatePlaylist from "../../components/ModalCreatePlaylist/modalCreatePlaylist";
 import refreshToken from '../../util/refreshToken'
 import Playlist from "../../components/Playlist/playlist";
+import fotoProfiloGenerica from '../../assets/fotoProfiloGenericaFullLight.png';
+import ModalModifyUser from '../../components/modalModifyUser/modalModifyUser'
 
 //Test 
 // import immagine from '../../assets/tests/exampleCopertina.jpg'
@@ -20,7 +22,7 @@ import Playlist from "../../components/Playlist/playlist";
 
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID_______________________________________________________________________________________________
-const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4' //238334b666894f049d233d6c1bb3c3fc
+const CLIENT_ID = '5ee1aac1104b4fd9b47757edf96aba44'  //'61e53419c8a547eabe2729e093b43ae4'  // '238334b666894f049d233d6c1bb3c3fc'
 const spotifyApi = new SpotifyWebApi({
   clientId: CLIENT_ID
 });
@@ -37,6 +39,7 @@ function PersonalArea() {
 
   const [filterName, setFilterName] = useState('ALL')   //nome dei filtri dei button nella pagina personale
   const [modal, setModal] = useState(false)             //impostiamo uno stato iniziale alla modale --> false chiusa, true aperta
+  const [userModal, setUserModal] = useState(false)             //impostiamo uno stato iniziale alla modale --> false chiusa, true aperta
   const [playlistResults, setPlaylistResults] = useState([])     //risultato alla chiamata per ottenere le playlist
   const [playlistFiltered, setPlaylistFiltered] = useState([])  //playlist filtrate in base al filtro attuale
   const [limit, setLimit] = useState(50)                        //limite di quante playlist max posso chiedere 
@@ -61,6 +64,7 @@ function PersonalArea() {
         .then(result => {
             console.log(result)
             localStorage.setItem('user', JSON.stringify({
+                description: result.body.description ? result.body.description : null,
                 name: result.body.display_name? result.body.display_name : 'user',
                 id: result.body.id,
                 image: result.body.images.length[0] ? result.body.images[0].url : null,
@@ -76,7 +80,7 @@ function PersonalArea() {
           }
       })
 
-  }, [accessToken])
+  }, [userModal, accessToken])
 
 //OTTENERE LE PLAYLIST____________________________________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -90,17 +94,25 @@ function PersonalArea() {
     .then(result => {
       console.log(result)
         const playlists = result.body.items.map(item => {   //ricevo e ciclo su una map di items
-          return {
-            image: item.images && item.images.length > 0 ? item.images[0].url : null,
-            name: item.name,
-            description: item.description ? item.description : null,
-            id: item.id,
-            ownerId: item.owner.id,
-            ownerName: item.owner.display_name,
-            public: item.public,
+              return {
+              image: item.images && item.images.length > 0 ? item.images[0].url : null,
+              name: item.name,
+              description: item.description ? item.description : null,
+              id: item.id,
+              ownerId: item.owner.id,
+              ownerName: item.owner.display_name,
+              public: item.public,
 
-          }
+            }
         })
+        // let playlistsWithoutDeleted = []                        //rimuovo dall'array di playlist restituito da spotify le playlist che ho contrassegnato come eliminate
+        // for (let i = 0; i < playlists.length; i++) {
+        //   if (playlists[i].name !== "[DELETED] by GCMO") {         //ho scoperto che eliminare una playlist anche se l'ha crata l'utente equivale a rimuoverla (vedi documentazione spotify)
+        //     playlistsWithoutDeleted[i] = playlists[i]
+        //   }
+        // }
+        // setPlaylistResults(playlistsWithoutDeleted)
+        // setPlaylistFiltered(playlistsWithoutDeleted)   //inserisco tutte le playlist nella sezione playlist filtered (non sono ancora filtrate)
         setPlaylistResults(playlists)
         setPlaylistFiltered(playlists)   //inserisco tutte le playlist nella sezione playlist filtered (non sono ancora filtrate)
         setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano
@@ -214,12 +226,14 @@ const updatePlaylists = () => {
       <>
       <NavigationBar/>
       <div className="info"><Row >
-        <Col>{currentUser&&currentUser.image&&<div className="immagineProfilo"><img className="img-fluid" src={currentUser.image} alt="immagine profilo"/></div> }</Col>
+        <Col>{currentUser&&<div className="immagineProfilo"><img className="img-fluid" src={currentUser.image ? currentUser.image : fotoProfiloGenerica} alt="immagine profilo"/></div>}</Col>
         <Col className="text-center">
           <div className="nomeUtente img-fluid">
             {currentUser&&<div className="text-center" ><h1>{currentUser.name}</h1></div>}
+            {currentUser&&<div className="text-center" ><h3>{currentUser.id}</h3></div>}
             <div className="benvenuto text-center">Benvenuto nella tua Area Personale</div>
-            {currentUser&&<div className="followers text-light text-center">{"Followers: " + currentUser.followers} </div>}
+            <div className="d-flex flex-row justify-content-center">{currentUser&&<div className="followers text-light text-center">{"Followers: " + currentUser.followers} </div>}
+            <Button className="modifica-profilo btn-light" onClick={()=>setUserModal(true)}><Pencil className="pencil"/></Button></div>
           </div>
         </Col>
         <Col></Col>
@@ -261,6 +275,7 @@ const updatePlaylists = () => {
 
       {/*passo lo stato di modal alla modale e la funzione per cambiarlo in false*/}
       <ModalCreatePlaylist show={modal} onClose={()=>{setModal(false)}} updatePlaylists={updatePlaylists}/>
+      {currentUser&&<ModalModifyUser show={userModal} onClose={()=>{setUserModal(false)}} userInfo={currentUser}/>}
 
       </>
     )

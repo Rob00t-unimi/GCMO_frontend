@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { StarFill, Lock, Unlock, Trash3, Pencil} from 'react-bootstrap-icons';
 import './style.css'
 import PlaylistViewModal from '../playlistViewModal/playlistViewModal'
-//import ModalDeletePlaylist from '../modalDeletePlaylist/modalDeletePlaylist';
+import ModalDeletePlaylist from '../modalDeletePlaylist/modalDeletePlaylist';
 import ModalModifyPlaylist from '../modalModifyPlaylist/modalModifyPlaylist';
 import refreshToken from '../../util/refreshToken'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
@@ -14,7 +14,7 @@ import playlistImage from '../../assets/generalPlaylistImage.jpg'
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
 
-const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4' //238334b666894f049d233d6c1bb3c3fc
+const CLIENT_ID = '5ee1aac1104b4fd9b47757edf96aba44'  //'61e53419c8a547eabe2729e093b43ae4'  // '238334b666894f049d233d6c1bb3c3fc'
 const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID
 });
@@ -47,7 +47,7 @@ function Playlist({playlist, updatePlaylists, userInfo}){
     const [type, setType] = useState();
     const [modalShow, setModalShow] = useState(false);  //ci sarà una modale per aprire le informazioni relative ad una playlist
 
-//    const [modalDeleteShow, setModalDeleteShow] = useState(false);
+    const [modalDeleteShow, setModalDeleteShow] = useState(false);
     const [modalModifyShow, setModalModifyShow] = useState(false);
 
     //controllo che tipo di playlist è 
@@ -137,19 +137,19 @@ function unfollowPlaylist(){
                     { 
                     type === 'FOLLOWED' ? 
                                 <div className= 'followed d-flex'>
-                                    {/* <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button> */}
+                                    <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button>
                                     <Button className='action' onClick={unfollowPlaylist}><StarFill/></Button>
                                 </div> :
                     type === 'PUBLIC' ? 
                                 <div className='public d-flex'>
                                     <Button className='action btn-light' onClick={() => { setModalModifyShow(true) }}><Pencil/></Button>
-                                    {/* <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button> */}
+                                    <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button> 
                                     <Button className='btn-success action ' onClick={switchPublic}><Unlock/></Button> 
                                 </div> :
 
                                 <div className='private d-flex'>
                                     <Button className='action btn-light' onClick={() => { setModalModifyShow(true) }}><Pencil/></Button>
-                                    {/* <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button> */}
+                                    <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button> 
                                     <Button className='btn-danger action' onClick={switchPublic}><Lock/></Button>
                                 </div>
                     }
@@ -157,7 +157,7 @@ function unfollowPlaylist(){
             </Card>
             
             <PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} currentUser={userInfo}/>
-            {/* <ModalDeletePlaylist show={modalDeleteShow}  onClose={() => {setModalDeleteShow(false)}} playlist={playlist}/> */}
+            {<ModalDeletePlaylist show={modalDeleteShow}  onClose={() => {setModalDeleteShow(false)}} playlist={playlist} updatePlaylists={updatePlaylists}/> }
             {modalModifyShow&&<ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist} updatePlaylists={updatePlaylists}/>}
         </>
     )

@@ -70,8 +70,7 @@
     padding-right: 7px;
     border-radius: 5px;
     width: 9rem;
-    margin-right:auto;
-    margin-left:auto;
+    margin-right:1vh;
 }
 
 .contenuto {
@@ -97,4 +96,11 @@
 
 .playlists{
     padding-top: 2rem
+}
+
+.modifica-profilo {
+    margin-top: 1.5vh;
+}
+.pencil{
+    margin-left:3px;
 }

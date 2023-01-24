@@ -12,6 +12,8 @@
 
 - footer                        (OK)
 
+-modal delete playlist          (OK --> eliminare sui sistemi di spotify equivale a smettere di seguire una playlist)
+
 - modal create playlist         (attenzione quando si passa ad aggiungere le canzoni, rivedere)
 
 - modal modify playlist         (attenzione quando si passa ad aggiungere le canzoni, rivedere)
@@ -29,13 +31,12 @@
 
 cose da fare: 
 - aggiungere canzoni
-- ricerca tramite tag, artista o canzoni interne alla playlist
+- ricerca tramite tag, artista o canzoni interne alla playlist       --> la ricerca di spotify è Fuzzy ovvero non precisa, approssima i risultati, quindi se scrivo un tag, un nome, un genere o altro mi restituisce sempre la cosa più opportuna
 - vedere tag e genere delle canzoni
 - aggiungere tag nelle playlist
-- modificare info utente
 - eliminare account utente (o revocare le autorizzazioni)
 - sistemare gestione errori
-
+- modificare info utente            --> non è possibile farlo con una chiamata alle api quindi siccome per la registrazione ci si registra direttamente in spotify, inserrisco un link alla pagina personale dell'utente di spotify
 
 
 

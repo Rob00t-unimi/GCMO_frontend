@@ -18,7 +18,7 @@ import Artist from "../../components/artist/artist";
 
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID_______________________________________________________________________________________
-const CLIENT_ID = '61e53419c8a547eabe2729e093b43ae4' //238334b666894f049d233d6c1bb3c3fc
+const CLIENT_ID = '5ee1aac1104b4fd9b47757edf96aba44'  //'61e53419c8a547eabe2729e093b43ae4'  // '238334b666894f049d233d6c1bb3c3fc'
 const spotifyApi = new SpotifyWebApi({
   clientId: CLIENT_ID
 });
@@ -82,10 +82,15 @@ useEffect(() => {
 
  //RICERCA______________________________________________________________________________________________________________________
 
- //cosa cercare
-  const [filterArr, setFilterArr] = useState([true, true, true, true])  //questo serve per contenere un array di 4 posizioni booleane, 0 canzoni, 1 playlists, 2 albums, 3 artists. TRUE per cercare, FALSE per non cercare
-//come cercare
-  const [searchFilter, setSearchFilter] =useState('TITLE')
+//  //cosa cercare
+   const [filterArr, setFilterArr] = useState([true, true, true, true])  //questo serve per contenere un array di 4 posizioni booleane, 0 canzoni, 1 playlists, 2 albums, 3 artists. TRUE per cercare, FALSE per non cercare
+// //come cercare
+//   const [searchFilter, setSearchFilter] = useState("TITLE")
+// //per quali cose è consentita la ricerca
+//   const [isAllowed, setIsAllowed] = useState([true, true, true, true]) 
+
+// //selezione dei filtri dell'utente
+//   const [userSelection, setUserSelection] = useState([true, true, true, true])
 
   const [searchWord, setSearchWord] = useState('')
   const [searchResultPlaylists, setSearchResultPlaylists] = useState()
@@ -93,29 +98,62 @@ useEffect(() => {
   const [searchResultArtists, setSearchResultArtists] = useState()
   const [searchResultTracks, setSearchResultTracks] = useState()
 
+  const [filtriPerChiamata, setFiltriPerChiamata] = useState(undefined)
+
+
+  // function impostaFiltroDiRicerca(){
+  //   let copy = filterArr
+  //   for(let i=0; i<4; i++){
+  //     if(userSelection[i]===isAllowed[i]===true) {
+  //       copy[i]=true
+  //     } else {
+  //       copy[i]=false
+  //     }
+  //   }
+  //   setFilterArr(copy)
+  // }
+
+
   useEffect(() => {
     if (searchWord && searchWord!=='') {
-       switch (searchFilter) {
-             case 'TITLE': 
-                ricercaPerNome()
-              break;
+      ricerca()
+      // console.log("filtro attivo: ", searchFilter)
+      //  switch (searchFilter) {                                                  //SPOTIFY OPERA CON UN TIPO DI RICERCA FUZZY, CIO' SIGNIFICA CHE CERCA SEMPRE DI MATCHARE I RISULTATI MIGLIORI, 
+      //        case 'TITLE':                                                      //NON è UNA RICERCA ESATTA, QUINDI SE INSERIAMO GENERE, NOME, TAG, ANNO, O ALTRO VIENE AUTOMATICAMENTE CERCATO UN RISULTATO COMPATBILE
+      //           setIsAllowed([true, true, true, true])                          //HO PROVATO A FILTRARE LE RICERCHE IN MODO PIU' PRECISO, AD ESEMPIO CON LE OPZIONI: //{genre: searchWord, limit : searchLimit, exact: true}
+      //           impostaFiltroDiRicerca()                                        //TUTTAVIA LA RICERCA NON E' PRECISA, CERCA ANCORA IN MODO FUZZY, QUINDI NON HA SENSO INSERIRE UNO SWITCH CHE SPECIFICA SECONDO QUALE CRITERIO CERCARE
+      //           console.log(filterArr)
+      //           ricerca()
+      //         break;
                 
-            case 'ARTIST':
-                //ricercaPerArtista()
+      //       case 'ARTIST':
+      //         setIsAllowed([true, false, true, true]) //il filtro artista può essere usato solo per la ricerca di canzoni, album, e artisti
+      //         impostaFiltroDiRicerca()
+      //         console.log(filterArr)
+      //         //impostare filtri 
+      //         ricerca()
                 
-              break;
+      //         break;
 
-            case 'TAG':
-                //ricercaPerTag()
-              break;
+      //       case 'TAG':
+      //         setIsAllowed([false, false, false, false]) //il filtro genere può essere usato solo per la ricerca di canzoni e artisti
+      //         impostaFiltroDiRicerca()
+      //         console.log(filterArr)
+      //         //impostare filtri 
+      //           //ricercaPerTag()
+      //         break;
 
-            case 'GENERE':
-                //ricercaPerGenere()
-              break;
+      //       case 'GENERE':
+      //         setIsAllowed([true, false, false, true]) //il filtro genere può essere usato solo per la ricerca di canzoni e artisti
+      //         impostaFiltroDiRicerca()
+      //         console.log(filterArr)
+      //         //impostare filtri 
+      //         ricerca()
+      //         break;
           
-            default:
-              break;
-          }
+      //       default:
+      //         break;
+      //     }
     } else {
       setSearchResultPlaylists(null)  
       setSearchResultTracks(null)       //se la searchWord si svuota riporto a null
@@ -128,10 +166,10 @@ useEffect(() => {
 
 //RICERCA PER NOME_______
 
-function ricercaPerNome(){
+function ricerca(){
   //ricerca canzoni
   if(filterArr[0]) {
-    spotifyApi.searchTracks(searchWord, { limit : searchLimit})
+    spotifyApi.searchTracks(searchWord, { limit : searchLimit})    //{genre: searchWord, limit : searchLimit, exact: true}
     .then(result => {
       console.log("result1", result)
       const tracks = result.body.tracks.items.map(item => {
@@ -207,7 +245,7 @@ function ricercaPerNome(){
     let newLimit
     searchLimit%5===0 ? newLimit=searchLimit :  newLimit = Math.ceil(searchLimit/5)*5   //divido per 5, arrotondo per eccesso, moltiplico per 5 per avere un numero di pagine con pagine sempre complete (ad esempio se searchLimit è 24 lo faccio diventare 25)
                                                                                         //lo faccio per mantenere il carosello semnza buchi sempre pieno 
-    spotifyApi.searchArtists(searchWord, { limit : newLimit})
+    spotifyApi.searchArtists(searchWord, {  limit : searchLimit})
     .then(result => {
       const artists = result.body.artists.items.map(item => {                                     //ricerca artisti  
         return {
@@ -359,6 +397,36 @@ function getMyTopTracksFunction() {
   })
 }
 
+
+ //PLAYLIST CONSIGLIATE ___________________________________________________________________________________________________________________________________________________________________________________
+
+// function getPlaylistConsigliate(){
+//   //chiedo la lista di generi consigliati per l'utente 
+//   spotifyApi.getAvailableGenreSeeds()
+//   .then(res => {
+//       console.log("generiConsigliati", res)
+//       const generiConsigliati = res
+//       //chiedo le raccomandazioni
+//       spotifyApi.getRecommendations({ min_energy: 0.4, seed_genres: generiConsigliati, min_popularity: 50 })
+//       .then(data => {
+//         console.log("raccomandazioni", data)
+//       }) 
+//       .catch(e => {
+//         console.log("erroreRaccomandazioni", e)
+//         if (e.response.status === 401 || e.response.status === 403) {
+//             refreshToken()
+//         }
+//       })
+//     }) 
+//   .catch(e => {
+//     console.log("errore", e)
+//     if (e.response.status === 401 || e.response.status === 403) {
+//         refreshToken()
+//     }
+//   })
+// }
+
+
 //LIMITE DI RICERCA_______________________________________________________________________________________________________________________________________________________________________________________
 
 const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il componente filtri di ricerca
@@ -392,10 +460,10 @@ const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il comp
         </Container>
 
       {/* FILTRI DI RICERCA */}
-        <FiltriRicerca changeLimit={(childNumber)=>setSearchLimit(childNumber)} filterArr={filterArr} cosaCercare={(filtriAttivi)=>setFilterArr(filtriAttivi)} comeCercare={(filtro)=>setSearchFilter(filtro)}></FiltriRicerca>
+        <FiltriRicerca changeLimit={(childNumber)=>setSearchLimit(childNumber)} filterArr={filterArr} /*isAllowed={isAllowed} userSelection={userSelection}*/ cosaCercare={(filtriSelezionati)=>setFilterArr(filtriSelezionati)/*(filtriSelezionati)=>setUserSelection(filtriSelezionati)*/} /*comeCercare={(newFilter)=>{setSearchFilter(newFilter)}}*/></FiltriRicerca>
 
         {/* CAROSELLO MY TOP TRACK */}
-        {myTopTracks&&(!searchWord||searchWord=="")&&<Container fluid className="cardsTop" >
+        {myTopTracks&&(!searchWord||searchWord==="")&&<Container fluid className="cardsTop" >
           <hr/>
             <div><h3>My Top Tracks</h3></div>
             <Carousel>
@@ -417,7 +485,7 @@ const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il comp
         </Container>}
 
         {/* CAROSELLO TOP 10 TRACKS SPOTIFY */}
-        {topTracks&&(!searchWord||searchWord=="")&&<Container fluid className="cardsTop" >
+        {topTracks&&(!searchWord||searchWord==="")&&<Container fluid className="cardsTop" >
            <hr/>
            <div><h3>Top 10 Spotify Tracks'</h3></div>
             <Carousel>
@@ -439,7 +507,7 @@ const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il comp
           </Container>}
 
         {/* CAROSELLO TOP 10 PLAYLIST SPOTIFY */}
-        {topPlaylists&&(!searchWord||searchWord=="")&&<Container fluid className="cardsTop" >
+        {topPlaylists&&(!searchWord||searchWord==="")&&<Container fluid className="cardsTop" >
             <hr/>
             <div><h3>Top 10 Spotify Playlist's</h3></div>
             <Carousel>
