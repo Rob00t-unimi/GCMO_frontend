@@ -22,7 +22,7 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser }) => {
+const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser}) => {
 
     if(!currentUser){
         currentUser = JSON.parse(localStorage.getItem('user'))

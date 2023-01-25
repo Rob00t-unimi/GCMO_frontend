@@ -14,6 +14,7 @@ import FiltriRicerca from "../../components/filtriRicerca/filtriRicerca";
 import Album from "../../components/album/album";
 import Artist from "../../components/artist/artist";
 import ErrorStatusCheck from '../../util/errorStatusCheck'
+import Playlist_list from "../../components/playlist_list/playlist_list";
 
 
 
@@ -422,6 +423,16 @@ function getMyTopTracksFunction() {
 const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il componente filtri di ricerca
 
 
+//ESTRAGGO LA LISTA DI PLAYLIST_____________________
+
+const [lista, setLista] = useState()
+
+useEffect(() => {
+  if(localStorage.getItem('playlist_list')) {
+    setLista((JSON.parse(localStorage.getItem('playlist_list'))))
+  }
+}, [])
+
 //RENDERIZZO IL BANNER____________________________________________________________________________________________________________________________________________________________________________________
 
     if (!(localStorage.getItem("accessToken"))||(localStorage.getItem("accessToken")==="undefined")) {
@@ -438,6 +449,7 @@ const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il comp
       )
     }
 
+
 //RENDERIZZO LA PAGINA____________________________________________________________________________________________________________________________________________________________________________________
 
     return(
@@ -451,6 +463,9 @@ const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il comp
 
       {/* FILTRI DI RICERCA */}
         <FiltriRicerca changeLimit={(childNumber)=>setSearchLimit(childNumber)} filterArr={filterArr} /*isAllowed={isAllowed} userSelection={userSelection}*/ cosaCercare={(filtriSelezionati)=>setFilterArr(filtriSelezionati)/*(filtriSelezionati)=>setUserSelection(filtriSelezionati)*/} /*comeCercare={(newFilter)=>{setSearchFilter(newFilter)}}*/></FiltriRicerca>
+
+      {/* LISTA DELLE PLAYLIST */}
+      {lista&&<Playlist_list lista={lista} showFooter={showFooter} setShowFooter={()=>setShowFooter(true)}></Playlist_list>}
 
         {/* CAROSELLO MY TOP TRACK */}
         {myTopTracks&&(!searchWord||searchWord==="")&&<Container fluid className="cardsTop" >

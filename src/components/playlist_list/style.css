@@ -1,0 +1,34 @@
+.colonna-sx {
+    position: absolute;
+    padding-left: 1vh;
+    padding-right: 1.5vh;
+    width: 20vh;
+    top:0;
+    position: fixed;
+    height: 100vh;
+}
+
+.titolo {
+    margin-top: 7vh;
+    text-align: center;
+}
+
+.tabellaPlaylist {
+    height: 70vh;
+    margin-top: 2.5vh;
+    border-style: solid 1px;
+    border-color: azure;
+    overflow-y: auto;
+}
+
+.listElements {
+    width: 100%;
+    text-align: left;
+    height: 3rem;
+    overflow: hidden;
+}
+
+hr {
+    padding: none;
+    margin: none;
+}

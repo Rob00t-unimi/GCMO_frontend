@@ -7,5 +7,7 @@ export default function ErrorStatusCheck(errore) {
         refreshToken()
     }
     
+    //aggiungere un controllo quando error status è 429 ovvero troope richieste 
+    //per non inviare più richieste fino allo scadere del tempo di attesa restituito
     
 }

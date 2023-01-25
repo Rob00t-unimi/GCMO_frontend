@@ -102,7 +102,7 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
 
                 <Modal.Footer className='d-flex justify-content-center bg-dark text-light'>
                     <Button className='btn-light btn-lg' onClick={async () => await onConfirmFunction()}> Salva </Button>
-                    <Button className='btn-success btn-lg' onClick={async () => await onConfirmFunctionAndGo()}> Aggiungi brani </Button>
+                    <Button className='btn-success btn-lg' onClick={async () => await onConfirmFunctionAndGo()}> Salva e Aggiungi brani </Button>
                 </Modal.Footer>
             </Modal>
 
@@ -150,6 +150,7 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                 }
             })
             .catch(err => {
+                alert("Non siamo riusciti a creare la Playlist")
                 ErrorStatusCheck(err)
             })
     }
@@ -178,49 +179,49 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                         //UPLOAD IMMAGINE DI COPERTINA
                         spotifyApi.uploadCustomPlaylistCoverImage(id, base64)
                         .then(data => {
-                            finish()
+                            finish(id)
                         })
                         .catch(err => {
+                            alert("Non è stato possibile caricare l'immagine di copertina")
                             ErrorStatusCheck(err)
                         })
                     }
                     
                 } else {
-                    finish()
+                    finish(id)
                 }
-
-              const finish = () => {  //CREO E SALVO NEL LOCAL STORAGE LA NUOVA PLAYLIST 
-
-                spotifyApi.getPlaylist(id)
-                .then(item =>{
-                    const createdPlaylist =  {
-                        image: item.body.images && item.body.images.length > 0 ? item.body.images[0].url : null,
-                        name: item.body.name,
-                        description: item.body.description ? item.body.description : null,
-                        id: item.body.id,
-                        ownerId: item.body.owner.id,
-                        ownerName: item.body.owner.display_name,
-                        public: item.body.public,
-                      }
-                      console.log("createdplaylist", createdPlaylist)
-
-                       localStorage.setItem('createdPlaylist', JSON.stringify(createdPlaylist) )
-
-                       close()
-
-                        //REINDIRIZZO ALLA PAGINA DI NAVIGAZIONE PER AGGIUNGERE LE CANZONI
-                        window.location = "http://localhost:3000/navigate" 
-                })
-                .catch(err => {
-                    ErrorStatusCheck(err)
-                })
-            }
-                
             })
             .catch(err => {
                 ErrorStatusCheck(err)
             })
     }
+
+    function finish(id) {  //CHIEDO E SALVO NEL LOCAL STORAGE LA NUOVA PLAYLIST 
+        spotifyApi.getPlaylist(id)
+        .then(item =>{
+            const createdPlaylist =  {
+                image: item.body.images && item.body.images.length > 0 ? item.body.images[0].url : null,
+                name: item.body.name,
+                description: item.body.description ? item.body.description : null,
+                id: item.body.id,
+                ownerId: item.body.owner.id,
+                ownerName: item.body.owner.display_name,
+                public: item.body.public,
+              }
+              console.log("createdplaylist", createdPlaylist)
+
+               localStorage.setItem('createdPlaylist', JSON.stringify(createdPlaylist) )
+
+               onClose()
+
+                //REINDIRIZZO ALLA PAGINA DI NAVIGAZIONE PER AGGIUNGERE LE CANZONI
+                window.location = "http://localhost:3000/navigate" 
+        })
+        .catch(err => {
+            console.log("ciaone")
+            ErrorStatusCheck(err)
+        })
+        }
 }
 
 export default ModalCreatePlaylist

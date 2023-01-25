@@ -46,13 +46,20 @@ function PersonalArea() {
   const [update, setUpdate] = useState(false)
   
   const [currentUser, setCurrentUser] = useState();   //dati attuali dell'utente
-  const accessToken = localStorage.getItem('accessToken')   //estraggo il token dal local storage
+
+  //CONTROLLO IL TOKEN e lo passo all'oggetto spotifyApi____________________________________________________________________________________
+
+  const accessToken = localStorage.getItem('accessToken');
+
+  useEffect(() => {
+    if (!accessToken) return;
+    spotifyApi.setAccessToken(accessToken);
+  }, [accessToken])
 
 
 //OTTENERE INFO UTENTE________________________________________________________________________________________________________________________________________
 
   useEffect(() => {                 //quando cambia l'access token eseguo lo use effect
-    if (!accessToken) return;
 
     if(localStorage.getItem('user')) {
       setCurrentUser(JSON.parse(localStorage.getItem('user')))
@@ -111,6 +118,7 @@ function PersonalArea() {
         // setPlaylistResults(playlistsWithoutDeleted)
         // setPlaylistFiltered(playlistsWithoutDeleted)   //inserisco tutte le playlist nella sezione playlist filtered (non sono ancora filtrate)
         setPlaylistResults(playlists)
+        localStorage.setItem('playlist_list', JSON.stringify(playlists))
         setPlaylistFiltered(playlists)   //inserisco tutte le playlist nella sezione playlist filtered (non sono ancora filtrate)
         setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano
       })

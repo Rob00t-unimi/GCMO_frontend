@@ -1,8 +1,11 @@
 .colonna {
     position: absolute;
-    padding-left: 3vh;
+    top: 11vh;
+    right: 6vh;
+    position: fixed;
     width: 20vh;
 }
+
 
 .select{
     max-width: 4vh;

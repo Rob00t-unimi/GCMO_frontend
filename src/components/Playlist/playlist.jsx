@@ -113,6 +113,15 @@ function unfollowPlaylist(){
     }
 }
 
+//quando chiudo la modale per vidualizzare il contenuto di una playlist, potrei aver cancellato dei brani quindi refresho le playlist
+//questo serve poichè una playlist senza una specifica copertina quando viene svuotata spotify rimuove la copertina
+useEffect(() => {
+    if(!modalShow) {
+            updatePlaylists()
+    }
+}, [modalShow])
+
+
 //RENDERING_______________________________________________________________________________________________________________________________________
 
     return(

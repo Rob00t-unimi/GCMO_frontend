@@ -4,7 +4,9 @@ export default function Logout() {
     localStorage.removeItem('expiresIn')
     localStorage.removeItem('refreshToken')
     localStorage.removeItem('user')
+    localStorage.removeItem('playlist_list')
     window.location= '/'
+
 }
 
 

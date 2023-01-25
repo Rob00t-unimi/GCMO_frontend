@@ -30,7 +30,7 @@ function NavigationBar() {
 
     if (localStorage.getItem('accessToken')!==null && localStorage.getItem('accessToken')!==undefined){
         return(
-        <Navbar className='bg-dark'>
+        <Navbar className= 'bg-dark' fixed='top'>
             <Navbar.Brand>
                 <Link to="/"><img src={logo} className="navLogo" alt='logo'/></Link>
             </Navbar.Brand>
