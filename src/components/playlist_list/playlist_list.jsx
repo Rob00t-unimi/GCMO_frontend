@@ -15,7 +15,10 @@ import './style.css';
 
     return(
         <Col className="colonna-sx bg-dark">
+            <hr className="text-light"></hr>
             <h2 className="titolo text-light">My Playlists</h2>
+            <p className="text-light text-center">Premi su una playlist per aggiungere i brani</p>
+            <hr className="text-light"></hr>
             <div className="tabellaPlaylist" striped bordered hover variant="dark">
                 {lista.map((playlist, index) => (
                     <div key={index}><Button className="listElements btn-dark" onClick={()=>addPlaylistInStorage(playlist)}>{playlist.name}<hr/></Button></div>
