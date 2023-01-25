@@ -10,7 +10,7 @@ import playlistImage from '../../assets/generalPlaylistImage.jpg'
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
 
-const CLIENT_ID = '5ee1aac1104b4fd9b47757edf96aba44'  //'61e53419c8a547eabe2729e093b43ae4'  // '238334b666894f049d233d6c1bb3c3fc'
+const CLIENT_ID ='1e56ed8e387f449c805e681c3f8e43b4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'61e53419c8a547eabe2729e093b43ae4'  // '238334b666894f049d233d6c1bb3c3fc'
 const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID
 });
@@ -54,19 +54,19 @@ const[deletedTrack, setDeletedTrack] = useState(false)
     useEffect(() => {
         spotifyApi.getPlaylistTracks(playlist.id, { limit: page.limit, offset: (page.activePage - 1)*page.limit })
         .then(res => {
-            console.log(res)
+            console.log("dat", res)
             const totalPages = Math.ceil(res.body.total / page.limit);
             const tracks = res.body.items.map((trackInfo => {
                 console.log(trackInfo)
                 const artist = trackInfo.track.artists === []
-                    ? 'Unkonown'
-                    : trackInfo.track.artists.reduce((prev, artist) => {    //reduce funzione che concatena gli elementi, ad ogni giro aggiungo un artist a prev ==> unica stringa di artisti
-                        return prev.concat(artist.name + '')
-                    }, '');
+                        ? 'Unkonown'
+                        : trackInfo.track.artists.reduce((prev, artist) => {
+                            return prev.concat(artist.name + '')
+                        }, '');
                 const duration = new Date(trackInfo.track.duration_ms).toISOString().slice(14, 19);     //prendo la durata in ms della traccia, creo l'oggetto data, converto in stringa, prendo solo dal carattere 14 a 19 ovvero ore, minuti, secondi
                 return {
                     id: trackInfo.track.id,
-                    artist: artist,
+                    artists: artist,
                     duration: duration,
                     name: trackInfo.track.name,
                     uri: trackInfo.track.uri,
@@ -144,7 +144,7 @@ function removeTrack(trackUri){
                                     <tr key={item.id} >
                                         <td> {item.duration}</td>
                                         <td>{item.name}</td>
-                                        <td> {item.artist}</td>
+                                        <td> {item.artists}</td>
                                         {(playlist.ownerId === currentUser.id)&&<td><Button className='btn-danger btn-round btn-m' onClick={() => {removeTrack(item.uri)}}>X</Button></td>}
                                     </tr>
                                 );

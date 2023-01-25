@@ -18,7 +18,7 @@ import Artist from "../../components/artist/artist";
 
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID_______________________________________________________________________________________
-const CLIENT_ID = '5ee1aac1104b4fd9b47757edf96aba44'  //'61e53419c8a547eabe2729e093b43ae4'  // '238334b666894f049d233d6c1bb3c3fc'
+const CLIENT_ID ='1e56ed8e387f449c805e681c3f8e43b4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'61e53419c8a547eabe2729e093b43ae4'  // '238334b666894f049d233d6c1bb3c3fc'
 const spotifyApi = new SpotifyWebApi({
   clientId: CLIENT_ID
 });
@@ -247,15 +247,16 @@ function ricerca(){
                                                                                         //lo faccio per mantenere il carosello semnza buchi sempre pieno 
     spotifyApi.searchArtists(searchWord, {  limit : searchLimit})
     .then(result => {
+      console.log("DATI ARTISTI",result)
       const artists = result.body.artists.items.map(item => {                                     //ricerca artisti  
         return {
           image: item.images && item.images.length > 0 ? item.images[0].url : null,
           name: item.name,
           id: item.id,
-          releaseDate: item.release_date,
           followers: item.followers.total,
           uri: item.uri,    
           genres: item.genres,
+
         }
       })
       console.log("artists", artists)
@@ -466,7 +467,7 @@ const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il comp
         {myTopTracks&&(!searchWord||searchWord==="")&&<Container fluid className="cardsTop" >
           <hr/>
             <div><h3>My Top Tracks</h3></div>
-            <Carousel>
+            <Carousel indicators={false} controls={false}>
               <Carousel.Item interval={6000}>
                 <Row>
                     {myTopTracks.map((myCurrentTrack, index) => (                    
@@ -488,7 +489,7 @@ const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il comp
         {topTracks&&(!searchWord||searchWord==="")&&<Container fluid className="cardsTop" >
            <hr/>
            <div><h3>Top 10 Spotify Tracks'</h3></div>
-            <Carousel>
+           <Carousel indicators={false} controls={false}>
               <Carousel.Item interval={6000}>
                 <Row>
                   {topTracks.map((currentTrack, index) => (                    
@@ -510,7 +511,7 @@ const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il comp
         {topPlaylists&&(!searchWord||searchWord==="")&&<Container fluid className="cardsTop" >
             <hr/>
             <div><h3>Top 10 Spotify Playlist's</h3></div>
-            <Carousel>
+            <Carousel indicators={false} controls={false}>
               <Carousel.Item interval={5000}>
                   <Row>
                     {topPlaylists.map((currentPlaylist, index) => (                    
@@ -535,7 +536,7 @@ const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il comp
           {filterArr[3] && searchResultArtists && 
             <div>
                 <h4>La ricerca degli Artisti ha prodotto i seguenti risultati:</h4>
-                <Carousel>
+                <Carousel indicators={false} controls={false}>
                     {searchResultArtists.map((currentPageArtists, index) => (         
                         <Carousel.Item interval={5000} key={index}>
                             <Row>

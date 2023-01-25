@@ -1,0 +1,21 @@
+.header {
+    height: 15rem;
+    width: 100%;
+}
+
+.immagineArtista{
+    width: 18rem;
+    height: 18rem;
+    border-radius: 50%;
+    background-position: center;
+    background-size: cover;
+}
+
+.text {
+    margin-left: 6%;
+    margin-top: 10%
+}
+
+.followersArtista {
+    margin-top: 1rem;
+}
