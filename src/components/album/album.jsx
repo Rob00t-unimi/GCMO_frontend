@@ -5,9 +5,9 @@ import { useEffect } from 'react';
 import { StarFill, Star} from 'react-bootstrap-icons';
 import './style.css'
 import PlaylistViewModal from '../playlistViewModal/playlistViewModal'
-import refreshToken from '../../util/refreshToken'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import AlbumViewModal from '../albumViewModal/albumViewModal';
+import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 
 
@@ -56,11 +56,9 @@ useEffect(() => {
     .then(res =>{
         console.log('risposta', res)
         setType(res.body[0])
-        })
-    .catch((e)=>{
-        if (e.response.status === 401 || e.response.status === 403) {
-            refreshToken()
-        }
+    })
+    .catch(err => {
+        ErrorStatusCheck(err)
     })
 }, [currentAlbum])
 
@@ -73,10 +71,8 @@ function switchFollow(){
         .then(res=>{
             setType(false)
         })
-        .catch(e=>{
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
+        .catch(err => {
+            ErrorStatusCheck(err)
         })
     } else {
         //chiamata per seguire 
@@ -84,10 +80,8 @@ function switchFollow(){
         .then(res=>{
             setType(true)
         })
-        .catch(e=>{
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
+        .catch(err => {
+            ErrorStatusCheck(err)
         })
     }
 }

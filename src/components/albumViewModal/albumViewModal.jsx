@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, Modal, Pagination, Table } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
-import refreshToken from '../../util/refreshToken';
 import'./style.css'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
-
+import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 
 
@@ -66,11 +65,8 @@ const AlbumViewModal = ({ show, onClose, album, currentUser }) => {
             }))
             console.log("TRACCE ALBUM", tracks)
         })
-        .catch(e => {
-            console.log( e.response.status);
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
+        .catch(err => {
+            ErrorStatusCheck(err)
         })
 
     }, [page.activePage])

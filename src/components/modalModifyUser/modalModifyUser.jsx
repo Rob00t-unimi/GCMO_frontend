@@ -4,7 +4,6 @@ import { Button, ListGroup, Modal, Row, Col } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
 import  'bootstrap/dist/css/bootstrap.min.css' ;
 import '../ModalCreatePlaylist/style.css'
-import refreshToken from '../../util/refreshToken'
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
 

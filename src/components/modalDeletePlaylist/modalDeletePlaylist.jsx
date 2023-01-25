@@ -1,7 +1,7 @@
 import SpotifyWebApi from 'spotify-web-api-node';
 import {Modal, Button } from 'react-bootstrap'
 import { useEffect } from 'react';
-import refreshToken from '../../util/refreshToken';
+import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 const CLIENT_ID ='1e56ed8e387f449c805e681c3f8e43b4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'61e53419c8a547eabe2729e093b43ae4'  // '238334b666894f049d233d6c1bb3c3fc'
 const spotifyApi = new SpotifyWebApi({
@@ -83,11 +83,9 @@ function ModalDeletePlaylist({show, onClose, playlist, updatePlaylists}) {
              alert("Playlist Eliminata")
              onClose()
          })
-         .catch(e=>{
-             if (e.response.status === 401 || e.response.status === 403) {
-                 refreshToken()
-             }
-         })
+         .catch(err => {
+            ErrorStatusCheck(err)
+        })
      }
 
 

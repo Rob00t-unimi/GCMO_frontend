@@ -4,10 +4,9 @@ import './style.css'
 import SpotifyWebApi from 'spotify-web-api-node';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import refreshToken from '../../util/refreshToken'
 import { Heart, HeartFill, Plus, ArrowLeftShort} from 'react-bootstrap-icons';
 import ArtistViewModal from "../artistViewModal/artistViewModal";
-
+import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
 
@@ -44,10 +43,8 @@ function Artist({artist}){
             console.log('risposta', res)
             setType(res.body[0])
             })
-        .catch((e)=>{
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
+        .catch(err => {
+            ErrorStatusCheck(err)
         })
     }, [artist])
 
@@ -61,10 +58,8 @@ function switchFollow(){
         .then(res=>{
             setType(false)
         })
-        .catch(e=>{
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
+        .catch(err => {
+            ErrorStatusCheck(err)
         })
     } else {
         //chiamata per seguire 
@@ -72,10 +67,8 @@ function switchFollow(){
         .then(res=>{
             setType(true)
         })
-        .catch(e=>{
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
+        .catch(err => {
+            ErrorStatusCheck(err)
         })
     }
 }

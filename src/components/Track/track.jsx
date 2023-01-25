@@ -4,9 +4,9 @@ import './style.css'
 import SpotifyWebApi from 'spotify-web-api-node';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import refreshToken from '../../util/refreshToken'
 import { HeartFill, Heart, Plus, ArrowLeftShort} from 'react-bootstrap-icons';
-
+import TrackViewModal from "../trackViewModal/trackViewModal";
+import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
 
@@ -44,11 +44,9 @@ function Track({currentTrack}){
             console.log('risposta', res)
             setType(res.body[0])
             })
-        .catch((e)=>{
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
-        })
+            .catch(err => {
+                ErrorStatusCheck(err)
+            })
     }, [currentTrack])
 
 
@@ -61,10 +59,8 @@ function switchFollow(){
         .then(res=>{
             setType(false)
         })
-        .catch(e=>{
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
+        .catch(err => {
+            ErrorStatusCheck(err)
         })
     } else {
         //chiamata per seguire 
@@ -72,10 +68,8 @@ function switchFollow(){
         .then(res=>{
             setType(true)
         })
-        .catch(e=>{
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
+        .catch(err => {
+            ErrorStatusCheck(err)
         })
     }
 }
@@ -103,24 +97,26 @@ function addTrack(){
         setAddBtn(false)
         alert("Playlist aggiunta correttamente")
     })
-    .catch(e=>{
-        if (e.response.status === 401 || e.response.status === 403) {
-            refreshToken()
-        }
+    .catch(err => {
+        ErrorStatusCheck(err)
     })
 }
+
+const [show, setShow] = useState(false)
 
 
 //___________________________________________________________________________________________________________________________
 
     return(
         <Card className='card d-flex flex-row bg-dark text-light' >
+            <div className='btn btn-dark text-light text-start d-flex flex-row' onClick={() => { setShow(true) }}>
                     <Card.Img className='cardImg' src={currentTrack.image}/>
                     <Card.Body>
                         <Card.Title>{currentTrack.name}</Card.Title>
                         <Card.Text>{currentTrack.artists.join(', ')}</Card.Text>
                         {/* <Card.Text>{currentTrack.genres.join(', ')}</Card.Text> */}
                     </Card.Body>
+            </div>
                 <Card.Text className="d-flex flex-row">
                 {addBtn&&<div className="d-flex"><Button className="action btn-success" onClick={addTrack}><Plus></Plus></Button></div>}
                 {type  ? 
@@ -132,6 +128,7 @@ function addTrack(){
                     </div>
                 }
                 </Card.Text>
+                {show&&<TrackViewModal show={show} onClose={()=>setShow(false)} currentTrack={currentTrack}></TrackViewModal>}
         </Card>
     )
 }

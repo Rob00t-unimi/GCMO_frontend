@@ -13,4 +13,5 @@
     margin-bottom: auto;
     margin-top: auto;
     margin-right: 1rem;
+    max-width: min-content;
 }

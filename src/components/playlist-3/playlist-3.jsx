@@ -6,8 +6,8 @@ import { StarFill, Star} from 'react-bootstrap-icons';
 import './style.css'
 import PlaylistViewModal from '../playlistViewModal/playlistViewModal'
 import ModalModifyPlaylist from '../modalModifyPlaylist/modalModifyPlaylist';
-import refreshToken from '../../util/refreshToken'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
+import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 
 
@@ -61,10 +61,8 @@ function Playlist3({playlist}){
                 setType('MINE')
             }       
          })
-        .catch((e)=>{
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
+         .catch(err => {
+            ErrorStatusCheck(err)
         })
         console.log(playlist.name,type)
     }, [playlist])
@@ -78,10 +76,8 @@ function Playlist3({playlist}){
             .then(res=>{
                 setType('NOTFOLLOWED')
             })
-            .catch(e=>{
-                if (e.response.status === 401 || e.response.status === 403) {
-                    refreshToken()
-                }
+            .catch(err => {
+                ErrorStatusCheck(err)
             })
         } else if (type === 'NOTFOLLOWED'){
             //chiamata per seguire 
@@ -89,10 +85,8 @@ function Playlist3({playlist}){
             .then(res=>{
                 setType('FOLLOWED')
             })
-            .catch(e=>{
-                if (e.response.status === 401 || e.response.status === 403) {
-                    refreshToken()
-                }
+            .catch(err => {
+                ErrorStatusCheck(err)
             })
         }
     }

@@ -10,10 +10,10 @@ import Playlist2 from "../../components/playlist-2/playlist-2"
 import Playlist3 from "../../components/playlist-3/playlist-3"
 import Track from "../../components/Track/track";
 import Track2 from "../../components/track2/track2";
-import refreshToken from "../../util/refreshToken";
 import FiltriRicerca from "../../components/filtriRicerca/filtriRicerca";
 import Album from "../../components/album/album";
 import Artist from "../../components/artist/artist";
+import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 
 
@@ -180,23 +180,21 @@ function ricerca(){
           id: item.id,
           releaseDate: item.album.release_date,                                 //ricerca canzoni 
           artists: item.artists.map(artist => artist.name),
+          artistsId: item.artists.map(artista => artista.id),
           uri: item.uri,
         }
       })
       console.log("traccia", tracks)                
       setSearchResultTracks(tracks)
     })
-    .catch(e => {
-      if (e.response.status === 401 || e.response.status === 403) {
-          refreshToken()
-      }
-    })
+    .catch(err => {
+      ErrorStatusCheck(err)
+  })
   }       
   //ricerca playlist
   if(filterArr[1]) {
     spotifyApi.searchPlaylists(searchWord, { limit : searchLimit})
     .then(result => {
-      console.log("result2", result)
       const playlists = result.body.playlists.items.map(item => {                                       //ricerca playlist
         return {
           image: item.images && item.images.length > 0 ? item.images[0].url : null,
@@ -210,16 +208,15 @@ function ricerca(){
       console.log("playlists", playlists)  
       setSearchResultPlaylists(playlists)
     })
-    .catch(e => {
-      if (e.response.status === 401 || e.response.status === 403) {
-          refreshToken()
-      }
-    })
+    .catch(err => {
+      ErrorStatusCheck(err)
+  })
   }
   //ricerca album
   if (filterArr[2]) {
     spotifyApi.searchAlbums(searchWord, { limit : searchLimit})
     .then(result => {
+      console.log("ALBUM_____", result)
       const albums = result.body.albums.items.map(item => {                                       
         return {
           image: item.images && item.images.length > 0 ? item.images[0].url : null,
@@ -233,11 +230,9 @@ function ricerca(){
       console.log("albums", albums)
       setSearchResultAlbums(albums)       
     })
-    .catch(e => {                             
-      if (e.response.status === 401 || e.response.status === 403) {
-          refreshToken()
-      }
-    })
+    .catch(err => {
+      ErrorStatusCheck(err)
+  })
   }
   //ricerca Artisti
   if (filterArr[3]) {
@@ -270,11 +265,9 @@ function ricerca(){
       setSearchResultArtists(newArtists)
 
     })                                                                 
-    .catch(e => {
-      if (e.response.status === 401 || e.response.status === 403) {
-          refreshToken()
-      }
-    })
+    .catch(err => {
+      ErrorStatusCheck(err)
+  })
   } 
 }
 
@@ -319,11 +312,9 @@ function ricerca(){
       })
       setTopPlaylists(topPlaylists)
     })
-    .catch(e => {
-      if (e.response.status === 401 || e.response.status === 403) {
-          refreshToken()
-      }
-    })
+    .catch(err => {
+      ErrorStatusCheck(err)
+  })
 
 
   //per ottenere i brani più popolari non c'è una chiamata specifica, quindi chiedo i primi 10 brani della playlist top 50 italia oppure se l'utente non è italiano uso top 50 globale
@@ -335,6 +326,7 @@ function ricerca(){
   }
   spotifyApi.getPlaylistTracks(playlistOfTop50, {limit: 10, offset: 0})
   .then(res => {
+    console.log("problema", res)
     const currentTopTracks = res.body.items.map((item, index) => {
       return {
         image: item.track.album.images[0].url,
@@ -343,16 +335,15 @@ function ricerca(){
         id: item.track.id,
         releaseDate: item.track.album.release_date,
         artists: item.track.artists.map(artist => artist.name),
+        artistsId: item.track.artists.map(artista => artista.id),
         uri: item.track.uri,
         index: index+1
       }})
       setTopTracks(currentTopTracks)
       
     }) 
-  .catch(e => {
-    if (e.response.status === 401 || e.response.status === 403) {
-        refreshToken()
-    }
+    .catch(err => {
+      ErrorStatusCheck(err)
   })
  
 }
@@ -383,6 +374,7 @@ function getMyTopTracksFunction() {
         id: item.id,
         releaseDate: item.album.release_date,
         artists: item.artists.map(artist => artist.name),
+        artistsId: item.artists.map(artista => artista.id),
         uri: item.uri,
         index: index+1
       }})
@@ -390,11 +382,8 @@ function getMyTopTracksFunction() {
       setMyTopTracks(myCurrentTopTracks)
       
     }) 
-  .catch(e => {
-    console.log("errore", e)
-    if (e.response.status === 401 || e.response.status === 403) {
-        refreshToken()
-    }
+    .catch(err => {
+      ErrorStatusCheck(err)
   })
 }
 

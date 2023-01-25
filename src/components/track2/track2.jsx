@@ -4,9 +4,9 @@ import './style.css'
 import SpotifyWebApi from 'spotify-web-api-node';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import refreshToken from '../../util/refreshToken'
 import { Heart, HeartFill, Plus, ArrowLeftShort} from 'react-bootstrap-icons';
-
+import TrackViewModal from "../trackViewModal/trackViewModal";
+import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
 const CLIENT_ID ='1e56ed8e387f449c805e681c3f8e43b4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'61e53419c8a547eabe2729e093b43ae4'  // '238334b666894f049d233d6c1bb3c3fc'
@@ -43,15 +43,13 @@ function Track({currentTrack}){
             console.log('risposta', res)
             setType(res.body[0])
             })
-        .catch((e)=>{
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
-        })
+            .catch(err => {
+                ErrorStatusCheck(err)
+            })
     }, [currentTrack])
 
 
-//INVERTE IL TIPO DELLA PLAYLIST__________________________________________________________________________________________________
+//INVERTE IL TIPO DELLA TRACCIA__________________________________________________________________________________________________
 
 function switchFollow(){
     if (type) {
@@ -60,10 +58,8 @@ function switchFollow(){
         .then(res=>{
             setType(false)
         })
-        .catch(e=>{
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
+        .catch(err => {
+            ErrorStatusCheck(err)
         })
     } else {
         //chiamata per seguire 
@@ -71,10 +67,8 @@ function switchFollow(){
         .then(res=>{
             setType(true)
         })
-        .catch(e=>{
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
+        .catch(err => {
+            ErrorStatusCheck(err)
         })
     }
 }
@@ -102,19 +96,18 @@ function addTrack(){
         setAddBtn(false)
         alert("Playlist aggiunta correttamente")
     })
-    .catch(e=>{
-        if (e.response.status === 401 || e.response.status === 403) {
-            refreshToken()
-        }
+    .catch(err => {
+        ErrorStatusCheck(err)
     })
 }
 
+const [show, setShow] = useState(false)
 
 //___________________________________________________________________________________________________________________________
 
     return(
         <Card className='cardTraccia bg-dark text-light' >
-            
+            <div className='btn btn-dark text-light text-start' onClick={() => { setShow(true) }}>
                     <Card.Img src={currentTrack.image}/>
                     <div className="card-img-overlay "><div className='numberTop text-center'><h3>{currentTrack.index}</h3></div></div>
                     <Card.Body>
@@ -122,7 +115,7 @@ function addTrack(){
                         <Card.Text>{currentTrack.artists.join(', ')}</Card.Text>
                         {/* <Card.Text>{currentTrack.genres.join(', ')}</Card.Text> */}
                     </Card.Body>
-                <Card.Text >
+            </div>
                 {addBtn&&<div className="d-flex actionDiv"><Button className="action btn-success" onClick={addTrack}><Plus></Plus></Button></div>}
                 {type  ? 
                     <div className=' d-flex actionDiv'>
@@ -132,7 +125,7 @@ function addTrack(){
                         <Button className='action' onClick={switchFollow}><Heart/></Button>
                     </div>
                 }
-                </Card.Text>
+                {show&&<TrackViewModal show={show} onClose={()=>setShow(false)} currentTrack={currentTrack}></TrackViewModal>}
         </Card>
     )
 }

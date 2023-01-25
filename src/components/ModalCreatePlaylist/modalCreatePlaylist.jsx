@@ -4,7 +4,7 @@ import { Button, Modal} from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
 import  'bootstrap/dist/css/bootstrap.min.css' ;
 import './style.css';
-import refreshToken from '../../util/refreshToken'
+import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 //import imageCompression from 'browser-image-compression';   //libreria per comprimere immagini
 
@@ -139,12 +139,8 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                             alert("Playlist creata con Successo!")
                             close()
                         })
-                        .catch(e => {
-                            console.log( e.response.status);
-                            alert("Non è stato Possibile caricare l'immagine della playlist")
-                            if (e.response.status === 401 || e.response.status === 403) {
-                                refreshToken()
-                            }
+                        .catch(err => {
+                            ErrorStatusCheck(err)
                         })
                     }
                 } else {
@@ -153,12 +149,8 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                     close()
                 }
             })
-            .catch(e => {
-                console.log( e.response.status);
-                alert("Non è stato Possibile Creare la playlist")
-                if (e.response.status === 401 || e.response.status === 403) {
-                    refreshToken()
-                }
+            .catch(err => {
+                ErrorStatusCheck(err)
             })
     }
 
@@ -188,12 +180,8 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                         .then(data => {
                             finish()
                         })
-                        .catch(e => {
-                            console.log( e.response.status);
-                            alert("Non è stato Possibile caricare l'immagine della playlist")
-                            if (e.response.status === 401 || e.response.status === 403) {
-                                refreshToken()
-                            }
+                        .catch(err => {
+                            ErrorStatusCheck(err)
                         })
                     }
                     
@@ -223,21 +211,14 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                         //REINDIRIZZO ALLA PAGINA DI NAVIGAZIONE PER AGGIUNGERE LE CANZONI
                         window.location = "http://localhost:3000/navigate" 
                 })
-                .catch(e => {
-                    console.log( e.response.status);
-                    if (e.response.status === 401 || e.response.status === 403) {
-                        refreshToken()
-                    }
+                .catch(err => {
+                    ErrorStatusCheck(err)
                 })
             }
                 
             })
-            .catch(e => {
-                console.log( e.response.status);
-                alert("Non è stato Possibile Creare la playlist")
-                if (e.response.status === 401 || e.response.status === 403) {
-                    refreshToken()
-                }
+            .catch(err => {
+                ErrorStatusCheck(err)
             })
     }
 }

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, Modal, Container, Table, Row, Col } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
-import refreshToken from '../../util/refreshToken';
 import'./style.css'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
-
-
+import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
@@ -68,11 +66,8 @@ const [tracks, setTracks] = useState()
             }))
             setTracks(tracce)
         })
-        .catch(e => {
-            console.log( e);
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
+        .catch(err => {
+            ErrorStatusCheck(err)
         })
 
     }, [])
@@ -134,10 +129,8 @@ const [tracks, setTracks] = useState()
             setAddBtn(false)
             alert("Playlist aggiunta correttamente")
         })
-        .catch(e=>{
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
+        .catch(err => {
+            ErrorStatusCheck(err)
         })
         }
     }

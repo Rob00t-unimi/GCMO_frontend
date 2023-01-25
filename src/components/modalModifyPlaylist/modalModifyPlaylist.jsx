@@ -4,7 +4,7 @@ import { Button, ListGroup, Modal } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
 import  'bootstrap/dist/css/bootstrap.min.css' ;
 import '../ModalCreatePlaylist/style.css'
-import refreshToken from '../../util/refreshToken'
+import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
 
@@ -151,12 +151,9 @@ useEffect(() => {
                             alert("Playlist modificata con Successo!")
                             onClose()
                         })
-                        .catch(e => {
-                            console.log( e.response.status);
+                        .catch(err => {
                             alert("Non è stato Possibile caricare l'immagine della playlist")
-                            if (e.response.status === 401 || e.response.status === 403) {
-                                refreshToken()
-                            }
+                            ErrorStatusCheck(err)
                         })
                     }
             } else {
@@ -165,12 +162,9 @@ useEffect(() => {
                 onClose()
             }
         })
-        .catch(e => {
-            console.log( e.response.status);
+        .catch(err => {
             alert("Le Modifiche non sono state attuate.")
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
+            ErrorStatusCheck(err)
         })
     }
 

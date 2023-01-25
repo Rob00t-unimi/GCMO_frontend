@@ -8,10 +8,10 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import { Button, Container, Form, ListGroup, Modal, Row, Col } from 'react-bootstrap';
 import { Pencil, PlusCircle } from 'react-bootstrap-icons';
 import ModalCreatePlaylist from "../../components/ModalCreatePlaylist/modalCreatePlaylist";
-import refreshToken from '../../util/refreshToken'
 import Playlist from "../../components/Playlist/playlist";
 import fotoProfiloGenerica from '../../assets/fotoProfiloGenericaFullLight.png';
 import ModalModifyUser from '../../components/modalModifyUser/modalModifyUser'
+import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 //Test 
 // import immagine from '../../assets/tests/exampleCopertina.jpg'
@@ -73,11 +73,8 @@ function PersonalArea() {
             }))
             setCurrentUser(JSON.parse(localStorage.getItem('user')))
         })
-        .catch(e => {
-          console.log( e);
-          if (e.response.status === 401 || e.response.status === 403) {
-              refreshToken()
-          }
+        .catch(err => {
+          ErrorStatusCheck(err)
       })
 
   }, [userModal, accessToken])
@@ -117,11 +114,8 @@ function PersonalArea() {
         setPlaylistFiltered(playlists)   //inserisco tutte le playlist nella sezione playlist filtered (non sono ancora filtrate)
         setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano
       })
-      .catch(e => {
-        console.log( e.response.status);
-        if (e.response.status === 401 || e.response.status === 403) {
-            refreshToken()
-        }
+      .catch(err => {
+        ErrorStatusCheck(err)
     })
   }
 

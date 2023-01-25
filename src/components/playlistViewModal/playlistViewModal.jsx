@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, Modal, Pagination, Table } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
-import refreshToken from '../../util/refreshToken';
 import'./style.css'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
-
+import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 
 
@@ -58,15 +57,10 @@ const[deletedTrack, setDeletedTrack] = useState(false)
             const totalPages = Math.ceil(res.body.total / page.limit);
             const tracks = res.body.items.map((trackInfo => {
                 console.log(trackInfo)
-                const artist = trackInfo.track.artists === []
-                        ? 'Unkonown'
-                        : trackInfo.track.artists.reduce((prev, artist) => {
-                            return prev.concat(artist.name + '')
-                        }, '');
                 const duration = new Date(trackInfo.track.duration_ms).toISOString().slice(14, 19);     //prendo la durata in ms della traccia, creo l'oggetto data, converto in stringa, prendo solo dal carattere 14 a 19 ovvero ore, minuti, secondi
                 return {
                     id: trackInfo.track.id,
-                    artists: artist,
+                    artists: trackInfo.track.artists.map(artist => artist.name),
                     duration: duration,
                     name: trackInfo.track.name,
                     uri: trackInfo.track.uri,
@@ -79,11 +73,8 @@ const[deletedTrack, setDeletedTrack] = useState(false)
                 data: tracks
             }))
         })
-        .catch(e => {
-            console.log( e.response.status);
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
+        .catch(err => {
+            ErrorStatusCheck(err)
         })
 
     }, [page.activePage, deletedTrack])
@@ -104,11 +95,8 @@ function removeTrack(trackUri){
     .then( ()=>{
         setDeletedTrack(!deletedTrack)
     })
-    .catch(e => {
-        alert("Le Modifiche non sono state attuate.")
-        if (e.response.status === 401 || e.response.status === 403) {
-            refreshToken()
-        }
+    .catch(err => {
+        ErrorStatusCheck(err)
     })
 }
 
@@ -144,7 +132,7 @@ function removeTrack(trackUri){
                                     <tr key={item.id} >
                                         <td> {item.duration}</td>
                                         <td>{item.name}</td>
-                                        <td> {item.artists}</td>
+                                        <td> {item.artists.join(', ')}</td>
                                         {(playlist.ownerId === currentUser.id)&&<td><Button className='btn-danger btn-round btn-m' onClick={() => {removeTrack(item.uri)}}>X</Button></td>}
                                     </tr>
                                 );

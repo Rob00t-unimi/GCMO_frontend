@@ -7,8 +7,8 @@ import './style.css'
 import PlaylistViewModal from '../playlistViewModal/playlistViewModal'
 import ModalDeletePlaylist from '../modalDeletePlaylist/modalDeletePlaylist';
 import ModalModifyPlaylist from '../modalModifyPlaylist/modalModifyPlaylist';
-import refreshToken from '../../util/refreshToken'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
+import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 
 
@@ -83,22 +83,16 @@ useEffect(() => {
             .then(data => {
                 updatePlaylists()
             })
-            .catch(e => {
-                console.log( e.response.status);
-                if (e.response.status === 401 || e.response.status === 403) {
-                    refreshToken()
-                }
+            .catch(err => {
+                ErrorStatusCheck(err)
             })
         } else if (type === 'PRIVATE'){
             spotifyApi.changePlaylistDetails(playlist.id, {public: true})
             .then(data => {
                 updatePlaylists()
             })
-            .catch(e => {
-                console.log( e.response.status);
-                if (e.response.status === 401 || e.response.status === 403) {
-                    refreshToken()
-                }
+            .catch(err => {
+                ErrorStatusCheck(err)
             })
         }
     }
@@ -113,10 +107,8 @@ function unfollowPlaylist(){
         .then(res=>{
             updatePlaylists()
         })
-        .catch(e=>{
-            if (e.response.status === 401 || e.response.status === 403) {
-                refreshToken()
-            }
+        .catch(err => {
+            ErrorStatusCheck(err)
         })
     }
 }
