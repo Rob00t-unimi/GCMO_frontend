@@ -8,10 +8,10 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import { Button, Container, Form, ListGroup, Modal, Row, Col } from 'react-bootstrap';
 import { Pencil, PlusCircle } from 'react-bootstrap-icons';
 import ModalCreatePlaylist from "../../components/ModalCreatePlaylist/modalCreatePlaylist";
-import Playlist from "../../components/Playlist/playlist";
 import fotoProfiloGenerica from '../../assets/fotoProfiloGenericaFullLight.png';
 import ModalModifyUser from '../../components/modalModifyUser/modalModifyUser'
 import ErrorStatusCheck from '../../util/errorStatusCheck'
+import PlaylistCardPersonalArea from "../../components/playlistCardPersonalArea/playlistCardPersonalArea";
 
 //Test 
 // import immagine from '../../assets/tests/exampleCopertina.jpg'
@@ -22,7 +22,7 @@ import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID_______________________________________________________________________________________________
-const CLIENT_ID ='1e56ed8e387f449c805e681c3f8e43b4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'61e53419c8a547eabe2729e093b43ae4'  // '238334b666894f049d233d6c1bb3c3fc'
+const CLIENT_ID ='61e53419c8a547eabe2729e093b43ae4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '238334b666894f049d233d6c1bb3c3fc'
 const spotifyApi = new SpotifyWebApi({
   clientId: CLIENT_ID
 });
@@ -96,7 +96,7 @@ function PersonalArea() {
 
     spotifyApi.getUserPlaylists({limit: limit})
     .then(result => {
-      console.log(result)
+      console.log("playlists",result)
         const playlists = result.body.items.map(item => {   //ricevo e ciclo su una map di items
               return {
               image: item.images && item.images.length > 0 ? item.images[0].url : null,
@@ -106,7 +106,8 @@ function PersonalArea() {
               ownerId: item.owner.id,
               ownerName: item.owner.display_name,
               public: item.public,
-
+              totalTracks: item.tracks.total,
+              uri: item.uri,
             }
         })
         // let playlistsWithoutDeleted = []                        //rimuovo dall'array di playlist restituito da spotify le playlist che ho contrassegnato come eliminate
@@ -118,7 +119,12 @@ function PersonalArea() {
         // setPlaylistResults(playlistsWithoutDeleted)
         // setPlaylistFiltered(playlistsWithoutDeleted)   //inserisco tutte le playlist nella sezione playlist filtered (non sono ancora filtrate)
         setPlaylistResults(playlists)
-        localStorage.setItem('playlist_list', JSON.stringify(playlists))
+        
+        let onlyMyPlaylists = playlists.filter(item => {           //inserisco tutte le playlist create dall'utente nel local storage
+          return item.ownerId === currentUser.id
+        });
+        localStorage.setItem('playlist_list', JSON.stringify(onlyMyPlaylists));
+
         setPlaylistFiltered(playlists)   //inserisco tutte le playlist nella sezione playlist filtered (non sono ancora filtrate)
         setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano
       })
@@ -262,14 +268,14 @@ const updatePlaylists = () => {
             {(searchResult.length===0)&&<div className="text-center">Nessun Risultato</div>}
             <div>
             {searchResult.map(playlist => (                    
-              <Playlist playlist={playlist} userInfo={currentUser}/>
+              <PlaylistCardPersonalArea playlist={playlist} updatePlaylists={updatePlaylists} userInfo={currentUser}/>
             ))}
             </div>
             <hr/>
             </div>}
           <div>
             {playlistFiltered.map((playlist) => (                     //renderizzo ogni plaaylist nella lista filtered Playlist (simile forEach)
-              <Playlist playlist={playlist} updatePlaylists={updatePlaylists} userInfo={currentUser}/>
+              <PlaylistCardPersonalArea playlist={playlist} updatePlaylists={updatePlaylists} userInfo={currentUser}/>
             ))}
           </div>
         </Container>

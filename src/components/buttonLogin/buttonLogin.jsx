@@ -8,7 +8,7 @@ import spotifyLogo from '../../assets/SpotifyLogo02.png'
 //INIZIALIZZO LE COSTANTI_______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 const BASE_URL = "https://accounts.spotify.com/authorize";
-const CLIENT_ID ='1e56ed8e387f449c805e681c3f8e43b4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'61e53419c8a547eabe2729e093b43ae4'  // '238334b666894f049d233d6c1bb3c3fc'
+const CLIENT_ID ='61e53419c8a547eabe2729e093b43ae4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '238334b666894f049d233d6c1bb3c3fc'
 const RESPONSE_TYPE = 'code';
 const REDIRECT_URI = 'http://localhost:3000/';
 const SPOTIFY_SCOPE = 'streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-modify-playback-state%20user-follow-modify%20user-follow-read%20playlist-read-private%20playlist-read-collaborative%20playlist-modify-private%20playlist-modify-public%20ugc-image-upload%20user-top-read';

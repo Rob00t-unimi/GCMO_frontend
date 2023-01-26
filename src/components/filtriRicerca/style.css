@@ -1,20 +1,28 @@
-.colonna {
+.colonnaFiltri {
     position: absolute;
-    top: 11vh;
-    right: 6vh;
+    top: 68vh;
+    right: 2vh;
     position: fixed;
-    width: 20vh;
-}
-
-
-.select{
-    max-width: 4vh;
+    width: 15vh;
 }
 
 .switchFilter {
     margin-left: 3vh;
+    transform: scale(0.7);  /*non ho trovato altri modi per rimpicciolire gli switch*/
 }
 
-.cercaPer {
-    margin-right: 6%;
+.inserimentoNumero {
+    margin: auto;
+    width: 7vh;
+    height: 3vh;
+    font-size: x-large;
 }
+/* .select{
+    max-width: 4vh;
+} */
+
+
+
+/* .cercaPer {
+    margin-right: 6%;
+} */

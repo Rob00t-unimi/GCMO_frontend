@@ -1,4 +1,4 @@
-.colonna-sx {
+.colonna-sx-navigationPage {
     position: absolute;
     padding-left: 1vh;
     padding-right: 1.5vh;
@@ -8,12 +8,12 @@
     height: 100vh;
 }
 
-.titolo {
+.myPlaylistList {
     margin-top: 7vh;
     text-align: center;
 }
 
-.tabellaPlaylist {
+.tabellaPlaylistList {
     height: 70vh;
     margin-top: 2.5vh;
     border-style: solid 1px;
@@ -21,7 +21,7 @@
     overflow-y: auto;
 }
 
-.listElements {
+.playlistListElements {
     width: 100%;
     text-align: left;
     height: 3rem;

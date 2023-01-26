@@ -11,7 +11,7 @@ import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
 
-const CLIENT_ID ='1e56ed8e387f449c805e681c3f8e43b4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'61e53419c8a547eabe2729e093b43ae4'  // '238334b666894f049d233d6c1bb3c3fc'
+const CLIENT_ID ='61e53419c8a547eabe2729e093b43ae4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '238334b666894f049d233d6c1bb3c3fc'
 const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID
 });
@@ -52,22 +52,6 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
         onClose();
     }
 
-// //COMPRESSIONE IMMAGINE_______________________________________________________________
-
-
-// async function compressImage(image) {   
-//     const options = {
-//         maxSizeMB: 0.25, // massimo peso dell'immagine in MB
-//         useWebWorker: true // utilizzare web worker del browser
-//     }
-//     // chiamare la libreria per comprimere l'immagine
-//     const compressedImage = await imageCompression(image, options);
-//     return compressedImage;
-// }
-
-//____________________________________________________________________________________
-
-
     return(
         <>
             <Modal className='modal' show={show} size='xl' centered >
@@ -80,7 +64,7 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                 <Modal.Body className='bg-dark text-light'>
                     <div >
                         <div className=' d-flex justify-content-center flex-row'>
-                            <input className=' text-center bg-dark text-light' type="text" placeholder={'Titolo'} value={title} onChange={(e)=> {setTitle(e.target.value)}}/>
+                            <input className='text-center bg-dark text-light' type="text" placeholder={'Titolo'} value={title} onChange={(e)=> {setTitle(e.target.value)}}/>
                 
                             <select name="visibility" value={isPublic} onChange={(e)=> {setIsPublic(e.target.value)}}>
                                 <option className="text-center" value={true}> Pubblica </option>

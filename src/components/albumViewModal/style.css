@@ -1,14 +1,3 @@
-.header {
-    height: 15rem;
-    width: 100%;
-}
-
-.header .img {
-    width: 15rem;
-}
-
-.button {
-    background-color: #429aaad0;
-    transform: translateY(-6rem);
-    margin: 1rem;
+.infoModalView {
+    margin-top: 6vh;
 }

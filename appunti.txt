@@ -32,14 +32,18 @@
 cose da fare: 
 - aggiungere canzoni
 - ricerca tramite tag, artista o canzoni interne alla playlist       --> la ricerca di spotify è Fuzzy ovvero non precisa, approssima i risultati, quindi se scrivo un tag, un nome, un genere o altro mi restituisce sempre la cosa più opportuna
+                                                                    --> HO SCOPERTO CHE ESISTE getPlaylistForCategory
 - vedere tag e genere delle canzoni
 - aggiungere tag nelle playlist
 - eliminare account utente (o revocare le autorizzazioni)
 - sistemare gestione errori
 - modificare info utente            --> non è possibile farlo con una chiamata alle api quindi siccome per la registrazione ci si registra direttamente in spotify, inserrisco un link alla pagina personale dell'utente di spotify
-
+-se c'è già una canzone in una playlist il tasto per aggiungerla non deve comparire
 
 
 - modal delete playlist         (non serve, da eliminare)
 
 - modal delete track            (ho preferito non usarla)
+
+
+-importare album in una playlist 

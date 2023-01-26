@@ -1,0 +1,91 @@
+
+.buttonCardOrizzontale {
+    margin-top: 2.5vh;
+    margin-right: 1.5vh
+}
+
+/* _____________________________ */
+
+.headerCardModalView {
+    height: 15rem;
+    width: 100%;
+}
+
+.imgCardModalView {
+    width: 15rem;
+}
+
+.btnCloseModal {
+    background-color: #429aaad0;
+    transform: translateY(-6rem);
+    margin: 1rem;
+}
+
+
+/* _____________________________ */
+
+.verticalCardBtn {
+    width: 100%;
+    margin-top: 2px;
+    z-index: 1;     /* ____questo perchè essendo buttons su card che sono a loro volta button, se non li mettiamo sopra non possiamo cliccarli_________________________ */
+}
+
+.cardVertical {
+    padding-bottom: 0.5vh;
+    padding-right: 0.5vh;
+    padding-left: 0.5vh;
+    height: 98%;
+}
+
+/* _____________________________ */
+
+.btnCard {
+    width: 20vh;
+}
+
+.cardImg{
+    width: 6rem;
+    height: 6rem;
+}
+
+/* _____________________________ */
+
+.button {
+    background-color: #429aaad0;
+    transform: translateY(-6rem);
+    margin: 1rem;
+}
+
+/* _____________________________ */
+
+.card{
+    margin-top: 0.5rem;
+}
+.cardImg{
+    width: 6rem;
+    height: 6rem;
+}
+.card div{
+    width:100%;
+}
+
+
+
+
+.numberTop {
+    background-color:rgb(11, 156, 161);
+    max-width: 2.5vh;
+    border-radius: 50%;
+}
+
+
+.spotifyLinkBtn {
+    width: 10rem;
+    position: absolute;
+    bottom: 0.5vh;
+    right: 0.5vh;
+}
+
+.spotifyLinkBtn img{
+    width: 80%;
+}

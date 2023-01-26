@@ -27,15 +27,16 @@ select {
 input {
     font-size: 2rem;
     border-radius: 5px;
-    width: 100%;
     border: 1px solid;
     border-color: rgb(59, 59, 59);
+    width: 100%;
 }
 
 .inputFoto {
     margin-top: 1rem;
-    width: 250px;
     height: 60px;
+    transform: scale(0.6);
+    width: 25%;
 }
 
 .copertina {
@@ -45,6 +46,7 @@ input {
     border-width: 1px;
     border-radius: 3%;
     border-color: rgb(59, 59, 59);
+    
 }
 
 .copertina div {

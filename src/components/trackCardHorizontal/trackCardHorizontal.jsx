@@ -1,16 +1,16 @@
 import React from "react";
-import {Card, Button} from 'react-bootstrap'
-import './style.css'
+import {Card, Button, Col} from 'react-bootstrap'
+import '../general.css'
 import SpotifyWebApi from 'spotify-web-api-node';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { HeartFill, Heart, Plus, ArrowLeftShort} from 'react-bootstrap-icons';
+import { HeartFill, Heart, Plus} from 'react-bootstrap-icons';
 import TrackViewModal from "../trackViewModal/trackViewModal";
 import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
 
-const CLIENT_ID ='1e56ed8e387f449c805e681c3f8e43b4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'61e53419c8a547eabe2729e093b43ae4'  // '238334b666894f049d233d6c1bb3c3fc'
+const CLIENT_ID ='61e53419c8a547eabe2729e093b43ae4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '238334b666894f049d233d6c1bb3c3fc'
 const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID
 });
@@ -22,7 +22,9 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-function Track({currentTrack}){
+function TrackCardHorizontal({currentTrack, showFooter}){
+
+    
 
 
     
@@ -76,17 +78,34 @@ function switchFollow(){
 
 
 //AGGIUNGERE TRACCIA A PLAYLIST SELEZIONATA_________________________________________________________________________________
-
+//se la createdPlaylist non è nel local storage showFooter sarà false e non renderizzo il Btn
+//se showFooter è true ma la traccia è già presente nella playlist non renderizzo il Btn 
 const [addBtn, setAddBtn] = useState()
 
 useEffect(() => {
-  
-    if(localStorage.getItem('createdPlaylist')) {
-        setAddBtn(true)
-    } else {
-        setAddBtn(false)
+
+    const traccePlaylist = JSON.parse(localStorage.getItem('createdPlaylistTracks'))
+    let trackIsJustContained = false
+
+    if(!traccePlaylist||traccePlaylist.length===0) {
+        setAddBtn(showFooter)
+        return
     }
-}, [])
+
+    
+    for(let i=0; i<traccePlaylist.length; i++) {
+        if (traccePlaylist[i]===currentTrack.id) {
+            trackIsJustContained = true
+        }
+    }
+
+    if (trackIsJustContained) {
+        setAddBtn(false)
+    } else {
+        setAddBtn(showFooter)
+    }
+
+}, [showFooter] )
 
 
 function addTrack(){
@@ -111,26 +130,36 @@ const [show, setShow] = useState(false)
         <Card className='card d-flex flex-row bg-dark text-light' >
             <div className='btn btn-dark text-light text-start d-flex flex-row' onClick={() => { setShow(true) }}>
                     <Card.Img className='cardImg' src={currentTrack.image}/>
-                    <Card.Body>
-                        <Card.Title>{currentTrack.name}</Card.Title>
-                        <Card.Text>{currentTrack.artists.join(', ')}</Card.Text>
-                        {/* <Card.Text>{currentTrack.genres.join(', ')}</Card.Text> */}
-                    </Card.Body>
-            </div>
-                <Card.Text className="d-flex flex-row">
-                {addBtn&&<div className="d-flex"><Button className="action btn-success" onClick={addTrack}><Plus></Plus></Button></div>}
-                {type  ? 
-                    <div className=' d-flex'>
-                        <Button className='action ' onClick={switchFollow}><HeartFill/></Button> 
-                    </div> :
-                    <div className=' d-flex'>
-                        <Button className='action' onClick={switchFollow}><Heart/></Button>
+                    <div className='card-body d-flex'>
+                        <Col>
+                            <Card.Title>{currentTrack.name}</Card.Title>
+                            <Card.Text>{currentTrack.artists.join(', ')}</Card.Text>
+                        </Col>
+                        
+                        <Col>
+                            <div className="text-center" style={{marginLeft: "3rem"}} >Release date: {currentTrack.releaseDate}</div>
+                        </Col>
                     </div>
-                }
-                </Card.Text>
+            </div>
+                <Col className="d-flex">
+                    <Col>
+                        {addBtn&&<div className="d-flex"><Button className="buttonCardOrizzontale btn-success" onClick={addTrack}><Plus></Plus></Button></div>}
+                        {!addBtn&&<div className="buttonCardOrizzontale" style={{width: "44px"}}/>}
+                    </Col>
+                    <Col>
+                        {type  ? 
+                            <div className=' d-flex'>
+                                <Button className='buttonCardOrizzontale ' onClick={switchFollow}><HeartFill/></Button> 
+                            </div> :
+                            <div className=' d-flex'>
+                                <Button className='buttonCardOrizzontale' onClick={switchFollow}><Heart/></Button>
+                            </div>
+                        }
+                    </Col>
+                </Col>
                 {show&&<TrackViewModal show={show} onClose={()=>setShow(false)} currentTrack={currentTrack}></TrackViewModal>}
         </Card>
     )
 }
 
-export default Track
+export default TrackCardHorizontal

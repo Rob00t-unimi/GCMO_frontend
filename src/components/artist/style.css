@@ -1,21 +1,13 @@
-
-.action {
-    width: 100%;
-}
-
-.cardImmagine {
+.cardImgRounded {
     border-radius: 50%;
     height: 14rem;
     min-height: 5rem;
     background-position: center;
     background-size: cover;
+    margin-bottom: 5px;
 }
 
-.actionDiv {
-    margin-bottom: 1vh;
-}
-
-.followersCard {
+.followersArtistCard {
     margin-bottom: 1vh;
     margin-top: 1vh;
 }

@@ -8,7 +8,7 @@ import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
 
-const CLIENT_ID ='1e56ed8e387f449c805e681c3f8e43b4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'61e53419c8a547eabe2729e093b43ae4'  // '238334b666894f049d233d6c1bb3c3fc'
+const CLIENT_ID ='61e53419c8a547eabe2729e093b43ae4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '238334b666894f049d233d6c1bb3c3fc'
 const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID
 });
@@ -95,15 +95,17 @@ const [tracks, setTracks] = useState()
             </Modal.Header>
             <Modal.Body className='bg-dark'>
                 <div>
+                    <h4 className='text-light text-center'>Top 10 {artist.name}'s tracks</h4>
+                    <hr className='text-light'></hr>
                     <Table hover variant="dark">
 
                         {tracks ? 
                             tracks.map((track, index) =>(
                             <tr>
-                                <td> {track.duration}</td>
+                                <td className='text-center'> <b>{index+1}</b></td>
                                 <td>{track.name}</td>
                                 <td> {track.artist}</td>
-                                <td className='text-center'> <b >{index+1}</b></td>
+                                <td>{track.duration} </td>
                                 {addBtn&&<td><Button className='btn-success' onClick={addTrack(track)}>+</Button></td>}
                             </tr>
                         )) : null

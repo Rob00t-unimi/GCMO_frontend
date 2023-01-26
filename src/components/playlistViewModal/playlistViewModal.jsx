@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, Modal, Pagination, Table } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
-import'./style.css'
+import'../general.css'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import ErrorStatusCheck from '../../util/errorStatusCheck'
+import spotifyLogo from "../../assets/SpotifyLogo01.png"
 
 
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
 
-const CLIENT_ID ='1e56ed8e387f449c805e681c3f8e43b4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'61e53419c8a547eabe2729e093b43ae4'  // '238334b666894f049d233d6c1bb3c3fc'
+const CLIENT_ID ='61e53419c8a547eabe2729e093b43ae4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '238334b666894f049d233d6c1bb3c3fc'
 const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID
 });
@@ -101,21 +102,24 @@ function removeTrack(trackUri){
 }
 
 //______________________________________________________________________________________________________________________________
-
-
-
-    
+   
 
     return (
         <Modal show={show} size="xl" centered>
             <Modal.Header className='bg-dark'>
-                <Card className="header d-flex flex-row bg-dark text-light"  >
-                    <Card.Img className="img" src={playlist.image?playlist.image:playlistImage} />
+                <Card className="headerCardModalView d-flex flex-row bg-dark text-light"  >
+                    <Card.Img className="imgCardModalView" src={playlist.image?playlist.image:playlistImage} />
                     <Card.Body>
                         <Card.Title> {playlist.name} </Card.Title>
                         <Card.Text> {playlist.ownerName} </Card.Text>
                         {playlist.description && <p>{playlist.description}</p>}
-                        {/* tags.... */}
+                        <div className='d-flex'>
+                            <div></div>
+                            <a className="spotifyLinkBtn btn btn-success btn-sm" href={playlist.uri} target="_blank" ><img src={spotifyLogo} /></a>
+                            
+                            {/* tags....genere... */}
+                        </div>
+                        
                     </Card.Body>
                 </Card>
                 <Button className='button btn-dark' onClick={onClose}>Close</Button>

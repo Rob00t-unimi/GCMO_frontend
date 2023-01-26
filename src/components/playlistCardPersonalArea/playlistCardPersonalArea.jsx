@@ -1,9 +1,9 @@
 import SpotifyWebApi from 'spotify-web-api-node';
-import { Button, Card, Container } from 'react-bootstrap';
+import { Button, Card, Container, Col } from 'react-bootstrap';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { StarFill, Lock, Unlock, Trash3, Pencil} from 'react-bootstrap-icons';
-import './style.css'
+import '../general.css'
 import PlaylistViewModal from '../playlistViewModal/playlistViewModal'
 import ModalDeletePlaylist from '../modalDeletePlaylist/modalDeletePlaylist';
 import ModalModifyPlaylist from '../modalModifyPlaylist/modalModifyPlaylist';
@@ -14,7 +14,7 @@ import ErrorStatusCheck from '../../util/errorStatusCheck'
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
 
-const CLIENT_ID ='1e56ed8e387f449c805e681c3f8e43b4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'61e53419c8a547eabe2729e093b43ae4'  // '238334b666894f049d233d6c1bb3c3fc'
+const CLIENT_ID ='61e53419c8a547eabe2729e093b43ae4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '238334b666894f049d233d6c1bb3c3fc'
 const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID
 });
@@ -27,7 +27,7 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-function Playlist({playlist, updatePlaylists, userInfo}){
+function PlaylistCardPersonalArea({playlist, updatePlaylists, userInfo}){
 
 //INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
@@ -127,34 +127,40 @@ useEffect(() => {
     return(
         <>
             <Card className='card d-flex flex-row bg-dark text-light' >
-                <div className='btn btn-dark d-flex flex-row text-light text-start' onClick={() => { setModalShow(true) }}>
+                <div className='btnCard btn btn-dark d-flex flex-row text-light text-start' onClick={() => { setModalShow(true) }}>
                     <Card.Img className='cardImg' src={image}/>
-                    <Card.Body>
-                        <Card.Title>{playlist.name}</Card.Title>
-                        <Card.Text>{playlist.ownerName}</Card.Text>
-                    </Card.Body>
+                    <div className='card-body d-flex'>
+                        <Col>            
+                            <Card.Title>{playlist.name}</Card.Title>
+                            <Card.Text>{playlist.ownerName}</Card.Text>
+                        </Col>
+                        <Col>
+                            <Card.Text className='text-center'>{playlist.totalTracks} Tracce</Card.Text>
+                        </Col>
+                    </div>
                 </div>
-                <Card.Text>
+                <Col>
                     { 
                     type === 'FOLLOWED' ? 
-                                <div className= 'followed d-flex'>
-                                    <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button>
-                                    <Button className='action' onClick={unfollowPlaylist}><StarFill/></Button>
+                                <div className= ' d-flex'>
+                                    <div className='buttonCardOrizzontale' style={{width: "44px"}}/> {/*ho aggiunto questo div con la stessa larghezza di uno degli altri btn in modo da avere tutto allineato */}
+                                    <Button className='buttonCardOrizzontale btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button>
+                                    <Button className='buttonCardOrizzontale' onClick={unfollowPlaylist}><StarFill/></Button>
                                 </div> :
                     type === 'PUBLIC' ? 
-                                <div className='public d-flex'>
-                                    <Button className='action btn-light' onClick={() => { setModalModifyShow(true) }}><Pencil/></Button>
-                                    <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button> 
-                                    <Button className='btn-success action ' onClick={switchPublic}><Unlock/></Button> 
+                                <div className=' d-flex'>
+                                    <Button className='buttonCardOrizzontale btn-light' onClick={() => { setModalModifyShow(true) }}><Pencil/></Button>
+                                    <Button className='buttonCardOrizzontale btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button> 
+                                    <Button className='buttonCardOrizzontale btn-success  ' onClick={switchPublic}><Unlock/></Button> 
                                 </div> :
 
-                                <div className='private d-flex'>
-                                    <Button className='action btn-light' onClick={() => { setModalModifyShow(true) }}><Pencil/></Button>
-                                    <Button className='action btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button> 
-                                    <Button className='btn-danger action' onClick={switchPublic}><Lock/></Button>
+                                <div className=' d-flex'>
+                                    <Button className='buttonCardOrizzontale btn-light' onClick={() => { setModalModifyShow(true) }}><Pencil/></Button>
+                                    <Button className='buttonCardOrizzontale btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button> 
+                                    <Button className='buttonCardOrizzontale btn-danger ' onClick={switchPublic}><Lock/></Button>
                                 </div>
                     }
-                </Card.Text>
+                </Col>
             </Card>
             
             {modalShow&&<PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} currentUser={userInfo}/>}
@@ -164,4 +170,4 @@ useEffect(() => {
     )
 }
 
-export default Playlist
+export default PlaylistCardPersonalArea

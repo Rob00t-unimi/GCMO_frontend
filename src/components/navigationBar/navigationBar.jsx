@@ -40,7 +40,7 @@ function NavigationBar() {
         </Nav>
         <Button className='btn-dark btn-lg pulsanteLoginNav' onClick={Logout}>Esci</Button>
         
-        <div className="containerFotoProfilo d-flex justify-content-center"><img src={immagineProfilo} alt="immagine profilo" /></div>            
+        <div className="navFotoProfilo d-flex justify-content-center"><img src={immagineProfilo} alt="immagine profilo" /></div>            
         </Navbar>
         )
     }
@@ -58,7 +58,7 @@ function NavigationBar() {
         </Nav>
         <div className='pulsanteLoginNav'><ButtonLogin text="Accedi" /></div>
         
-        <div className="containerFotoProfilo d-flex justify-content-center"><img src={fotoProfiloGenerica} alt="immagine profilo" /></div>            
+        <div className="navFotoProfilo d-flex justify-content-center"><img src={fotoProfiloGenerica} alt="immagine profilo" /></div>            
         </Navbar>
     )
 
