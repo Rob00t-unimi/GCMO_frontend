@@ -22,7 +22,7 @@ import PlaylistCardPersonalArea from "../../components/playlistCardPersonalArea/
 
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID_______________________________________________________________________________________________
-const CLIENT_ID ='61e53419c8a547eabe2729e093b43ae4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '238334b666894f049d233d6c1bb3c3fc'
+const CLIENT_ID = '238334b666894f049d233d6c1bb3c3fc'//'5ee1aac1104b4fd9b47757edf96aba44'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '61e53419c8a547eabe2729e093b43ae4'
 const spotifyApi = new SpotifyWebApi({
   clientId: CLIENT_ID
 });
@@ -69,15 +69,15 @@ function PersonalArea() {
     spotifyApi.setAccessToken(accessToken);     //se l'access token non è nullo eseguo la richiesta di informazioni dell'utente e le salvo nel local storage
     spotifyApi.getMe()
         .then(result => {
-            console.log("UserInfo", result)
             localStorage.setItem('user', JSON.stringify({
                 description: result.body.description ? result.body.description : null,
                 name: result.body.display_name? result.body.display_name : 'user',
                 id: result.body.id,
-                image: result.body.images.length[0] ? result.body.images[0].url : null,
+                image: result.body.images.length > 0 ? result.body.images[0].url : null,
                 followers: result.body.followers.total,
                 country: result.body.country,
             }))
+            console.log("UserInfo", result)
             setCurrentUser(JSON.parse(localStorage.getItem('user')))
         })
         .catch(err => {

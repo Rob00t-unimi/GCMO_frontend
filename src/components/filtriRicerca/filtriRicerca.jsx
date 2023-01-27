@@ -31,7 +31,7 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
     }, [accessToken])
 
 
-    //___GET CATEGORIES_______________________________________________________________________________________________________________________________________________________________________________
+    //___RICHIEDO LE CATEGORIE DI SPOTIFY (o generi) (sistema ORGANIZZATO TRAMITE TAG)_______________________________________________________________________________________________________________________________________________________________________________
 
     const [categorie, setCategorie] = useState()
     
@@ -39,9 +39,9 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
 
         spotifyApi.getCategories()
         .then(res =>{
-            const categories = res.body.categories.items.map(item=>{
-                return {
-                    id: item.id,
+            const categories = res.body.categories.items.map(item=>{            // è possibile usare le categorie per richiedere un elenco di playlist di quella categoria
+                return {                                                        // oppure per cercare canzoni tramite parola chiave e genere
+                    id: item.id,                                                // oppure per cercare artisti tramite parola chiave e genere
                     name: item.name,
                     icon: item.icons[0].url,
                     href: item.href
@@ -57,6 +57,8 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
 
     }, [])
 
+
+    
   //_______________________________________________________________________________________________________________________________________________________________________________________________
 
   const [showCheckbox, setShowCheckbox] = useState(filterArr[1])

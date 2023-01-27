@@ -289,7 +289,9 @@ function ricerca(){
 
 useEffect(() => {
 
-  if (optionCategory&&optionCategory!==""&&optionCategory!=="nomeTraccia") {
+  if(searchWord&&searchWord!=="") return
+
+  if (optionCategory&&optionCategory!==""/*&&optionCategory!=="nomeTraccia"*/) {
       
     //ricerca playlist tramite categoria:
     spotifyApi.getPlaylistsForCategory(optionCategory, {  limit : searchLimit})
@@ -323,7 +325,7 @@ useEffect(() => {
   //   })
   // }
 
-}, [optionCategory])
+}, [optionCategory, searchWord])
 
 
 
