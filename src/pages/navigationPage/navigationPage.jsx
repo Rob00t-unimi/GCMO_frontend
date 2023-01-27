@@ -44,9 +44,11 @@ function NavigationPage(){
 //SHOW FOOTER______________________________________________________________________________________________________________________________
   
      const [showFooter, setShowFooter] = useState(false);
+     const [createdPlaylist, setCreatedPlaylist] = useState();
 
      useEffect(() => {
       if(localStorage.getItem("createdPlaylist")) {
+        setCreatedPlaylist(JSON.parse(localStorage.getItem('createdPlaylist')))
         setShowFooter(true)
       }
     }, [])
@@ -85,7 +87,6 @@ useEffect(() => {
  //RICERCA______________________________________________________________________________________________________________________
 
  const [optionCategory, setOptionCategory] = useState("");
-  console.log("categoria selezionata: ", optionCategory);
 //  //cosa cercare
    const [filterArr, setFilterArr] = useState([true, true, true, true])  //questo serve per contenere un array di 4 posizioni booleane, 0 canzoni, 1 playlists, 2 albums, 3 artists. TRUE per cercare, FALSE per non cercare
 // //come cercare
@@ -102,7 +103,7 @@ useEffect(() => {
   const [searchResultArtists, setSearchResultArtists] = useState()
   const [searchResultTracks, setSearchResultTracks] = useState()
 
-  const [filtriPerChiamata, setFiltriPerChiamata] = useState(undefined)
+
 
 
   // function impostaFiltroDiRicerca(){
@@ -632,7 +633,7 @@ useEffect(() => {
         </Container>
         
         {/* FOOTER AGGIUNTA CANZONI A PLAYLIST */}
-           {showFooter&&<FooterElement close={()=>setShowFooter(false)}></FooterElement>}
+           {showFooter&&<FooterElement close={()=>setShowFooter(false)} playlist={createdPlaylist}></FooterElement>}
       </>
     )
 }

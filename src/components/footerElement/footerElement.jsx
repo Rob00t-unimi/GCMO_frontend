@@ -5,10 +5,9 @@ import { useState, useEffect } from 'react';
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
 
 
-function FooterElement({close}){
+function FooterElement({close, playlist}){
 
-//SET PLAYLIST
-const [playlist, setPlaylist] = useState(JSON.parse(localStorage.getItem('createdPlaylist')))   //posso fare direttamente cosi perchè il componente esiste solo se la playlist è nel local storage
+  
 
 
 //RENDER COMPONENTE________________________________________________________________________________________________________________________
@@ -18,11 +17,11 @@ const [playlist, setPlaylist] = useState(JSON.parse(localStorage.getItem('create
                 <Card className='bg-dark text-light footerCard' >
                     <Row>
                         <Col className='text-start d-flex flex-row'>
-                            <Card.Img className='footerImg' src={playlist.image ? playlist.image : playlistImage}/>
-                            <Card.Body className='footer-body'>
+                            {playlist&&<Card.Img className='footerImg' src={playlist.image ? playlist.image : playlistImage}/>}
+                            {playlist&&<Card.Body className='footer-body'>
                                <h1>{playlist.name}</h1>
                                <h5>{playlist.ownerName}</h5>
-                            </Card.Body>
+                            </Card.Body>}
                         </Col>
                         <Col className='text-end'>
                             <Card.Body className='footer-text'><h2 >Aggiungi delle Tracce alla playlist</h2></Card.Body>
