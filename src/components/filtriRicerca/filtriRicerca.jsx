@@ -59,25 +59,51 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
 
   //_______________________________________________________________________________________________________________________________________________________________________________________________
 
+  const [showCheckbox, setShowCheckbox] = useState(filterArr[1])
 
     function switchingValues(num) {
         let copy = filterArr
         copy[num] = !copy[num] 
         cosaCercare(copy)
+        if(num===1) {
+            setShowCheckbox(!showCheckbox)
+        }  
     }
 
+    function setCategoryPlaylist(idCategoria){
+        setOptionCategory(idCategoria)
+        if (idCategoria!=="") {
+            let copy = [false, true, false, false]
+            cosaCercare(copy)
+        } else {
+            let copy = [true, true, true, true]
+            cosaCercare(copy)
+        }
+    }
 
     return(
     <Col className="colonnaFiltri bg-dark text-light">
         <h4 className="text-center">Filtri di Ricerca:</h4>
         <hr />
-        <Row><Col><h5 className="text-center">Canzoni</h5></Col><Col><Form.Check custom className="switchFilter" type="switch" defaultChecked={filterArr[0] }  onChange={()=>switchingValues(0)}></Form.Check></Col></Row>                
+        
+        <Row><Col><h5 className="text-center">Playlist</h5></Col><Col><Form.Check  className="switchFilter" type="switch" defaultChecked={filterArr[1] } onChange={()=>switchingValues(1)}></Form.Check></Col></Row>          
+
+        {showCheckbox&&categorie&&<>
+            <div className="CategorieTitle text-center"><h6>Puoi scegliere una categoria di ricerca per le playlist: </h6></div> 
+            <select class="form-control selectCategory" onChange={(e) => setCategoryPlaylist(e.target.value)}>
+                <option value="" selected className="text-center">Seleziona una categoria</option>
+                {/* <option value="nomeTraccia" selected className="text-center">Nome di una traccia</option> */}
+                {categorie.map((category) => (
+                    <option key={category.id} value={category.id} className="text-center">{category.name}</option>
+                ))}
+            </select>
+        </>}
         <hr />
-        <Row><Col><h5 className="text-center">Playlist</h5></Col><Col><Form.Check  className="switchFilter" type="switch" defaultChecked={filterArr[1] } onChange={()=>switchingValues(1)}></Form.Check></Col></Row>                
+        <Row><Col><h5 className="text-center">Canzoni</h5></Col><Col><Form.Check custom className="switchFilter" type="switch" checked={filterArr[0] }  onChange={()=>switchingValues(0)}></Form.Check></Col></Row>                
         <hr />
-        <Row><Col><h5 className="text-center">Album</h5></Col><Col> <Form.Check className="switchFilter" type="switch" defaultChecked={filterArr[2] } onChange={()=>switchingValues(2)}></Form.Check></Col></Row>                   
+        <Row><Col><h5 className="text-center">Album</h5></Col><Col> <Form.Check className="switchFilter" type="switch" checked={filterArr[2] } onChange={()=>switchingValues(2)}></Form.Check></Col></Row>                   
         <hr />
-        <Row><Col><h5 className="text-center">Artisti</h5></Col><Col><Form.Check  className="switchFilter" type="switch" defaultChecked={filterArr[3] } onChange={()=>switchingValues(3)}></Form.Check></Col></Row>                 
+        <Row><Col><h5 className="text-center">Artisti</h5></Col><Col><Form.Check  className="switchFilter" type="switch" checked={filterArr[3] } onChange={()=>switchingValues(3)}></Form.Check></Col></Row>                 
 
         <hr />
         <div className="d-flex flex-row">
@@ -85,21 +111,6 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
             <Col className="text-end"><input className="text-center inserimentoNumero" type="number" min={5} max={25} placeholder={5} onChange={(e)=>{changeLimit(e.target.value)}}></input></Col>
         </div>
         <hr />
-        <div className="CategorieTitle text-center"><h4>Categorie di ricerca:</h4></div>
-        <hr/>
-
-        {categorie&&<div className="checkBoxCategorie">
-            {categorie.map(categoria => {
-                return (
-                    <Row key={categoria.id}>
-                        <Col className="col-2"><input type="checkbox" id={categoria.id} value={categoria.name} onChange={event => setOptionCategory(event.target.checked ? categoria.id : null)} /></Col>
-                        <Col><label for={categoria.name}>{categoria.name}</label></Col>
-                    </Row>
-                );
-            })}
-        </div>}
-
-
     </Col>
     )
 }

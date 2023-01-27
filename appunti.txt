@@ -47,3 +47,9 @@ cose da fare:
 
 
 -importare album in una playlist 
+
+
+ho provato a fare la ricerca per tag e anche quella per categorie su specifiche parole chiave ma i risultati restituiti sono sempre gli stessi, le richieste vanno a buon fine ma la ricerca non filtra nulla. restituisce sempre cose simili
+ho deciso di applicare le categorie solo alla ricerca delle playlist, devo applicare anche la ricerca delle playlist in base al nome di una canzone contenuta.
+
+filtri alla ricerca di playlist OK ma non so come cercare una playlist per nome di canzone

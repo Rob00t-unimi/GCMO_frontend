@@ -24,11 +24,11 @@
 }
 
 .CategorieTitle{
-    margin-top: 4vh;
+    margin-top: 1vh;
 }
 
-.checkBoxCategorie {
-    padding-left: 3vh;
+.selectCategory {
+    transform: scale(0.8);
 }
 
   

@@ -84,8 +84,8 @@ useEffect(() => {
 
  //RICERCA______________________________________________________________________________________________________________________
 
- const [optionCategory, setOptionCategory] = useState();
-console.log("categoria selezionata: ", optionCategory);
+ const [optionCategory, setOptionCategory] = useState("");
+  console.log("categoria selezionata: ", optionCategory);
 //  //cosa cercare
    const [filterArr, setFilterArr] = useState([true, true, true, true])  //questo serve per contenere un array di 4 posizioni booleane, 0 canzoni, 1 playlists, 2 albums, 3 artists. TRUE per cercare, FALSE per non cercare
 // //come cercare
@@ -126,7 +126,7 @@ console.log("categoria selezionata: ", optionCategory);
       //        case 'TITLE':                                                      //NON è UNA RICERCA ESATTA, QUINDI SE INSERIAMO GENERE, NOME, TAG, ANNO, O ALTRO VIENE AUTOMATICAMENTE CERCATO UN RISULTATO COMPATBILE
       //           setIsAllowed([true, true, true, true])                          //HO PROVATO A FILTRARE LE RICERCHE IN MODO PIU' PRECISO, AD ESEMPIO CON LE OPZIONI: //{genre: searchWord, limit : searchLimit, exact: true}
       //           impostaFiltroDiRicerca()                                        //TUTTAVIA LA RICERCA NON E' PRECISA, CERCA ANCORA IN MODO FUZZY, QUINDI NON HA SENSO INSERIRE UNO SWITCH CHE SPECIFICA SECONDO QUALE CRITERIO CERCARE
-      //           console.log(filterArr)
+      //           console.log(filterArr)                                          //ho provato anche ad inviare la richiesta con il campo option category_id attivo ma la ricerca pur funzionando dava gli stessi risultati
       //           ricerca()
       //         break;
                 
@@ -164,16 +164,18 @@ console.log("categoria selezionata: ", optionCategory);
       setSearchResultAlbums(null)
       setSearchResultArtists(null)
     }
-  },[searchWord, showFooter, optionCategory])
+  },[searchWord, showFooter])
 
 
 
 //RICERCA PER NOME_______
 
 function ricerca(){
+  //if(optionCategory!=="nomeTraccia"){
+
   //ricerca canzoni
   if(filterArr[0]) {
-    spotifyApi.searchTracks(searchWord, { limit : searchLimit, ...(optionCategory && { category_id: optionCategory })})    //{genre: searchWord, limit : searchLimit, exact: true}
+    spotifyApi.searchTracks(searchWord, { limit : searchLimit})    //{genre: searchWord, limit : searchLimit, exact: true}
     .then(result => {
       const tracks = result.body.tracks.items.map(item => {
         return {
@@ -196,7 +198,8 @@ function ricerca(){
   }       
   //ricerca playlist
   if(filterArr[1]) {
-    spotifyApi.searchPlaylists(searchWord, { limit : searchLimit, ...(optionCategory && { category_id: optionCategory })})
+
+    spotifyApi.searchPlaylists(searchWord, { limit : searchLimit})
     .then(result => {
       const playlists = result.body.playlists.items.map(item => {                                       //ricerca playlist
         return {
@@ -219,7 +222,7 @@ function ricerca(){
   }
   //ricerca album
   if (filterArr[2]) {
-    spotifyApi.searchAlbums(searchWord, { limit : searchLimit, ...(optionCategory && { category_id: optionCategory })})
+    spotifyApi.searchAlbums(searchWord, { limit : searchLimit})
     .then(result => {
       console.log("ALBUM_____", result)
       const albums = result.body.albums.items.map(item => {                                       
@@ -247,7 +250,7 @@ function ricerca(){
     let newLimit
     searchLimit%5===0 ? newLimit=searchLimit :  newLimit = Math.ceil(searchLimit/5)*5   //divido per 5, arrotondo per eccesso, moltiplico per 5 per avere un numero di pagine con pagine sempre complete (ad esempio se searchLimit è 24 lo faccio diventare 25)
                                                                                         //lo faccio per mantenere il carosello semnza buchi sempre pieno 
-    spotifyApi.searchArtists(searchWord, {  limit : searchLimit, ...(optionCategory && { category_id: optionCategory })})
+    spotifyApi.searchArtists(searchWord, {  limit : searchLimit})
     .then(result => {
       const artists = result.body.artists.items.map(item => {                                     //ricerca artisti  
         return {
@@ -275,14 +278,52 @@ function ricerca(){
       ErrorStatusCheck(err)
   })
   } 
+//}
 }
 
 
 
 
 
+//RICERCA PLAYLIST PER CATEGORIA 
 
+useEffect(() => {
 
+  if (optionCategory&&optionCategory!==""&&optionCategory!=="nomeTraccia") {
+      
+    //ricerca playlist tramite categoria:
+    spotifyApi.getPlaylistsForCategory(optionCategory, {  limit : searchLimit})
+    .then(result => {
+      const playlists = result.body.playlists.items.map(item => {                                       //ricerca playlist
+        return {
+          image: item.images && item.images.length > 0 ? item.images[0].url : null,
+          name: item.name,
+          description: item.description ? item.description : null,
+          id: item.id,
+          ownerId: item.owner.id,
+          ownerName: item.owner.display_name,
+          totalTracks: item.tracks.total,
+          uri: item.uri,
+        }
+      })
+      console.log("playlists", playlists)  
+      setSearchResultPlaylists(playlists)
+    })
+    .catch(err => {
+      ErrorStatusCheck(err)
+    })
+
+   } //else if(optionCategory==="nomeTraccia") {
+  //   spotifyApi.searchPlaylists({track:searchWord}, { limit : searchLimit})
+  //   .then(result => {
+  //     console.log("playlists con una traccia", result)
+  //   })
+  //   .catch(err => {
+  //     ErrorStatusCheck(err)
+  //   })
+  // }
+
+}, [optionCategory])
 
 
 
@@ -469,7 +510,7 @@ useEffect(() => {
       {lista&&<Playlist_list lista={lista} showFooter={showFooter} setShowFooter={()=>setShowFooter(true)}></Playlist_list>}
 
         {/* CAROSELLO MY TOP TRACK */}
-        {myTopTracks&&(!searchWord||searchWord==="")&&<Container fluid className="cardsTop" >
+        {myTopTracks&&(!searchWord||searchWord==="")&&optionCategory===""&&<Container fluid className="cardsTop" >
           <hr/>
             <div><h3>My Top Tracks</h3></div>
             <Carousel indicators={false} controls={false}>
@@ -491,7 +532,7 @@ useEffect(() => {
         </Container>}
 
         {/* CAROSELLO TOP 10 TRACKS SPOTIFY */}
-        {topTracks&&(!searchWord||searchWord==="")&&<Container fluid className="cardsTop" >
+        {topTracks&&(!searchWord||searchWord==="")&&optionCategory===""&&<Container fluid className="cardsTop" >
            <hr/>
            <div><h3>Top 10 Spotify Tracks'</h3></div>
            <Carousel indicators={false} controls={false}>
@@ -513,7 +554,7 @@ useEffect(() => {
           </Container>}
 
         {/* CAROSELLO TOP 10 PLAYLIST SPOTIFY */}
-        {topPlaylists&&(!searchWord||searchWord==="")&&<Container fluid className="cardsTop" >
+        {topPlaylists&&(!searchWord||searchWord==="")&&optionCategory===""&&<Container fluid className="cardsTop" >
             <hr/>
             <div><h3>Top 10 Spotify Playlist's</h3></div>
             <Carousel indicators={false} controls={false}>
@@ -566,7 +607,7 @@ useEffect(() => {
             <hr/>
           </div>}
           {/* PLAYLISTS */}
-          {filterArr[1]&&searchResultPlaylists&&<div >
+          {filterArr[1]&&searchResultPlaylists&&(searchWord||optionCategory!=="")&&<div >
             <h4>La ricerca delle Playlist ha prodotto i seguenti risultati:</h4>
               <div>
                 {searchResultPlaylists.map(currentPlaylist => (                    
