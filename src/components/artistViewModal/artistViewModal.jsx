@@ -106,7 +106,7 @@ const [tracks, setTracks] = useState()
                                 <td>{track.name}</td>
                                 <td> {track.artist}</td>
                                 <td>{track.duration} </td>
-                                {addBtn&&<td><Button className='btn-success' onClick={addTrack(track)}>+</Button></td>}
+                                {addBtn&&<td><Button className='btn-success' onClick={addTrack(track)}>Add</Button></td>}
                             </tr>
                         )) : null
                         }

@@ -23,7 +23,7 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser}) => {
+const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter}) => {
 
     if(!currentUser){
         currentUser = JSON.parse(localStorage.getItem('user'))
@@ -101,6 +101,52 @@ function removeTrack(trackUri){
     })
 }
 
+
+//AGGIUNGERE TRACCIA A PLAYLIST SELEZIONATA_________________________________________________________________________________
+//se la createdPlaylist non è nel local storage showFooter sarà false e non renderizzo il Btn
+//se showFooter è true ma la traccia è già presente nella playlist non renderizzo il Btn 
+
+const [addBtn, setAddBtn] = useState()
+const [traccePlaylist, setTraccePlaylist] = useState([])
+
+useEffect(() => {
+
+    if(showFooter===null) {return}
+
+    if(localStorage.getItem('createdPlaylistTracks')) {
+            setTraccePlaylist(JSON.parse(localStorage.getItem('createdPlaylistTracks')))
+    }
+    
+    const newAddbtn = page.data.map((item, index) => {
+        return showFooter
+    })
+    setAddBtn(newAddbtn)   
+
+}, [showFooter, page] )
+
+
+function addTrack(currentTrack, i){
+    const currentPlaylist = JSON.parse(localStorage.getItem("createdPlaylist"))
+    spotifyApi.addTracksToPlaylist(currentPlaylist.id, [currentTrack.uri])
+    .then(res=>{
+        console.log("added",res)
+
+        const newAddbtn = page.data.map((item, index) => {
+            if(i===index){
+                return false
+            } else {
+                return addBtn[index]
+            }
+        })
+        setAddBtn(newAddbtn)
+
+        alert("Playlist aggiunta correttamente")
+    })
+    .catch(err => {
+        ErrorStatusCheck(err)
+    })
+}
+
 //______________________________________________________________________________________________________________________________
    
 
@@ -130,7 +176,7 @@ function removeTrack(trackUri){
 
                     <Table hover variant="dark">
                         <tbody>
-                            {page.data.map((item) => {
+                            {page.data.map((item, index) => {
 
                                 return (
                                     <tr key={item.id} >
@@ -138,6 +184,7 @@ function removeTrack(trackUri){
                                         <td>{item.name}</td>
                                         <td> {item.artists.join(', ')}</td>
                                         {(playlist.ownerId === currentUser.id)&&<td><Button className='btn-danger btn-round btn-m' onClick={() => {removeTrack(item.uri)}}>X</Button></td>}
+                                        {(!traccePlaylist.includes(item.id))&&addBtn&&addBtn[index]&&<td><Button className='btn-success' onClick={() => {addTrack(item, index)}}>Add</Button></td>}
                                     </tr>
                                 );
                             })}

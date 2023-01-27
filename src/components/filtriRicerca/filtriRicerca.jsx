@@ -2,8 +2,63 @@ import React, { useState, useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.min.css' ;
 import {Form, Col, Row } from "react-bootstrap";
 import './style.css';
+import SpotifyWebApi from "spotify-web-api-node";
+import ErrorStatusCheck from "../../util/errorStatusCheck";
 
-export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, userSelection,*/ cosaCercare, /*comeCercare*/}){
+
+
+
+//INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID_______________________________________________________________________________________
+const CLIENT_ID ='61e53419c8a547eabe2729e093b43ae4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '238334b666894f049d233d6c1bb3c3fc'
+const spotifyApi = new SpotifyWebApi({
+  clientId: CLIENT_ID
+});
+
+
+
+
+
+
+export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, userSelection,*/ cosaCercare, /*comeCercare*/ setOptionCategory}){
+
+    //CONTROLLO IL TOKEN e lo passo all'oggetto spotifyApi____________________________________________________________________________________
+
+    const accessToken = localStorage.getItem('accessToken');
+
+    useEffect(() => {
+    if (!accessToken) return;
+    spotifyApi.setAccessToken(accessToken);
+    }, [accessToken])
+
+
+    //___GET CATEGORIES_______________________________________________________________________________________________________________________________________________________________________________
+
+    const [categorie, setCategorie] = useState()
+    
+    useEffect(() => {
+
+        spotifyApi.getCategories()
+        .then(res =>{
+            const categories = res.body.categories.items.map(item=>{
+                return {
+                    id: item.id,
+                    name: item.name,
+                    icon: item.icons[0].url,
+                    href: item.href
+                }
+            })
+
+            console.log("Categorie: ", categories)
+            setCategorie(categories)
+        })
+        .catch(err => {
+        ErrorStatusCheck(err)
+        })
+
+    }, [])
+
+  //_______________________________________________________________________________________________________________________________________________________________________________________________
+
 
     function switchingValues(num) {
         let copy = filterArr
@@ -13,22 +68,38 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
 
 
     return(
-    <Col className="colonnaFiltri">
-        <h4>Filtri di Ricerca:</h4>
+    <Col className="colonnaFiltri bg-dark text-light">
+        <h4 className="text-center">Filtri di Ricerca:</h4>
         <hr />
-        <Row><Col><h5>Canzoni</h5></Col><Col><Form.Check custom className="switchFilter" type="switch" defaultChecked={filterArr[0] }  onChange={()=>switchingValues(0)}></Form.Check></Col></Row>                
+        <Row><Col><h5 className="text-center">Canzoni</h5></Col><Col><Form.Check custom className="switchFilter" type="switch" defaultChecked={filterArr[0] }  onChange={()=>switchingValues(0)}></Form.Check></Col></Row>                
         <hr />
-        <Row><Col><h5>Playlist</h5></Col><Col><Form.Check  className="switchFilter" type="switch" defaultChecked={filterArr[1] } onChange={()=>switchingValues(1)}></Form.Check></Col></Row>                
+        <Row><Col><h5 className="text-center">Playlist</h5></Col><Col><Form.Check  className="switchFilter" type="switch" defaultChecked={filterArr[1] } onChange={()=>switchingValues(1)}></Form.Check></Col></Row>                
         <hr />
-        <Row><Col><h5>Album</h5></Col><Col> <Form.Check className="switchFilter" type="switch" defaultChecked={filterArr[2] } onChange={()=>switchingValues(2)}></Form.Check></Col></Row>                   
+        <Row><Col><h5 className="text-center">Album</h5></Col><Col> <Form.Check className="switchFilter" type="switch" defaultChecked={filterArr[2] } onChange={()=>switchingValues(2)}></Form.Check></Col></Row>                   
         <hr />
-        <Row><Col><h5>Artisti</h5></Col><Col><Form.Check  className="switchFilter" type="switch" defaultChecked={filterArr[3] } onChange={()=>switchingValues(3)}></Form.Check></Col></Row>                 
+        <Row><Col><h5 className="text-center">Artisti</h5></Col><Col><Form.Check  className="switchFilter" type="switch" defaultChecked={filterArr[3] } onChange={()=>switchingValues(3)}></Form.Check></Col></Row>                 
 
         <hr />
         <div className="d-flex flex-row">
-            <Col><h6 >Numero di risultati:</h6></Col>
+            <Col><h6 className="text-center">Numero di risultati:</h6></Col>
             <Col className="text-end"><input className="text-center inserimentoNumero" type="number" min={5} max={25} placeholder={5} onChange={(e)=>{changeLimit(e.target.value)}}></input></Col>
         </div>
+        <hr />
+        <div className="CategorieTitle text-center"><h4>Categorie di ricerca:</h4></div>
+        <hr/>
+
+        {categorie&&<div className="checkBoxCategorie">
+            {categorie.map(categoria => {
+                return (
+                    <Row key={categoria.id}>
+                        <Col className="col-2"><input type="checkbox" id={categoria.id} value={categoria.name} onChange={event => setOptionCategory(event.target.checked ? categoria.id : null)} /></Col>
+                        <Col><label for={categoria.name}>{categoria.name}</label></Col>
+                    </Row>
+                );
+            })}
+        </div>}
+
+
     </Col>
     )
 }

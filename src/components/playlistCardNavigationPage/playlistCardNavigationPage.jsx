@@ -25,7 +25,7 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-function PlaylistCardNavigationPage({playlist}){
+function PlaylistCardNavigationPage({playlist, showFooter}){
 
 //INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
@@ -122,7 +122,7 @@ function PlaylistCardNavigationPage({playlist}){
                 </Card.Text>
             </Card>
             
-            {modalShow&&<PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} />}
+            {modalShow&&<PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} showFooter={showFooter}/>}
 
         </>
     )

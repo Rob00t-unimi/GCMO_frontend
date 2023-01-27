@@ -52,8 +52,6 @@ function PlaylistCardPersonalArea({playlist, updatePlaylists, userInfo}){
 
     //controllo che tipo di playlist è 
     useEffect(() => {
-
-        console.log(playlist)
         if (playlist.ownerId !== userInfo.id) {     
             setType('FOLLOWED')
         } else if (playlist.public) {
@@ -163,7 +161,7 @@ useEffect(() => {
                 </Col>
             </Card>
             
-            {modalShow&&<PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} currentUser={userInfo}/>}
+            {modalShow&&<PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} currentUser={userInfo} showFooter={null}/>}
             {modalDeleteShow&&<ModalDeletePlaylist show={modalDeleteShow}  onClose={() => {setModalDeleteShow(false)}} playlist={playlist} updatePlaylists={updatePlaylists}/> }
             {modalModifyShow&&<ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist} updatePlaylists={updatePlaylists}/>}
         </>

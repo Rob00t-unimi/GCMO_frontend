@@ -188,7 +188,7 @@ function addTrack(currentTrack, i){
                                         <td> {item.duration}</td>
                                         <td>{item.name}</td>
                                         <td> {item.artists.join(', ')}</td>
-                                        {(!tracceAlbum.includes(item.id))&&addBtn[index]&&<td><Button className='btn-success' onClick={() => {addTrack(item, index)}}>+</Button></td>}
+                                        {(!tracceAlbum.includes(item.id))&&addBtn[index]&&<td><Button className='btn-success' onClick={() => {addTrack(item, index)}}>Add</Button></td>}
                                     </tr>
                                 );
                             })}

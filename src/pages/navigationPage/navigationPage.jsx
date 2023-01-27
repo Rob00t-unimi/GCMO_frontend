@@ -84,6 +84,8 @@ useEffect(() => {
 
  //RICERCA______________________________________________________________________________________________________________________
 
+ const [optionCategory, setOptionCategory] = useState();
+console.log("categoria selezionata: ", optionCategory);
 //  //cosa cercare
    const [filterArr, setFilterArr] = useState([true, true, true, true])  //questo serve per contenere un array di 4 posizioni booleane, 0 canzoni, 1 playlists, 2 albums, 3 artists. TRUE per cercare, FALSE per non cercare
 // //come cercare
@@ -162,7 +164,7 @@ useEffect(() => {
       setSearchResultAlbums(null)
       setSearchResultArtists(null)
     }
-  },[searchWord, showFooter])
+  },[searchWord, showFooter, optionCategory])
 
 
 
@@ -171,9 +173,8 @@ useEffect(() => {
 function ricerca(){
   //ricerca canzoni
   if(filterArr[0]) {
-    spotifyApi.searchTracks(searchWord, { limit : searchLimit})    //{genre: searchWord, limit : searchLimit, exact: true}
+    spotifyApi.searchTracks(searchWord, { limit : searchLimit, ...(optionCategory && { category_id: optionCategory })})    //{genre: searchWord, limit : searchLimit, exact: true}
     .then(result => {
-      console.log("result1", result)
       const tracks = result.body.tracks.items.map(item => {
         return {
           image: item.album.images[0].url,
@@ -186,7 +187,7 @@ function ricerca(){
           uri: item.uri,
         }
       })
-      console.log("traccia", tracks)                
+      console.log("Tracks", tracks)                
       setSearchResultTracks(tracks)
     })
     .catch(err => {
@@ -195,7 +196,7 @@ function ricerca(){
   }       
   //ricerca playlist
   if(filterArr[1]) {
-    spotifyApi.searchPlaylists(searchWord, { limit : searchLimit})
+    spotifyApi.searchPlaylists(searchWord, { limit : searchLimit, ...(optionCategory && { category_id: optionCategory })})
     .then(result => {
       const playlists = result.body.playlists.items.map(item => {                                       //ricerca playlist
         return {
@@ -218,7 +219,7 @@ function ricerca(){
   }
   //ricerca album
   if (filterArr[2]) {
-    spotifyApi.searchAlbums(searchWord, { limit : searchLimit})
+    spotifyApi.searchAlbums(searchWord, { limit : searchLimit, ...(optionCategory && { category_id: optionCategory })})
     .then(result => {
       console.log("ALBUM_____", result)
       const albums = result.body.albums.items.map(item => {                                       
@@ -233,7 +234,7 @@ function ricerca(){
           totalTracks: item.total_tracks
         }
       })
-      console.log("albums", albums)
+      console.log("Albums:", albums)
       setSearchResultAlbums(albums)       
     })
     .catch(err => {
@@ -246,9 +247,8 @@ function ricerca(){
     let newLimit
     searchLimit%5===0 ? newLimit=searchLimit :  newLimit = Math.ceil(searchLimit/5)*5   //divido per 5, arrotondo per eccesso, moltiplico per 5 per avere un numero di pagine con pagine sempre complete (ad esempio se searchLimit è 24 lo faccio diventare 25)
                                                                                         //lo faccio per mantenere il carosello semnza buchi sempre pieno 
-    spotifyApi.searchArtists(searchWord, {  limit : searchLimit})
+    spotifyApi.searchArtists(searchWord, {  limit : searchLimit, ...(optionCategory && { category_id: optionCategory })})
     .then(result => {
-      console.log("DATI ARTISTI",result)
       const artists = result.body.artists.items.map(item => {                                     //ricerca artisti  
         return {
           image: item.images && item.images.length > 0 ? item.images[0].url : null,
@@ -260,7 +260,7 @@ function ricerca(){
 
         }
       })
-      console.log("artists", artists)
+      console.log("Artists:", artists)
       
       let newArtists = []
       while (artists.length > 0) {
@@ -317,6 +317,7 @@ function ricerca(){
         }
       })
       setTopPlaylists(topPlaylists)
+      console.log("Top 10 Spotify Playlists",topPlaylists)
     })
     .catch(err => {
       ErrorStatusCheck(err)
@@ -332,7 +333,6 @@ function ricerca(){
   }
   spotifyApi.getPlaylistTracks(playlistOfTop50, {limit: 10, offset: 0})
   .then(res => {
-    console.log("problema", res)
     const currentTopTracks = res.body.items.map((item, index) => {
       return {
         image: item.track.album.images[0].url,
@@ -346,7 +346,7 @@ function ricerca(){
         index: index+1
       }})
       setTopTracks(currentTopTracks)
-      
+      console.log("Top 10 Spotify Tracks",currentTopTracks)
     }) 
     .catch(err => {
       ErrorStatusCheck(err)
@@ -357,10 +357,7 @@ function ricerca(){
 useEffect(() => {
   if (searchWord === "" || !searchWord) {
     getTop()
-    console.log('top tracks', topTracks)
-    console.log('top playlist', topPlaylists)
     getMyTopTracksFunction()
-    console.log('my top', myTopTracks)
   }
 }, [searchWord])
 
@@ -371,7 +368,6 @@ const [myTopTracks, setMyTopTracks] = useState()
 function getMyTopTracksFunction() {
   spotifyApi.getMyTopTracks({limit: 10, offset: 0})
   .then(res => {
-    console.log("MY TOP", res)
     const myCurrentTopTracks = res.body.items.map((item, index) => {
       return {
         image: item.album.images[0].url,
@@ -386,7 +382,7 @@ function getMyTopTracksFunction() {
       }})
 
       setMyTopTracks(myCurrentTopTracks)
-      
+      console.log('User Top Tracks', myCurrentTopTracks)
     }) 
     .catch(err => {
       ErrorStatusCheck(err)
@@ -467,7 +463,7 @@ useEffect(() => {
         </Container>
 
       {/* FILTRI DI RICERCA */}
-        <FiltriRicerca changeLimit={(childNumber)=>setSearchLimit(childNumber)} filterArr={filterArr} /*isAllowed={isAllowed} userSelection={userSelection}*/ cosaCercare={(filtriSelezionati)=>setFilterArr(filtriSelezionati)/*(filtriSelezionati)=>setUserSelection(filtriSelezionati)*/} /*comeCercare={(newFilter)=>{setSearchFilter(newFilter)}}*/></FiltriRicerca>
+        <FiltriRicerca changeLimit={(childNumber)=>setSearchLimit(childNumber)} filterArr={filterArr} cosaCercare={(filtriSelezionati)=>setFilterArr(filtriSelezionati)} setOptionCategory={(categoria)=>setOptionCategory(categoria)}/>
 
       {/* LISTA DELLE PLAYLIST */}
       {lista&&<Playlist_list lista={lista} showFooter={showFooter} setShowFooter={()=>setShowFooter(true)}></Playlist_list>}
@@ -524,14 +520,14 @@ useEffect(() => {
               <Carousel.Item interval={5000}>
                   <Row>
                     {topPlaylists.map((currentPlaylist, index) => (                    
-                        index<5 ? <Col><PlaylistCardVertical playlist={currentPlaylist} key={currentPlaylist.id}/></Col> : null
+                        index<5 ? <Col><PlaylistCardVertical playlist={currentPlaylist} key={currentPlaylist.id} showFooter={showFooter}/></Col> : null
                       ))}
                   </Row>
                 </Carousel.Item>
               <Carousel.Item interval={5000}>
                   <Row>
                     {topPlaylists.map((currentPlaylist, index) => (                    
-                        index>=5 ? <Col><PlaylistCardVertical playlist={currentPlaylist} key={currentPlaylist.id}/></Col> : null
+                        index>=5 ? <Col><PlaylistCardVertical playlist={currentPlaylist} key={currentPlaylist.id} showFooter={showFooter}/></Col> : null
                       ))}
                   </Row>
               </Carousel.Item>
@@ -574,7 +570,7 @@ useEffect(() => {
             <h4>La ricerca delle Playlist ha prodotto i seguenti risultati:</h4>
               <div>
                 {searchResultPlaylists.map(currentPlaylist => (                    
-                  <PlaylistCardNavigationPage playlist={currentPlaylist} key={currentPlaylist.id}/>
+                  <PlaylistCardNavigationPage playlist={currentPlaylist} key={currentPlaylist.id} showFooter={showFooter}/>
                 ))}
               </div>
             <hr/>

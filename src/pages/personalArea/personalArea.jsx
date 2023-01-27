@@ -69,7 +69,7 @@ function PersonalArea() {
     spotifyApi.setAccessToken(accessToken);     //se l'access token non è nullo eseguo la richiesta di informazioni dell'utente e le salvo nel local storage
     spotifyApi.getMe()
         .then(result => {
-            console.log(result)
+            console.log("UserInfo", result)
             localStorage.setItem('user', JSON.stringify({
                 description: result.body.description ? result.body.description : null,
                 name: result.body.display_name? result.body.display_name : 'user',
@@ -96,7 +96,7 @@ function PersonalArea() {
 
     spotifyApi.getUserPlaylists({limit: limit})
     .then(result => {
-      console.log("playlists",result)
+        console.log("Playlists", result)
         const playlists = result.body.items.map(item => {   //ricevo e ciclo su una map di items
               return {
               image: item.images && item.images.length > 0 ? item.images[0].url : null,
@@ -120,11 +120,12 @@ function PersonalArea() {
         // setPlaylistFiltered(playlistsWithoutDeleted)   //inserisco tutte le playlist nella sezione playlist filtered (non sono ancora filtrate)
         setPlaylistResults(playlists)
         
-        let onlyMyPlaylists = playlists.filter(item => {           //inserisco tutte le playlist create dall'utente nel local storage
+        if(currentUser){
+          let onlyMyPlaylists = playlists.filter(item => {           //inserisco tutte le playlist create dall'utente nel local storage
           return item.ownerId === currentUser.id
-        });
-        localStorage.setItem('playlist_list', JSON.stringify(onlyMyPlaylists));
-
+          });
+          localStorage.setItem('playlist_list', JSON.stringify(onlyMyPlaylists));
+        }
         setPlaylistFiltered(playlists)   //inserisco tutte le playlist nella sezione playlist filtered (non sono ancora filtrate)
         setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano
       })

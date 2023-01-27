@@ -45,8 +45,6 @@ export default function Album({currentAlbum, showFooter}){
     const [type, setType] = useState();
     const [modalShow, setModalShow] = useState(false);  //ci sarà una modale per aprire le informazioni relative ad una playlist
 
-    const [modalModifyShow, setModalModifyShow] = useState(false);
-
 
 //controllo che tipo di album è  (salvato o no)______________________________________________________________
 useEffect(() => {

@@ -26,7 +26,7 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-function PlaylistCardVertical({playlist}){
+function PlaylistCardVertical({playlist, showFooter}){
 
 //INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
@@ -45,9 +45,6 @@ function PlaylistCardVertical({playlist}){
 
     const [type, setType] = useState();
     const [modalShow, setModalShow] = useState(false);  //ci sarà una modale per aprire le informazioni relative ad una playlist
-
-//    const [modalDeleteShow, setModalDeleteShow] = useState(false);
-    const [modalModifyShow, setModalModifyShow] = useState(false);
 
     //controllo che tipo di playlist è 
     useEffect(() => {
@@ -103,7 +100,7 @@ function PlaylistCardVertical({playlist}){
                         <Card.Text>{playlist.ownerName}</Card.Text>
                     </Card.Body>
                 </div>
-                <Card.Text>
+                <div className="d-flex align-items-end" style={{height: "100%"}}>
                     { 
                     type === 'MINE' ? 
                                 <div></div> :
@@ -115,12 +112,10 @@ function PlaylistCardVertical({playlist}){
                                     <Button className='verticalCardBtn' onClick={switchFollow}><Star/></Button>
                                 </div>
                     }
-                </Card.Text>
+                </div>
             </Card>
             
-            {modalShow&&<PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} />}
-            {/* <ModalDeletePlaylist show={modalDeleteShow}  onClose={() => {setModalDeleteShow(false)}} playlist={playlist}/> */}
-            {modalModifyShow&&<ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist}/>}
+            {modalShow&&<PlaylistViewModal show={modalShow}  onClose={() => { setModalShow(false) }} playlist={playlist} showFooter={showFooter}/>}
         </>
     )
 }
