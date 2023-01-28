@@ -115,7 +115,7 @@ function unfollowPlaylist(){
 //questo serve poichè una playlist senza una specifica copertina quando viene svuotata spotify rimuove la copertina
 useEffect(() => {
     if(!modalShow) {
-            updatePlaylists()
+        updatePlaylists()
     }
 }, [modalShow])
 

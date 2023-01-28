@@ -126,7 +126,6 @@ function PersonalArea() {
           });
           localStorage.setItem('playlist_list', JSON.stringify(onlyMyPlaylists));
         }
-        setPlaylistFiltered(playlists)   //inserisco tutte le playlist nella sezione playlist filtered (non sono ancora filtrate)
         setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano
       })
       .catch(err => {

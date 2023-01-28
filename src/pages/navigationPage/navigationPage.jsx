@@ -49,6 +49,12 @@ function NavigationPage(){
      useEffect(() => {
       if(localStorage.getItem("createdPlaylist")) {
         setCreatedPlaylist(JSON.parse(localStorage.getItem('createdPlaylist')))
+      }
+    }, [showFooter])
+
+    useEffect(() => {
+      if(localStorage.getItem("createdPlaylist")) {
+        setCreatedPlaylist(JSON.parse(localStorage.getItem('createdPlaylist')))
         setShowFooter(true)
       }
     }, [])
