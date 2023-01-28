@@ -250,7 +250,7 @@ const updatePlaylists = () => {
       <div className="wallpaperInfo"></div>
       <div  className="contenuto">
         <Row>
-          <Col>
+          <Col className="text-end">
             <Button className='crea btn-lg btn-success text-light' onClick={()=>setModal(true)} ><PlusCircle/> Crea</Button>  {/*onlcick stato della modale = true quindi la apro*/}
           </Col>
           <Col className="text-center">
@@ -259,8 +259,8 @@ const updatePlaylists = () => {
             <Button className="filter btn-lg btn-light text-light" onClick={() => setFilterName("PUBLIC")} style={{backgroundColor: `${filterName === 'PUBLIC' ? '#429baa' : 'rgb(196, 199, 197)'}`}}>Pubblicate</Button>
             <Button className="filter btn-lg btn-light text-light" onClick={() => setFilterName("FOLLOWED")} style={{backgroundColor: `${filterName === 'FOLLOWED' ? '#429baa' : 'rgb(196, 199, 197)'}`}}>Salvate</Button>
           </Col>
-          <Col className="text-end">
-            <Form.Control className="search" type="search" placeholder="Cerca Playlist" value={searchWord} onChange={(e)=>{setSearchWord(e.target.value)}}/>
+          <Col >
+            <Form.Control className="searchPersonalArea" type="search" placeholder="Cerca Playlist" value={searchWord} onChange={(e)=>{setSearchWord(e.target.value)}}/>
           </Col>
         </Row>   
         <Container className="playlists">

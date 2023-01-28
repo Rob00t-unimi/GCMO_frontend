@@ -61,13 +61,13 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
     
   //_______________________________________________________________________________________________________________________________________________________________________________________________
 
-  const [showCheckbox, setShowCheckbox] = useState(filterArr[1])
+  const [showCheckbox, setShowCheckbox] = useState(filterArr[0])
 
-    function switchingValues(num) {
-        let copy = filterArr
-        copy[num] = !copy[num] 
-        cosaCercare(copy)
-        if(num===1) {
+    function switchingValues(index) {
+        const newFilterArr = [...filterArr];
+        newFilterArr[index] = !newFilterArr[index];
+        cosaCercare(newFilterArr);
+        if(index===0) {
             setShowCheckbox(!showCheckbox)
         }  
     }
@@ -77,11 +77,11 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
     function setCategoryPlaylist(idCategoria){
         setOptionCategory(idCategoria)
         if (idCategoria!=="") {
-            let limitaFiltri = [false, true, false, false]
-            cosaCercare(limitaFiltri)
+            const newFilterArr = [true, false, false, false];
+            cosaCercare(newFilterArr);
         } else {
-            let riabilitaFiltri = [true, true, true, true]
-            cosaCercare(riabilitaFiltri)
+            const newFilterArr = [true, true, true, true];
+            cosaCercare(newFilterArr);
         }
     }
     console.log(filterArr)
@@ -90,7 +90,7 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
         <h4 className="text-center">Filtri di Ricerca:</h4>
         <hr />
         
-        <Row><Col><h5 className="text-center">Playlist</h5></Col><Col><Form.Check  className="switchFilter" type="switch"  checked={filterArr[1] } onChange={()=>switchingValues(1)}></Form.Check></Col></Row>          
+        <Row><Col><h5 className="text-center">Playlist</h5></Col><Col><Form.Check  className="switchFilter" type="switch"  checked={filterArr[0] } onChange={()=>switchingValues(0)}></Form.Check></Col></Row>          
 
         {showCheckbox&&categorie&&<>
             <div className="CategorieTitle text-center"><h6>Puoi scegliere una categoria di ricerca per le playlist: </h6></div> 
@@ -103,7 +103,7 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
             </select>
         </>}
         <hr />
-        <Row><Col><h5 className="text-center">Canzoni</h5></Col><Col><Form.Check custom className="switchFilter" type="switch"  checked={filterArr[0] }  onChange={()=>switchingValues(0)}></Form.Check></Col></Row>                
+        <Row><Col><h5 className="text-center">Canzoni</h5></Col><Col><Form.Check custom className="switchFilter" type="switch"  checked={filterArr[1] }  onChange={()=>switchingValues(1)}></Form.Check></Col></Row>                
         <hr />
         <Row><Col><h5 className="text-center">Album</h5></Col><Col> <Form.Check className="switchFilter" type="switch"  checked={filterArr[2] } onChange={()=>switchingValues(2)}></Form.Check></Col></Row>                   
         <hr />

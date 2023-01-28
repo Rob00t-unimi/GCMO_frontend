@@ -84,14 +84,15 @@
     border-color:#429baa;
 }
 
-.search {
+.searchPersonalArea {
+    margin-left: 10%;
+    width: 80%;
     height: 3rem;
-    transform: translateY(-30px);
-    width: 100%;
+
 }
 
 .crea{
-    margin-left: 12%;
+    margin-right: 13%;
 }
 
 .playlists{

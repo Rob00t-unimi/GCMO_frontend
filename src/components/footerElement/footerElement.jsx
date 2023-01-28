@@ -17,11 +17,11 @@ function FooterElement({close, playlist}){
                 <Card className='bg-dark text-light footerCard' >
                     <Row>
                         <Col className='text-start d-flex flex-row'>
-                            {playlist&&<Card.Img className='footerImg' src={playlist.image ? playlist.image : playlistImage}/>}
-                            {playlist&&<Card.Body className='footer-body'>
+                            <Card.Img className='footerImg' src={playlist.image ? playlist.image : playlistImage}/>
+                            <Card.Body className='footer-body'>
                                <h1>{playlist.name}</h1>
                                <h5>{playlist.ownerName}</h5>
-                            </Card.Body>}
+                            </Card.Body>
                         </Col>
                         <Col className='text-end'>
                             <Card.Body className='footer-text'><h2 >Aggiungi delle Tracce alla playlist</h2></Card.Body>

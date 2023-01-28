@@ -88,7 +88,7 @@ useEffect(() => {
 
  const [optionCategory, setOptionCategory] = useState("");
 //  //cosa cercare
-   const [filterArr, setFilterArr] = useState([true, true, true, true])  //questo serve per contenere un array di 4 posizioni booleane, 0 canzoni, 1 playlists, 2 albums, 3 artists. TRUE per cercare, FALSE per non cercare
+   const [filterArr, setFilterArr] = useState([true, true, true, true])  //questo serve per contenere un array di 4 posizioni booleane, 0 playlist, 1 canzoni, 2 albums, 3 artists. TRUE per cercare, FALSE per non cercare
 // //come cercare
 //   const [searchFilter, setSearchFilter] = useState("TITLE")
 // //per quali cose è consentita la ricerca
@@ -174,8 +174,33 @@ useEffect(() => {
 function ricerca(){
   //if(optionCategory!=="nomeTraccia"){
 
+    //ricerca playlist
+    if(filterArr[0]) {
+
+      spotifyApi.searchPlaylists(searchWord, { limit : searchLimit})
+      .then(result => {
+        const playlists = result.body.playlists.items.map(item => {                                       //ricerca playlist
+          return {
+            image: item.images && item.images.length > 0 ? item.images[0].url : null,
+            name: item.name,
+            description: item.description ? item.description : null,
+            id: item.id,
+            ownerId: item.owner.id,
+            ownerName: item.owner.display_name,
+            totalTracks: item.tracks.total,
+            uri: item.uri,
+          }
+        })
+        console.log("playlists", playlists)  
+        setSearchResultPlaylists(playlists)
+      })
+      .catch(err => {
+        ErrorStatusCheck(err)
+    })
+    }
+
   //ricerca canzoni
-  if(filterArr[0]) {
+  if(filterArr[1]) {
     spotifyApi.searchTracks(searchWord, { limit : searchLimit})    //{genre: searchWord, limit : searchLimit, exact: true}
     .then(result => {
       const tracks = result.body.tracks.items.map(item => {
@@ -197,30 +222,7 @@ function ricerca(){
       ErrorStatusCheck(err)
   })
   }       
-  //ricerca playlist
-  if(filterArr[1]) {
 
-    spotifyApi.searchPlaylists(searchWord, { limit : searchLimit})
-    .then(result => {
-      const playlists = result.body.playlists.items.map(item => {                                       //ricerca playlist
-        return {
-          image: item.images && item.images.length > 0 ? item.images[0].url : null,
-          name: item.name,
-          description: item.description ? item.description : null,
-          id: item.id,
-          ownerId: item.owner.id,
-          ownerName: item.owner.display_name,
-          totalTracks: item.tracks.total,
-          uri: item.uri,
-        }
-      })
-      console.log("playlists", playlists)  
-      setSearchResultPlaylists(playlists)
-    })
-    .catch(err => {
-      ErrorStatusCheck(err)
-  })
-  }
   //ricerca album
   if (filterArr[2]) {
     spotifyApi.searchAlbums(searchWord, { limit : searchLimit})
@@ -503,7 +505,7 @@ useEffect(() => {
 
       {/* FORM DI RICERCA */}
         <Container className="search d-flex flex-row">
-          <Form.Control className="width-100" type="search mb-3" placeholder="Cerca Playlist o Traccia musicale" value={searchWord} onChange={(e)=>{setSearchWord(e.target.value)}}/>
+          <Form.Control disabled={optionCategory!==""} className="width-100" type="search mb-3" placeholder="Cerca Playlist o Traccia musicale" value={searchWord} onChange={(e)=>{setSearchWord(e.target.value)}}/>
         </Container>
 
       {/* FILTRI DI RICERCA */}
@@ -599,7 +601,7 @@ useEffect(() => {
             </div>
         }
           {/* TRACKS */}
-          {filterArr[0]&&searchResultTracks&&<div >
+          {filterArr[1]&&searchResultTracks&&<div >
             <hr/>
             <h4>La ricerca delle Tracce ha prodotto i seguenti risultati:</h4>
               <div>
@@ -610,7 +612,7 @@ useEffect(() => {
             <hr/>
           </div>}
           {/* PLAYLISTS */}
-          {filterArr[1]&&searchResultPlaylists&&(searchWord||optionCategory!=="")&&<div >
+          {filterArr[0]&&searchResultPlaylists&&(searchWord||optionCategory!=="")&&<div >
             <h4>La ricerca delle Playlist ha prodotto i seguenti risultati:</h4>
               <div>
                 {searchResultPlaylists.map(currentPlaylist => (                    
@@ -633,7 +635,7 @@ useEffect(() => {
         </Container>
         
         {/* FOOTER AGGIUNTA CANZONI A PLAYLIST */}
-           {showFooter&&<FooterElement close={()=>setShowFooter(false)} playlist={createdPlaylist}></FooterElement>}
+           {showFooter&&createdPlaylist&&<FooterElement close={()=>setShowFooter(false)} playlist={createdPlaylist}></FooterElement>}
       </>
     )
 }
