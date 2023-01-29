@@ -26,7 +26,7 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-function PlaylistCardVertical({playlist, showFooter}){
+function PlaylistCardVertical({playlist, showFooter, createdPlaylist}){
 
 //INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
@@ -115,7 +115,7 @@ function PlaylistCardVertical({playlist, showFooter}){
                 </div>
             </Card>
             
-            {modalShow&&<PlaylistViewModal show={modalShow}  onClose={() => { setModalShow(false) }} playlist={playlist} showFooter={showFooter}/>}
+            {modalShow&&<PlaylistViewModal show={modalShow}  onClose={() => { setModalShow(false) }} playlist={playlist} showFooter={showFooter} createdPlaylist={createdPlaylist}/>}
         </>
     )
 }

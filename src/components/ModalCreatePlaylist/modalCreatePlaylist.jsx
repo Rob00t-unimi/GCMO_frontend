@@ -194,18 +194,36 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
               }
               console.log("createdplaylist", createdPlaylist)
 
-               localStorage.setItem('createdPlaylist', JSON.stringify(createdPlaylist) )
+              addPlaylistInStorage(createdPlaylist) 
 
-               onClose()
-
-                //REINDIRIZZO ALLA PAGINA DI NAVIGAZIONE PER AGGIUNGERE LE CANZONI
-                window.location = "http://localhost:3000/navigate" 
         })
         .catch(err => {
             console.log("ciaone")
             ErrorStatusCheck(err)
         })
         }
+
+        function addPlaylistInStorage(playlist){
+        
+            spotifyApi.getPlaylistTracks(playlist.id)
+            .then((tracks) => {
+                console.log(tracks)
+                const tracce = tracks.body.items.map(traccia=>{
+                    return traccia.track.id
+                })
+                localStorage.setItem('createdPlaylistTracks', JSON.stringify(tracce))
+                localStorage.setItem("createdPlaylist", JSON.stringify(playlist))
+
+                onClose()
+
+                //REINDIRIZZO ALLA PAGINA DI NAVIGAZIONE PER AGGIUNGERE LE CANZONI
+                window.location = "http://localhost:3000/navigate" 
+            })
+            .catch(e=>{
+                ErrorStatusCheck()
+            })
+         
+    }
 }
 
 export default ModalCreatePlaylist

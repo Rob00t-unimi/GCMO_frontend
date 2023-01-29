@@ -22,7 +22,7 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-function TrackCardHorizontal({currentTrack, showFooter}){
+function TrackCardHorizontal({currentTrack, showFooter, currentPlaylist}){
 
     
 
@@ -109,7 +109,7 @@ useEffect(() => {
 
 
 function addTrack(){
-    const currentPlaylist = JSON.parse(localStorage.getItem("createdPlaylist"))
+
     spotifyApi.addTracksToPlaylist(currentPlaylist.id, [currentTrack.uri])
     .then(res=>{
         console.log("added",res)

@@ -25,7 +25,7 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-export default function Album({currentAlbum, showFooter}){
+export default function Album({currentAlbum, showFooter, createdPlaylist}){
 
 //INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
@@ -117,7 +117,7 @@ function switchFollow(){
                 </Col>
             </Card>
             
-            <AlbumViewModal show={modalShow} album={currentAlbum} onClose={() => { setModalShow(false) }} showFooter={showFooter}/>
+            <AlbumViewModal show={modalShow} album={currentAlbum} onClose={() => { setModalShow(false) }} showFooter={showFooter} createdPlaylist={createdPlaylist}/>
 
         </>
     )

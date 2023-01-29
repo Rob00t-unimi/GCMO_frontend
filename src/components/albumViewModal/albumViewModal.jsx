@@ -22,7 +22,7 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-const AlbumViewModal = ({ show, onClose, album, currentUser, showFooter }) => {
+const AlbumViewModal = ({ show, onClose, album, currentUser, showFooter, createdPlaylist}) => {
 
     if(!currentUser){
         currentUser = JSON.parse(localStorage.getItem('user'))
@@ -126,12 +126,12 @@ useEffect(() => {
     })
     setAddBtn(newAddbtn)
 
-}, [showFooter] )
+}, [showFooter, page] )
 
 
 function addTrack(currentTrack, i){
-    const currentPlaylist = JSON.parse(localStorage.getItem("createdPlaylist"))
-    spotifyApi.addTracksToPlaylist(currentPlaylist.id, [currentTrack.uri])
+    
+    spotifyApi.addTracksToPlaylist(createdPlaylist.id, [currentTrack.uri])
     .then(res=>{
         console.log("added",res)
 
@@ -150,7 +150,54 @@ function addTrack(currentTrack, i){
         ErrorStatusCheck(err)
     })
 }
-//______________________________________________________________________________________________________________________________
+//RICHIEDERE OGNI TRACCIA   _______________________________________________________________________________________________________
+async function getAllTracks() {
+    let allTracks = [];
+    let offset = 0;
+    let limit = 50;
+  
+    while (true) {
+      let tracks = await spotifyApi.getAlbumTracks(album.id, { offset, limit });
+      console.log(tracks)
+      let tracce = tracks.body.items.map(traccia => {
+        return traccia.uri
+      })
+      allTracks = allTracks.concat(tracce);
+  
+      if (tracks.body.next === null) {
+        break;
+      }
+  
+      offset += limit;
+    }
+    console.log(allTracks)
+    return allTracks;
+  }
+  
+
+
+//IMPORTARE L'INTERO ALBUM IN UNA PLAYLIST_______________________________________________________________________________________________________
+async function importaAlbum(){
+    const tracce = await getAllTracks()
+    await spotifyApi.createPlaylist(album.name, {public: false})
+    .then(res=>{
+
+        spotifyApi.addTracksToPlaylist(res.body.id, tracce)
+        .then(data => {
+            alert("Album importato correttamente.")
+        })
+        .catch(err => {
+            alert("Non è stato possibile importare l'album.")
+            ErrorStatusCheck(err)
+            spotifyApi.unfollowPlaylist(res.body.id)
+        })
+    })
+    .catch(err => {
+        alert("Non è stato possibile importare l'album.")
+        ErrorStatusCheck(err)
+    })
+
+}
 
 
 
@@ -164,6 +211,7 @@ function addTrack(currentTrack, i){
                     <Card.Body>
                         <Card.Title> {album.name} </Card.Title>
                         <div>{album.artists.join(', ')}</div>
+                        <Button className='btn-light infoModalView' onClick={importaAlbum}>Importa album in una playlist</Button>
                         <div className='d-flex infoModalView'>
                             <div>
                                 <div>Release date: {album.releaseDate}</div>

@@ -528,14 +528,14 @@ useEffect(() => {
               <Carousel.Item interval={6000}>
                 <Row>
                     {myTopTracks.map((myCurrentTrack, index) => (                    
-                      index<5 ? <Col><TrackCardVertical currentTrack={myCurrentTrack} key={myCurrentTrack.id} showFooter={showFooter}/></Col> : null
+                      index<5 ? <Col><TrackCardVertical currentTrack={myCurrentTrack} key={myCurrentTrack.id} showFooter={showFooter} currentPlaylist={createdPlaylist}/></Col> : null
                     ))}
                 </Row>
               </Carousel.Item>
               <Carousel.Item interval={4000}>
               <Row>
                     {myTopTracks.map((myCurrentTrack, index) => (                    
-                      index>=5 ? <Col><TrackCardVertical currentTrack={myCurrentTrack} key={myCurrentTrack.id} showFooter={showFooter}/></Col> : null
+                      index>=5 ? <Col><TrackCardVertical currentTrack={myCurrentTrack} key={myCurrentTrack.id} showFooter={showFooter} currentPlaylist={createdPlaylist}/></Col> : null
                     ))}
                 </Row>
               </Carousel.Item>
@@ -550,14 +550,14 @@ useEffect(() => {
               <Carousel.Item interval={6000}>
                 <Row>
                   {topTracks.map((currentTrack, index) => (                    
-                      index<5 ? <Col><TrackCardVertical currentTrack={currentTrack} key={currentTrack.id} showFooter={showFooter}/></Col> : null
+                      index<5 ? <Col><TrackCardVertical currentTrack={currentTrack} key={currentTrack.id} showFooter={showFooter} currentPlaylist={createdPlaylist}/></Col> : null
                     ))}
                 </Row>
               </Carousel.Item>
               <Carousel.Item interval={4000}>
                 <Row>
                   {topTracks.map((currentTrack, index) => (                    
-                      index>=5 ? <Col><TrackCardVertical currentTrack={currentTrack} key={currentTrack.id} showFooter={showFooter}/></Col> : null
+                      index>=5 ? <Col><TrackCardVertical currentTrack={currentTrack} key={currentTrack.id} showFooter={showFooter} currentPlaylist={createdPlaylist}/></Col> : null
                     ))}
                 </Row>
               </Carousel.Item>
@@ -572,14 +572,14 @@ useEffect(() => {
               <Carousel.Item interval={5000}>
                   <Row>
                     {topPlaylists.map((currentPlaylist, index) => (                    
-                        index<5 ? <Col><PlaylistCardVertical playlist={currentPlaylist} key={currentPlaylist.id} showFooter={showFooter}/></Col> : null
+                        index<5 ? <Col><PlaylistCardVertical playlist={currentPlaylist} key={currentPlaylist.id} showFooter={showFooter} createdPlaylist={createdPlaylist}/></Col> : null
                       ))}
                   </Row>
                 </Carousel.Item>
               <Carousel.Item interval={5000}>
                   <Row>
                     {topPlaylists.map((currentPlaylist, index) => (                    
-                        index>=5 ? <Col><PlaylistCardVertical playlist={currentPlaylist} key={currentPlaylist.id} showFooter={showFooter}/></Col> : null
+                        index>=5 ? <Col><PlaylistCardVertical playlist={currentPlaylist} key={currentPlaylist.id} showFooter={showFooter} createdPlaylist={createdPlaylist}/></Col> : null
                       ))}
                   </Row>
               </Carousel.Item>
@@ -612,7 +612,7 @@ useEffect(() => {
             <h4>La ricerca delle Tracce ha prodotto i seguenti risultati:</h4>
               <div>
                 {searchResultTracks.map(currentTrack => (                    
-                  <TrackCardHorizontal currentTrack={currentTrack} key={currentTrack.id} showFooter={showFooter}/>
+                  <TrackCardHorizontal currentTrack={currentTrack} key={currentTrack.id} showFooter={showFooter} currentPlaylist={createdPlaylist}/>
                 ))}
               </div>
             <hr/>
@@ -622,7 +622,7 @@ useEffect(() => {
             <h4>La ricerca delle Playlist ha prodotto i seguenti risultati:</h4>
               <div>
                 {searchResultPlaylists.map(currentPlaylist => (                    
-                  <PlaylistCardNavigationPage playlist={currentPlaylist} key={currentPlaylist.id} showFooter={showFooter}/>
+                  <PlaylistCardNavigationPage playlist={currentPlaylist} key={currentPlaylist.id} showFooter={showFooter} createdPlaylist={createdPlaylist}/>
                 ))}
               </div>
             <hr/>
@@ -632,7 +632,7 @@ useEffect(() => {
             <h4>La ricerca degli Album ha prodotto i seguenti risultati:</h4>
               <div>
                 {searchResultAlbums.map(currentAlbum => (                    
-                  <Album currentAlbum={currentAlbum} key={currentAlbum.id} showFooter={showFooter}/>
+                  <Album currentAlbum={currentAlbum} key={currentAlbum.id} showFooter={showFooter} createdPlaylist={createdPlaylist}/>
                 ))}
               </div>
             <hr/>

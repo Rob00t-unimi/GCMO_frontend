@@ -23,7 +23,7 @@ const spotifyApi = new SpotifyWebApi({
 
 
 
-const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter}) => {
+const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter, createdPlaylist}) => {
 
     if(!currentUser){
         currentUser = JSON.parse(localStorage.getItem('user'))
@@ -126,8 +126,8 @@ useEffect(() => {
 
 
 function addTrack(currentTrack, i){
-    const currentPlaylist = JSON.parse(localStorage.getItem("createdPlaylist"))
-    spotifyApi.addTracksToPlaylist(currentPlaylist.id, [currentTrack.uri])
+
+    spotifyApi.addTracksToPlaylist(createdPlaylist.id, [currentTrack.uri])
     .then(res=>{
         console.log("added",res)
 
@@ -147,8 +147,58 @@ function addTrack(currentTrack, i){
     })
 }
 
+
+
+async function getAllTracks() {
+    let allTracks = [];
+    let offset = 0;
+    let limit = 50;
+  
+    while (true) {
+      let tracks = await spotifyApi.getPlaylistTracks(playlist.id, { offset, limit });
+      console.log(tracks)
+      let tracce = tracks.body.items.map(traccia => {
+        return traccia.track.uri
+      })
+      allTracks = allTracks.concat(tracce);
+  
+      if (tracks.body.next === null) {
+        break;
+      }
+  
+      offset += limit;
+    }
+    console.log(allTracks)
+    return allTracks;
+  }
+  
+
+
+//IMPORTARE IN UNA NUOVA PLAYLIST_______________________________________________________________________________________________________
+async function importaPlaylist(){
+    const tracce = await getAllTracks()
+    await spotifyApi.createPlaylist(playlist.name, {public: false})
+    .then(res=>{
+
+        spotifyApi.addTracksToPlaylist(res.body.id, tracce)
+        .then(data => {
+            alert("Playlist importata correttamente.")
+        })
+        .catch(err => {
+            alert("Non è stato possibile importare la Playlist.")
+            ErrorStatusCheck(err)
+            spotifyApi.unfollowPlaylist(res.body.id)
+        })
+    })
+    .catch(err => {
+        alert("Non è stato possibile importare la Playlist.")
+        ErrorStatusCheck(err)
+    })
+
+}
+
 //______________________________________________________________________________________________________________________________
-   
+
 
     return (
         <Modal show={show} size="xl" centered>
@@ -159,6 +209,7 @@ function addTrack(currentTrack, i){
                         <Card.Title> {playlist.name} </Card.Title>
                         <Card.Text> {playlist.ownerName} </Card.Text>
                         {playlist.description && <p>{playlist.description}</p>}
+                        <Button className='btn-light' onClick={importaPlaylist}>Importa in nuova playlist</Button>
                         <div className='d-flex'>
                             <div></div>
                             <a className="spotifyLinkBtn btn btn-success btn-sm" href={playlist.uri} target="_blank" ><img src={spotifyLogo} /></a>

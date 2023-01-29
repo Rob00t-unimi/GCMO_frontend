@@ -184,12 +184,28 @@ useEffect(() => {
             public: isPublic ? isPublic : null,
         }
 
+        addPlaylistInStorage(newPlaylist)                   //inserisco la playlist e le sue tracce nel local storage per prenderla dalla navigationPage
+               
+    }
 
-        localStorage.setItem('createdPlaylist', JSON.stringify(newPlaylist) )       //inserisco la playlist nel local storage per prenderla dalla navigationPage
 
+    function addPlaylistInStorage(playlist){
+        
+            spotifyApi.getPlaylistTracks(playlist.id)
+            .then((tracks) => {
+                console.log(tracks)
+                const tracce = tracks.body.items.map(traccia=>{
+                    return traccia.track.id
+                })
+                localStorage.setItem('createdPlaylistTracks', JSON.stringify(tracce))
+                localStorage.setItem("createdPlaylist", JSON.stringify(playlist))
 
-        window.location = "http://localhost:3000/navigate"      //mando alla navigation page
-
+                window.location = "http://localhost:3000/navigate"      //mando alla navigation page
+            })
+            .catch(e=>{
+                ErrorStatusCheck()
+            })
+         
     }
     
 }
