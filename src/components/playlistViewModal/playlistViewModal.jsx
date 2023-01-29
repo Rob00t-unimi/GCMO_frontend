@@ -5,6 +5,7 @@ import'../general.css'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import ErrorStatusCheck from '../../util/errorStatusCheck'
 import spotifyLogo from "../../assets/SpotifyLogo01.png"
+import UserModalView from '../userModalView/userModalView';
 
 
 
@@ -168,16 +169,17 @@ async function importaPlaylist(){
 }
 
 //______________________________________________________________________________________________________________________________
-
+const[userModalShow, setUserModalShow] = useState(false)
 
     return (
-        <Modal show={show} size="xl" centered>
+        <Modal className='bg-light bg-opacity-25' show={show} size="xl" centered>
             <Modal.Header className='bg-dark'>
                 <Card className="headerCardModalView d-flex flex-row bg-dark text-light"  >
                     <Card.Img className="imgCardModalView" src={playlist.image?playlist.image:playlistImage} />
                     <Card.Body>
                         <Card.Title> {playlist.name} </Card.Title>
-                        <Card.Text> {playlist.ownerName} </Card.Text>
+                        <a className='btn btn-dark' onClick={()=>setUserModalShow(true)}>{playlist.ownerName}</a>
+
                         {playlist.description && <p>{playlist.description}</p>}
                         <Button className='btn-light' onClick={importaPlaylist}>Importa in nuova playlist</Button>
                         <div className='d-flex'>
@@ -214,7 +216,7 @@ async function importaPlaylist(){
 
                     
                 </div>
-
+                {userModalShow&&<UserModalView playlistOwnerId={playlist.ownerId} show={userModalShow} onClose={()=>setUserModalShow(false)}></UserModalView>}
             </Modal.Body>
             <Modal.Footer className='bg-dark'>
             </Modal.Footer>
@@ -223,3 +225,7 @@ async function importaPlaylist(){
 }
 
 export default ModalPlaylistDetail
+
+
+
+

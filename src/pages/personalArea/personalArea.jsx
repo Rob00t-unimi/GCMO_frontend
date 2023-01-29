@@ -35,6 +35,7 @@ const spotifyApi = new SpotifyWebApi({
 
 function PersonalArea() {
 
+ 
 //INIZIALIZZO UN PO' DI STATI______________________________________________________________________________________________________________________
 
   const [filterName, setFilterName] = useState('ALL')   //nome dei filtri dei button nella pagina personale
@@ -89,6 +90,9 @@ function PersonalArea() {
 //OTTENERE LE PLAYLIST____________________________________________________________________________________________________________________________________________________________________________________________________________________
 
    useEffect(() => {  
+    if(localStorage.getItem('createdPlaylist')) {
+      localStorage.removeItem('createdPlaylist')
+    }
     getAllPlaylist()
   }, []);
   
