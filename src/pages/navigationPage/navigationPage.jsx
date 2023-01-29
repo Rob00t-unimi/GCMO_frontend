@@ -19,7 +19,7 @@ import Playlist_list from "../../components/playlist_list/playlist_list";
 
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID_______________________________________________________________________________________
-const CLIENT_ID ='61e53419c8a547eabe2729e093b43ae4' //'5ee1aac1104b4fd9b47757edf96aba44'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '238334b666894f049d233d6c1bb3c3fc'
+const CLIENT_ID = '5ee1aac1104b4fd9b47757edf96aba44'//'238334b666894f049d233d6c1bb3c3fc'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '61e53419c8a547eabe2729e093b43ae4'
 const spotifyApi = new SpotifyWebApi({
   clientId: CLIENT_ID
 });
@@ -210,10 +210,12 @@ function ricerca(){
     spotifyApi.searchTracks(searchWord, { limit : searchLimit})    //{genre: searchWord, limit : searchLimit, exact: true}
     .then(result => {
       const tracks = result.body.tracks.items.map(item => {
+        const duration = new Date(item.duration_ms).toISOString().slice(14, 19);     //prendo la durata in ms della traccia, creo l'oggetto data, converto in stringa, prendo solo dal carattere 14 a 19 ovvero ore, minuti, secondi
         return {
           image: item.album.images[0].url,
           name: item.name,
           album: item.album.name,
+          duration: duration,
           id: item.id,
           releaseDate: item.album.release_date,                                 //ricerca canzoni 
           artists: item.artists.map(artist => artist.name),
@@ -421,9 +423,11 @@ function getMyTopTracksFunction() {
   spotifyApi.getMyTopTracks({limit: 10, offset: 0})
   .then(res => {
     const myCurrentTopTracks = res.body.items.map((item, index) => {
+      const duration = new Date(item.duration_ms).toISOString().slice(14, 19);     //prendo la durata in ms della traccia, creo l'oggetto data, converto in stringa, prendo solo dal carattere 14 a 19 ovvero ore, minuti, secondi
       return {
         image: item.album.images[0].url,
         name: item.name,
+        duration: duration,
         album: item.album.name,
         id: item.id,
         releaseDate: item.album.release_date,

@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Card, Modal, Pagination, Table } from 'react-bootstrap'
+import { Button, Card, Modal, Col, Table, Row, Container } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
 import'../general.css'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import ErrorStatusCheck from '../../util/errorStatusCheck'
 import spotifyLogo from "../../assets/SpotifyLogo01.png"
 import UserModalView from '../userModalView/userModalView';
+import TrackCardHorizontal from '../trackCardHorizontal/trackCardHorizontal'
 
 
 
 //INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
 
-const CLIENT_ID = '238334b666894f049d233d6c1bb3c3fc'//'5ee1aac1104b4fd9b47757edf96aba44'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '61e53419c8a547eabe2729e093b43ae4'
+const CLIENT_ID = '5ee1aac1104b4fd9b47757edf96aba44'//'238334b666894f049d233d6c1bb3c3fc'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '61e53419c8a547eabe2729e093b43ae4'
 const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID
 });
@@ -54,6 +55,7 @@ async function getAllTracks() {
     try {
         while (true) {
             let res = await spotifyApi.getPlaylistTracks(playlist.id, { offset, limit });
+            console.log(res)
             const tracks = res.body.items.map((trackInfo => {
                     const duration = new Date(trackInfo.track.duration_ms).toISOString().slice(14, 19);     //prendo la durata in ms della traccia, creo l'oggetto data, converto in stringa, prendo solo dal carattere 14 a 19 ovvero ore, minuti, secondi
                     return {
@@ -62,6 +64,10 @@ async function getAllTracks() {
                         duration: duration,
                         name: trackInfo.track.name,
                         uri: trackInfo.track.uri,
+                        image: trackInfo.track.album.images[0].url,
+                        artists: trackInfo.track.artists.map(artist => artist.name),
+                        artistsId: trackInfo.track.artists.map(artista => artista.id),
+                        releaseDate: trackInfo.track.album.release_date,
                     }
                 }))
             allTracks = allTracks.concat(tracks);
@@ -195,20 +201,21 @@ const[userModalShow, setUserModalShow] = useState(false)
             </Modal.Header>
 
             <Modal.Body className='bg-dark'>
-                <div style={{ maxHeight: "65vh", overflowY: "auto"}}>
+                <div style={{ maxHeight: "65vh", overflowY: "auto", overflowX: "hidden"}}>
 
-                    <Table hover variant="dark" >
+                    <Table >
                         <tbody>
                             {tracks&&tracks.map((item, index) => {
 
                                 return (
-                                    <tr key={item.id} >
-                                        <td> {item.duration}</td>
-                                        <td>{item.name}</td>
-                                        <td> {item.artists.join(', ')}</td>
-                                        {(playlist.ownerId === currentUser.id)&&<td><Button className='btn-danger btn-round btn-m' onClick={() => {removeTrack(item.uri)}}>X</Button></td>}
-                                        {(!traccePlaylist.includes(item.id))&&addBtn&&addBtn[index]&&<td><Button className='btn-success' onClick={() => {addTrack(item, index)}}>Add</Button></td>}
-                                    </tr>
+                                <span>
+                                    {(playlist.ownerId === currentUser.id) ? <Row>
+                                    <Col className='col-11'><TrackCardHorizontal currentTrack={item} showFooter={showFooter} currentPlaylist={createdPlaylist}/></Col>
+                                    <Col className='col-1'><Button className='btn-danger btn-round btn-m' onClick={() => {removeTrack(item.uri)}} style={{ marginTop: "3.2vh"}}>X</Button></Col>
+                                    </Row> :
+                                    <TrackCardHorizontal currentTrack={item} showFooter={showFooter} currentPlaylist={createdPlaylist}/>
+                                    }     
+                                </span>
                                 );
                             })}
                         </tbody>
@@ -216,7 +223,7 @@ const[userModalShow, setUserModalShow] = useState(false)
 
                     
                 </div>
-                {userModalShow&&<UserModalView playlistOwnerId={playlist.ownerId} show={userModalShow} onClose={()=>setUserModalShow(false)}></UserModalView>}
+                {userModalShow&&<UserModalView playlistOwnerId={playlist.ownerId} show={userModalShow} onClose={()=>setUserModalShow(false)} showFooter={showFooter} createdPlaylist={createdPlaylist}></UserModalView>}
             </Modal.Body>
             <Modal.Footer className='bg-dark'>
             </Modal.Footer>
