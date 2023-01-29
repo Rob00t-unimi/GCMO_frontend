@@ -117,7 +117,7 @@ function switchFollow(){
                 </Col>
             </Card>
             
-            <AlbumViewModal show={modalShow} album={currentAlbum} onClose={() => { setModalShow(false) }} showFooter={showFooter} createdPlaylist={createdPlaylist}/>
+            {modalShow&&<AlbumViewModal show={modalShow} album={currentAlbum} onClose={() => { setModalShow(false) }} showFooter={showFooter} createdPlaylist={createdPlaylist}/>}
 
         </>
     )

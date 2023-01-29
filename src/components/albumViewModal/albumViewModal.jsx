@@ -40,46 +40,49 @@ const AlbumViewModal = ({ show, onClose, album, currentUser, showFooter, created
 
 //PAGINAZIONE________________________________________________________________________________________________________________________
 
-    const [page, setPage] = useState({ data: [], limit: 25, activePage: 1, totalPages: 0 })
+const [tracks, setTracks] = useState(null)
 
 
-    useEffect(() => {
-        spotifyApi.getAlbumTracks(album.id, { limit: page.limit, offset: (page.activePage - 1)*page.limit })
-        .then(res => {
-            const totalPages = Math.ceil(res.body.total / page.limit);
-            const tracks = res.body.items.map((trackInfo => {
-                const duration = new Date(trackInfo.duration_ms).toISOString().slice(14, 19);     //prendo la durata in ms della traccia, creo l'oggetto data, converto in stringa, prendo solo dal carattere 14 a 19 ovvero ore, minuti, secondi
-                return {
-                    id: trackInfo.id,
-                    artists: trackInfo.artists.map(artist => artist.name),  
-                    duration: duration,
-                    name: trackInfo.name,
-                    uri: trackInfo.uri,
-                    index: trackInfo.track_number
-                }
-            }))
-            setPage(prev => ({
-                ...prev,
-                totalPages,
-                data: tracks
-            }))
-            console.log("TRACCE ALBUM", tracks)
-        })
-        .catch(err => {
-            ErrorStatusCheck(err)
-        })
-
-    }, [page.activePage])
-
-
-
-    const handlePageChange = (pageNumber) => {
-        setPage(prev => ({
-            ...prev,
-            activePage: pageNumber
-        }))
+//RICHIEDERE OGNI TRACCIA   _______________________________________________________________________________________________________
+async function getAllTracks() {
+    let allTracks = [];
+    let offset = 0;
+    let limit = 50;
+  
+    try {
+        while (true) {
+            let res = await spotifyApi.getAlbumTracks(album.id, { offset, limit });
+      
+            const tracce = res.body.items.map((trackInfo => {
+              const duration = new Date(trackInfo.duration_ms).toISOString().slice(14, 19);     //prendo la durata in ms della traccia, creo l'oggetto data, converto in stringa, prendo solo dal carattere 14 a 19 ovvero ore, minuti, secondi
+              return {
+                  id: trackInfo.id,
+                  artists: trackInfo.artists.map(artist => artist.name),  
+                  duration: duration,
+                  name: trackInfo.name,
+                  uri: trackInfo.uri,
+              }
+          }))
+            allTracks = allTracks.concat(tracce);
+        
+            if (res.body.next === null) {
+              break;
+            }
+        
+            offset += limit;
+          }
+          console.log(allTracks)
+          setTracks(allTracks)
+    } catch (err) {
+        ErrorStatusCheck(err)
     }
-    
+  }
+  
+  useEffect(() =>{
+    getAllTracks()
+  }, [])
+
+
 
 //RICERCA GENERI_______________________________________________________________________________________________________________
 
@@ -114,28 +117,30 @@ useEffect(() => {
 //se showFooter è true ma la traccia è già presente nella playlist non renderizzo il Btn 
 
 const [addBtn, setAddBtn] = useState()
-const [tracceAlbum, setTracceAlbum] = useState([])
+const [traccePlaylist, setTraccePlaylist] = useState([])
 
 useEffect(() => {
-    if(localStorage.getItem('createdPlaylistTracks')) {
-            setTracceAlbum(JSON.parse(localStorage.getItem('createdPlaylistTracks')))
-    }
     
-    const newAddbtn = page.data.map((item, index) => {
+    if(localStorage.getItem('createdPlaylistTracks')) {
+        setTraccePlaylist(JSON.parse(localStorage.getItem('createdPlaylistTracks')))
+    }
+    if(tracks) {
+       const newAddbtn = tracks.map((item, index) => {
         return showFooter
     })
-    setAddBtn(newAddbtn)
-
-}, [showFooter, page] )
+    setAddBtn(newAddbtn) 
+    }    
+}, [showFooter, tracks] )
 
 
 function addTrack(currentTrack, i){
+    if(!tracks) return
     
     spotifyApi.addTracksToPlaylist(createdPlaylist.id, [currentTrack.uri])
     .then(res=>{
         console.log("added",res)
 
-        const newAddbtn = page.data.map((item, index) => {
+        const newAddbtn = tracks.map((item, index) => {
             if(i===index){
                 return false
             } else {
@@ -150,35 +155,11 @@ function addTrack(currentTrack, i){
         ErrorStatusCheck(err)
     })
 }
-//RICHIEDERE OGNI TRACCIA   _______________________________________________________________________________________________________
-async function getAllTracks() {
-    let allTracks = [];
-    let offset = 0;
-    let limit = 50;
-  
-    while (true) {
-      let tracks = await spotifyApi.getAlbumTracks(album.id, { offset, limit });
-      console.log(tracks)
-      let tracce = tracks.body.items.map(traccia => {
-        return traccia.uri
-      })
-      allTracks = allTracks.concat(tracce);
-  
-      if (tracks.body.next === null) {
-        break;
-      }
-  
-      offset += limit;
-    }
-    console.log(allTracks)
-    return allTracks;
-  }
-  
 
 
 //IMPORTARE L'INTERO ALBUM IN UNA PLAYLIST_______________________________________________________________________________________________________
 async function importaAlbum(){
-    const tracce = await getAllTracks()
+    const tracce = tracks.map(track => track.uri)
     await spotifyApi.createPlaylist(album.name, {public: false})
     .then(res=>{
 
@@ -225,18 +206,18 @@ async function importaAlbum(){
             </Modal.Header>
 
             <Modal.Body className='bg-dark'>
-                <div>
+                <div style={{ maxHeight: "65vh", overflowY: "auto"}}>
 
                     <Table hover variant="dark">
                         <tbody>
-                            {page.data.map((item, index) => {
+                            {tracks&&tracks.map((item, index) => {
 
                                 return (
                                     <tr key={item.id} >
                                         <td> {item.duration}</td>
                                         <td>{item.name}</td>
                                         <td> {item.artists.join(', ')}</td>
-                                        {(!tracceAlbum.includes(item.id))&&addBtn[index]&&<td><Button className='btn-success' onClick={() => {addTrack(item, index)}}>Add</Button></td>}
+                                        {(!traccePlaylist.includes(item.id))&&addBtn&&addBtn[index]&&<td><Button className='btn-success' onClick={() => {addTrack(item, index)}}>Add</Button></td>}
                                     </tr>
                                 );
                             })}
@@ -247,14 +228,7 @@ async function importaAlbum(){
                 </div>
 
             </Modal.Body>
-            <Modal.Footer className='bg-dark justify-content-center'>
-                <Pagination>
-                    {Array.from({ length: page.totalPages }, (_, index) => (                
-                        <Pagination.Item key={index + 1} active={index + 1 === page.activePage} onClick={() => handlePageChange(index + 1)}>
-                            {index + 1}
-                        </Pagination.Item>
-                    ))}
-                </Pagination>
+            <Modal.Footer className='bg-dark'>
             </Modal.Footer>
         </Modal>
     )

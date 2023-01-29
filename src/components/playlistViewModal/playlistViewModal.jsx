@@ -39,55 +39,50 @@ const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter,
         spotifyApi.setAccessToken(accessToken);
     }, [accessToken])
 
-//PAGINAZIONE________________________________________________________________________________________________________________________
+//________________________________________________________________________________________________________________________
 
 const[deletedTrack, setDeletedTrack] = useState(false)
-
-    const [page, setPage] = useState({
-        data: [],
-        limit: 10,
-        activePage: 1,
-        totalPages: 0
-    })
+const [tracks, setTracks] = useState()
 
 
-    useEffect(() => {
-        spotifyApi.getPlaylistTracks(playlist.id, { limit: page.limit, offset: (page.activePage - 1)*page.limit })
-        .then(res => {
-            console.log("dat", res)
-            const totalPages = Math.ceil(res.body.total / page.limit);
+async function getAllTracks() {
+    let allTracks = []
+    let offset = 0;
+    let limit = 50;
+  
+    try {
+        while (true) {
+            let res = await spotifyApi.getPlaylistTracks(playlist.id, { offset, limit });
             const tracks = res.body.items.map((trackInfo => {
-                console.log(trackInfo)
-                const duration = new Date(trackInfo.track.duration_ms).toISOString().slice(14, 19);     //prendo la durata in ms della traccia, creo l'oggetto data, converto in stringa, prendo solo dal carattere 14 a 19 ovvero ore, minuti, secondi
-                return {
-                    id: trackInfo.track.id,
-                    artists: trackInfo.track.artists.map(artist => artist.name),
-                    duration: duration,
-                    name: trackInfo.track.name,
-                    uri: trackInfo.track.uri,
-                    index: trackInfo.track.track_number
-                }
-            }))
-            setPage(prev => ({
-                ...prev,
-                totalPages,
-                data: tracks
-            }))
-        })
-        .catch(err => {
-            ErrorStatusCheck(err)
-        })
-
-    }, [page.activePage, deletedTrack])
-
-
-
-    const handlePageChange = (pageNumber) => {
-        setPage(prev => ({
-            ...prev,
-            activePage: pageNumber
-        }))
+                    const duration = new Date(trackInfo.track.duration_ms).toISOString().slice(14, 19);     //prendo la durata in ms della traccia, creo l'oggetto data, converto in stringa, prendo solo dal carattere 14 a 19 ovvero ore, minuti, secondi
+                    return {
+                        id: trackInfo.track.id,
+                        artists: trackInfo.track.artists.map(artist => artist.name),
+                        duration: duration,
+                        name: trackInfo.track.name,
+                        uri: trackInfo.track.uri,
+                    }
+                }))
+            allTracks = allTracks.concat(tracks);
+        
+            if (res.body.next === null) {
+                break;
+            }
+        
+            offset += limit;
+        }
+        console.log(allTracks)
+        setTracks(allTracks)
+    } catch (err) {
+        ErrorStatusCheck(err)
     }
+  }
+
+  useEffect(() =>{
+    getAllTracks()
+  }, [deletedTrack])
+
+
     
 //REMOVE TRACK_______________________________________________________________________________________________________________________
 
@@ -110,28 +105,28 @@ const [addBtn, setAddBtn] = useState()
 const [traccePlaylist, setTraccePlaylist] = useState([])
 
 useEffect(() => {
-
+    if(!tracks) return
     if(showFooter===null) {return}
 
     if(localStorage.getItem('createdPlaylistTracks')) {
             setTraccePlaylist(JSON.parse(localStorage.getItem('createdPlaylistTracks')))
     }
     
-    const newAddbtn = page.data.map((item, index) => {
+    const newAddbtn = tracks.map((item, index) => {
         return showFooter
     })
     setAddBtn(newAddbtn)   
 
-}, [showFooter, page] )
+}, [showFooter, tracks] )
 
 
 function addTrack(currentTrack, i){
-
+    if(!tracks) return
     spotifyApi.addTracksToPlaylist(createdPlaylist.id, [currentTrack.uri])
     .then(res=>{
         console.log("added",res)
 
-        const newAddbtn = page.data.map((item, index) => {
+        const newAddbtn = tracks.map((item, index) => {
             if(i===index){
                 return false
             } else {
@@ -146,37 +141,12 @@ function addTrack(currentTrack, i){
         ErrorStatusCheck(err)
     })
 }
-
-
-
-async function getAllTracks() {
-    let allTracks = [];
-    let offset = 0;
-    let limit = 50;
-  
-    while (true) {
-      let tracks = await spotifyApi.getPlaylistTracks(playlist.id, { offset, limit });
-      console.log(tracks)
-      let tracce = tracks.body.items.map(traccia => {
-        return traccia.track.uri
-      })
-      allTracks = allTracks.concat(tracce);
-  
-      if (tracks.body.next === null) {
-        break;
-      }
-  
-      offset += limit;
-    }
-    console.log(allTracks)
-    return allTracks;
-  }
-  
+ 
 
 
 //IMPORTARE IN UNA NUOVA PLAYLIST_______________________________________________________________________________________________________
 async function importaPlaylist(){
-    const tracce = await getAllTracks()
+    const tracce = tracks.map(track => track.uri)
     await spotifyApi.createPlaylist(playlist.name, {public: false})
     .then(res=>{
 
@@ -223,11 +193,11 @@ async function importaPlaylist(){
             </Modal.Header>
 
             <Modal.Body className='bg-dark'>
-                <div>
+                <div style={{ maxHeight: "65vh", overflowY: "auto"}}>
 
-                    <Table hover variant="dark">
+                    <Table hover variant="dark" >
                         <tbody>
-                            {page.data.map((item, index) => {
+                            {tracks&&tracks.map((item, index) => {
 
                                 return (
                                     <tr key={item.id} >
@@ -246,14 +216,7 @@ async function importaPlaylist(){
                 </div>
 
             </Modal.Body>
-            <Modal.Footer className='bg-dark justify-content-center'>
-                <Pagination>
-                    {Array.from({ length: page.totalPages }, (_, index) => (                //rivedere
-                        <Pagination.Item key={index + 1} active={index + 1 === page.activePage} onClick={() => handlePageChange(index + 1)}>
-                            {index + 1}
-                        </Pagination.Item>
-                    ))}
-                </Pagination>
+            <Modal.Footer className='bg-dark'>
             </Modal.Footer>
         </Modal>
     )
