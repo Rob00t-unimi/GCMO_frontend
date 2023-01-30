@@ -7,25 +7,14 @@ import ErrorStatusCheck from '../../util/errorStatusCheck'
 import spotifyLogo from "../../assets/SpotifyLogo01.png"
 import UserModalView from '../userModalView/userModalView';
 import TrackCardHorizontal from '../trackCardHorizontal/trackCardHorizontal'
-
-
-
-//INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
-
-const CLIENT_ID = '5ee1aac1104b4fd9b47757edf96aba44'//'238334b666894f049d233d6c1bb3c3fc'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '61e53419c8a547eabe2729e093b43ae4'
-const spotifyApi = new SpotifyWebApi({
-    clientId: CLIENT_ID
-});
+import { spotifyApi } from '../../util/costanti';
 
 
 
 
 
 
-
-
-
-const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter, createdPlaylist}) => {
+const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter, createdPlaylist, updateSinglePlaylist}) => {
 
     if(!currentUser){
         currentUser = JSON.parse(localStorage.getItem('user'))
@@ -43,60 +32,68 @@ const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter,
 
 //________________________________________________________________________________________________________________________
 
-const[deletedTrack, setDeletedTrack] = useState(false)
-const [tracks, setTracks] = useState()
+const [tracks, setTracks] = useState([])
 
+const [offset, setOffset] = useState(0)
 
-async function getAllTracks() {
-    let allTracks = []
-    let offset = 0;
+function getAllTracks() {
     let limit = 50;
   
-    try {
-        while (true) {
-            let res = await spotifyApi.getPlaylistTracks(playlist.id, { offset, limit });
-            console.log(res)
-            const tracks = res.body.items.map((trackInfo => {
-                    const duration = new Date(trackInfo.track.duration_ms).toISOString().slice(14, 19);     //prendo la durata in ms della traccia, creo l'oggetto data, converto in stringa, prendo solo dal carattere 14 a 19 ovvero ore, minuti, secondi
-                    return {
-                        id: trackInfo.track.id,
-                        artists: trackInfo.track.artists.map(artist => artist.name),
-                        duration: duration,
-                        name: trackInfo.track.name,
-                        uri: trackInfo.track.uri,
-                        image: trackInfo.track.album.images[0].url,
-                        artists: trackInfo.track.artists.map(artist => artist.name),
-                        artistsId: trackInfo.track.artists.map(artista => artista.id),
-                        releaseDate: trackInfo.track.album.release_date,
-                    }
-                }))
-            allTracks = allTracks.concat(tracks);
-        
-            if (res.body.next === null) {
-                break;
-            }
-        
-            offset += limit;
-        }
-        console.log(allTracks)
+    spotifyApi.getPlaylistTracks(playlist.id, { offset, limit })
+    .then(res=>{
+        console.log(res)
+        const tracce = res.body.items.map((trackInfo => {
+                const duration = new Date(trackInfo.track.duration_ms).toISOString().slice(14, 19);     //prendo la durata in ms della traccia, creo l'oggetto data, converto in stringa, prendo solo dal carattere 14 a 19 ovvero ore, minuti, secondi
+                return {
+                    id: trackInfo.track.id,
+                    artists: trackInfo.track.artists.map(artist => artist.name),
+                    duration: duration,
+                    name: trackInfo.track.name,
+                    uri: trackInfo.track.uri,
+                    image: trackInfo.track.album.images[0].url,
+                    artists: trackInfo.track.artists.map(artist => artist.name),
+                    artistsId: trackInfo.track.artists.map(artista => artista.id),
+                    releaseDate: trackInfo.track.album.release_date,
+                }
+            }))
+        const allTracks = tracks.concat(tracce);
+    
         setTracks(allTracks)
-    } catch (err) {
+        console.log(allTracks)
+        
+        setOffset(offset + limit);
+
+        if (res.body.next === null) {
+            setOffset(0)
+        } 
+              
+    }) 
+    .catch(err => {
+        // let retryAfter = err.response.headers['Retry-After'];
+        // if (err.body.error&&err.body.error.status === 429 ) {
+        //     setTimeout(() => {
+        //         getAllTracks()
+        //     }, retryAfter);
+        // }
         ErrorStatusCheck(err)
-    }
+    })
   }
 
-  useEffect(() =>{
+  useEffect(() => {
     getAllTracks()
-  }, [deletedTrack])
-
-
+  }, [])
+  
     
 //REMOVE TRACK_______________________________________________________________________________________________________________________
 
-function removeTrack(trackUri){
+function removeTrack(trackUri, i){
     spotifyApi.removeTracksFromPlaylist(playlist.id, [{uri: trackUri}])
     .then( ()=>{
-        setDeletedTrack(!deletedTrack)
+        setTracks(prevTracks => {
+            let newTracks = [...prevTracks];
+            newTracks[i] = null;
+            return newTracks;
+        }); 
     })
     .catch(err => {
         ErrorStatusCheck(err)
@@ -151,7 +148,7 @@ function addTrack(currentTrack, i){
  
 
 
-//IMPORTARE IN UNA NUOVA PLAYLIST_______________________________________________________________________________________________________
+//IMPORTARE IN UNA NUOVA PLAYLIST_____//MAX 50 TRACCE PER I LIMITI DI RICHIESTE __________________________________________________________________________________________________
 async function importaPlaylist(){
     const tracce = tracks.map(track => track.uri)
     await spotifyApi.createPlaylist(playlist.name, {public: false})
@@ -174,6 +171,10 @@ async function importaPlaylist(){
 
 }
 
+const close = () => {
+    updateSinglePlaylist()
+    onClose()
+}
 //______________________________________________________________________________________________________________________________
 const[userModalShow, setUserModalShow] = useState(false)
 
@@ -197,7 +198,7 @@ const[userModalShow, setUserModalShow] = useState(false)
                         
                     </Card.Body>
                 </Card>
-                <Button className='button btn-dark' onClick={onClose}>Close</Button>
+                <Button className='button btn-dark' onClick={close}>Close</Button>
             </Modal.Header>
 
             <Modal.Body className='bg-dark'>
@@ -209,18 +210,21 @@ const[userModalShow, setUserModalShow] = useState(false)
 
                                 return (
                                 <span>
-                                    {(playlist.ownerId === currentUser.id) ? <Row>
-                                    <Col className='col-11'><TrackCardHorizontal currentTrack={item} showFooter={showFooter} currentPlaylist={createdPlaylist}/></Col>
-                                    <Col className='col-1'><Button className='btn-danger btn-round btn-m' onClick={() => {removeTrack(item.uri)}} style={{ marginTop: "3.2vh"}}>X</Button></Col>
-                                    </Row> :
-                                    <TrackCardHorizontal currentTrack={item} showFooter={showFooter} currentPlaylist={createdPlaylist}/>
+                                    {(playlist.ownerId === currentUser.id)&&item ? 
+                                        <Row>
+                                            <Col className='col-11'><TrackCardHorizontal currentTrack={item} showFooter={showFooter} currentPlaylist={createdPlaylist}/></Col>
+                                            <Col className='col-1'><Button className='btn-danger btn-round btn-m' onClick={() => {removeTrack(item.uri, index)}} style={{ marginTop: "3.2vh"}}>X</Button></Col>
+                                        </Row> 
+                                    : item ?
+                                        <TrackCardHorizontal currentTrack={item} showFooter={showFooter} currentPlaylist={createdPlaylist}/> 
+                                    : null
                                     }     
                                 </span>
                                 );
                             })}
                         </tbody>
                     </Table>
-
+                    {offset!==0&&<div className='text-center'><Button className='btn-dark' onClick={getAllTracks}><u>Show more</u></Button></div>}
                     
                 </div>
                 {userModalShow&&<UserModalView playlistOwnerId={playlist.ownerId} show={userModalShow} onClose={()=>setUserModalShow(false)} showFooter={showFooter} createdPlaylist={createdPlaylist}></UserModalView>}

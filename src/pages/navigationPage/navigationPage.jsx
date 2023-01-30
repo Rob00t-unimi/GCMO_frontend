@@ -15,16 +15,7 @@ import Album from "../../components/album/album";
 import Artist from "../../components/artist/artist";
 import ErrorStatusCheck from '../../util/errorStatusCheck'
 import Playlist_list from "../../components/playlist_list/playlist_list";
-
-
-
-//INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID_______________________________________________________________________________________
-const CLIENT_ID = '5ee1aac1104b4fd9b47757edf96aba44'//'238334b666894f049d233d6c1bb3c3fc'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '61e53419c8a547eabe2729e093b43ae4'
-const spotifyApi = new SpotifyWebApi({
-  clientId: CLIENT_ID
-});
-
-
+import { spotifyApi } from '../../util/costanti';
 
 
 
@@ -261,7 +252,7 @@ function ricerca(){
     let newLimit
     searchLimit%5===0 ? newLimit=searchLimit :  newLimit = Math.ceil(searchLimit/5)*5   //divido per 5, arrotondo per eccesso, moltiplico per 5 per avere un numero di pagine con pagine sempre complete (ad esempio se searchLimit è 24 lo faccio diventare 25)
                                                                                         //lo faccio per mantenere il carosello semnza buchi sempre pieno 
-    spotifyApi.searchArtists(searchWord, {  limit : searchLimit})
+    spotifyApi.searchArtists(searchWord, {  limit : newLimit})
     .then(result => {
       const artists = result.body.artists.items.map(item => {                                     //ricerca artisti  
         return {
@@ -367,7 +358,7 @@ useEffect(() => {
           id: item.id,
           ownerId: item.owner.id,
           ownerName: item.owner.display_name,
-          
+          uri: item.uri,
         }
       })
       setTopPlaylists(topPlaylists)

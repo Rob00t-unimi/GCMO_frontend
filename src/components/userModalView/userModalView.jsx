@@ -6,16 +6,7 @@ import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import ErrorStatusCheck from '../../util/errorStatusCheck'
 import spotifyLogo from "../../assets/SpotifyLogo01.png"
 import PlaylistCardNavigationPage from '../playlistCardNavigationPage/playlistCardNavigationPage'
-
-
-//INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID_______________________________________________________________________________________
-const CLIENT_ID = '5ee1aac1104b4fd9b47757edf96aba44'//'238334b666894f049d233d6c1bb3c3fc'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '61e53419c8a547eabe2729e093b43ae4'
-const spotifyApi = new SpotifyWebApi({
-  clientId: CLIENT_ID
-});
-
-
-
+import { spotifyApi } from '../../util/costanti';
 
 
 

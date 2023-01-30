@@ -9,25 +9,14 @@ import ModalDeletePlaylist from '../modalDeletePlaylist/modalDeletePlaylist';
 import ModalModifyPlaylist from '../modalModifyPlaylist/modalModifyPlaylist';
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import ErrorStatusCheck from '../../util/errorStatusCheck'
-
-
-
-//INIZIALIZZO L'OGGETTO SPOTIFYAPI CON IL CLIENT ID___________________________________
-
-const CLIENT_ID = '5ee1aac1104b4fd9b47757edf96aba44'//'238334b666894f049d233d6c1bb3c3fc'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '61e53419c8a547eabe2729e093b43ae4'
-const spotifyApi = new SpotifyWebApi({
-    clientId: CLIENT_ID
-});
+import { spotifyApi } from '../../util/costanti';
 
 
 
 
 
 
-
-
-
-function PlaylistCardPersonalArea({playlist, updatePlaylists, userInfo}){
+function PlaylistCardPersonalArea({playlist, updatePlaylists, userInfo, setRemovedPlaylist, updateSinglePlaylist}){
 
 //INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
@@ -95,31 +84,6 @@ useEffect(() => {
         }
     }
     
-
-//UNFOLLOW__________________________________________________________________________________________________
-
-function unfollowPlaylist(){
-    if (type === 'FOLLOWED') {
-        //chiamata per smettere di seguire      
-        spotifyApi.unfollowPlaylist(playlist.id)
-        .then(res=>{
-            updatePlaylists()
-        })
-        .catch(err => {
-            ErrorStatusCheck(err)
-        })
-    }
-}
-
-//quando chiudo la modale per vidualizzare il contenuto di una playlist, potrei aver cancellato dei brani quindi refresho le playlist
-//questo serve poichè una playlist senza una specifica copertina quando viene svuotata spotify rimuove la copertina
-useEffect(() => {
-    if(!modalShow) {
-        updatePlaylists()
-    }
-}, [modalShow])
-
-
 //RENDERING_______________________________________________________________________________________________________________________________________
 
     return(
@@ -142,8 +106,7 @@ useEffect(() => {
                     type === 'FOLLOWED' ? 
                                 <div className= ' d-flex'>
                                     <div className='buttonCardOrizzontale' style={{width: "44px"}}/> {/*ho aggiunto questo div con la stessa larghezza di uno degli altri btn in modo da avere tutto allineato */}
-                                    <Button className='buttonCardOrizzontale btn-light' onClick={() => { setModalDeleteShow(true) }}><Trash3 /></Button>
-                                    <Button className='buttonCardOrizzontale' onClick={unfollowPlaylist}><StarFill/></Button>
+                                    <Button className='buttonCardOrizzontale' onClick={()=>setModalDeleteShow(true)}><StarFill/></Button>
                                 </div> :
                     type === 'PUBLIC' ? 
                                 <div className=' d-flex'>
@@ -161,8 +124,8 @@ useEffect(() => {
                 </Col>
             </Card>
             
-            {modalShow&&<PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} currentUser={userInfo} showFooter={null}/>}
-            {modalDeleteShow&&<ModalDeletePlaylist show={modalDeleteShow}  onClose={() => {setModalDeleteShow(false)}} playlist={playlist} updatePlaylists={updatePlaylists}/> }
+            {modalShow&&<PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} currentUser={userInfo} showFooter={null} updateSinglePlaylist={updateSinglePlaylist}/>}
+            {modalDeleteShow&&<ModalDeletePlaylist show={modalDeleteShow}  onClose={() => {setModalDeleteShow(false)}} playlist={playlist} setRemovedPlaylist={setRemovedPlaylist}/> }
             {modalModifyShow&&<ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist} updatePlaylists={updatePlaylists}/>}
         </>
     )

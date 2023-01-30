@@ -2,13 +2,9 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import {Modal, Button } from 'react-bootstrap'
 import { useEffect } from 'react';
 import ErrorStatusCheck from '../../util/errorStatusCheck'
+import { spotifyApi } from '../../util/costanti';
 
-const CLIENT_ID = '5ee1aac1104b4fd9b47757edf96aba44'//'238334b666894f049d233d6c1bb3c3fc'  //'1e56ed8e387f449c805e681c3f8e43b4'  // '61e53419c8a547eabe2729e093b43ae4'
-const spotifyApi = new SpotifyWebApi({
-  clientId: CLIENT_ID
-});
-
-function ModalDeletePlaylist({show, onClose, playlist, updatePlaylists}) {
+function ModalDeletePlaylist({show, onClose, playlist, setRemovedPlaylist}) {
    
     const userInfo = JSON.parse(localStorage.getItem('user'));  
     const accessToken = localStorage.getItem('accessToken')
@@ -24,7 +20,7 @@ function ModalDeletePlaylist({show, onClose, playlist, updatePlaylists}) {
          //chiamata per smettere di seguire = cancellare (spotify non rimuove veramente le playlist quindi non c'è nemmeno una chiamata per farlo)   
          spotifyApi.unfollowPlaylist(playlist.id)
          .then(res=>{
-             updatePlaylists()
+             setRemovedPlaylist()
              alert("Playlist Eliminata")
              onClose()
          })
