@@ -164,6 +164,31 @@ const updatePlaylists = () => {
   getAllPlaylist()                  //passo la funzione agli altri livelli, quando un livello la chiama vengono richieste le playlist nuove, all'interno di getAllPlaylist viene cambiato update quindi vengono anche filtrate 
 }
 
+//RIMOZIONE PLAYLIST DAL RENDERING_____________
+function removePlaylist(playlistId) {
+  playlistFiltered.map((playlist, index) => {
+    if(playlist.id === playlistId){
+      setPlaylistFiltered(prevPlaylists =>{
+        let newPlaylists = [...prevPlaylists];
+        newPlaylists[index] = null;
+        return newPlaylists
+      })
+    }
+  })
+
+  if(!searchResult) return 
+
+  searchResult.map((playlist,index)=>{
+    if(playlist.id === playlistId){
+      setSearchResult(prevPlaylists =>{
+        let newPlaylists = [...prevPlaylists];
+        newPlaylists[index] = null;
+        return newPlaylists
+      })
+    }
+  })
+}
+
 //RENDERIZZO IL BANNER__________________________________________________________________________________________________________________________________________________________________________________________________________
 
   //se non c'è il token restituisco un banner nella pagina personale altrimenti proseguo
@@ -180,7 +205,7 @@ const updatePlaylists = () => {
     </>
   );}
 
-//
+
 
 //RENDERIZZO PERSONAL AREA_________________________________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -222,25 +247,15 @@ const updatePlaylists = () => {
             <div>La ricerca ha prodotto i seguenti risultati:</div>
             {(searchResult.length===0)&&<div className="text-center">Nessun Risultato</div>}
             <div>
-            {searchResult.map((playlist, index) => (                    
-              playlist&&<PlaylistCardPersonalArea playlist={playlist} updatePlaylists={updatePlaylists} userInfo={currentUser} 
-                setRemovedPlaylist={()=>setSearchResult(prevPlaylists =>{
-                  let newPlaylists = [...prevPlaylists];    //imposto la playlist rimossa a null nella lista, se una playlist è null non viene renderizzata
-                  newPlaylists[index] = null;
-                  return newPlaylists
-                })}/>
+            {searchResult.map((playlist) => (                    
+              playlist&&<PlaylistCardPersonalArea playlist={playlist} updatePlaylists={updatePlaylists} userInfo={currentUser} setRemovedPlaylist={()=>removePlaylist(playlist.id)}/>
             ))}
             </div>
             <hr/>
             </div>}
           <div>
-            {playlistFiltered.map((playlist, index) => (                     
-              playlist&&<PlaylistCardPersonalArea playlist={playlist} updatePlaylists={updatePlaylists} userInfo={currentUser} 
-              setRemovedPlaylist={()=>setPlaylistFiltered(prevPlaylists =>{
-                let newPlaylists = [...prevPlaylists];
-                newPlaylists[index] = null;
-                return newPlaylists
-              })}/>
+            {playlistFiltered.map((playlist) => (                     
+              playlist&&<PlaylistCardPersonalArea playlist={playlist} updatePlaylists={updatePlaylists} userInfo={currentUser} setRemovedPlaylist={()=>removePlaylist(playlist.id)}/>
             ))}
           </div>
           
