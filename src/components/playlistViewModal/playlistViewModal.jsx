@@ -14,7 +14,7 @@ import { spotifyApi } from '../../util/costanti';
 
 
 
-const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter, createdPlaylist, updateSinglePlaylist}) => {
+const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter, createdPlaylist, setDeletedTracks}) => {
 
     if(!currentUser){
         currentUser = JSON.parse(localStorage.getItem('user'))
@@ -94,6 +94,7 @@ function removeTrack(trackUri, i){
             newTracks[i] = null;
             return newTracks;
         }); 
+        setDeletedTracks()
     })
     .catch(err => {
         ErrorStatusCheck(err)
@@ -171,10 +172,6 @@ async function importaPlaylist(){
 
 }
 
-const close = () => {
-    updateSinglePlaylist()
-    onClose()
-}
 //______________________________________________________________________________________________________________________________
 const[userModalShow, setUserModalShow] = useState(false)
 
@@ -198,7 +195,7 @@ const[userModalShow, setUserModalShow] = useState(false)
                         
                     </Card.Body>
                 </Card>
-                <Button className='button btn-dark' onClick={close}>Close</Button>
+                <Button className='button btn-dark' onClick={onClose}>Close</Button>
             </Modal.Header>
 
             <Modal.Body className='bg-dark'>

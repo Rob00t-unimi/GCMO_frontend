@@ -16,7 +16,7 @@ import { spotifyApi } from '../../util/costanti';
 
 
 
-function PlaylistCardPersonalArea({playlist, updatePlaylists, userInfo, setRemovedPlaylist, updateSinglePlaylist}){
+function PlaylistCardPersonalArea({playlist, updatePlaylists, userInfo, setRemovedPlaylist}){
 
 //INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
@@ -84,6 +84,16 @@ useEffect(() => {
         }
     }
     
+//quando chiudo la modale per vidualizzare il contenuto di una playlist, potrei aver cancellato dei brani quindi refresho le playlist
+//questo serve poichè una playlist senza una specifica copertina quando viene svuotata spotify rimuove la copertina
+const [deletedTracks, setDeletedTracks] = useState(false)
+useEffect(() => {
+    if(!modalShow&&deletedTracks) {
+        updatePlaylists()
+        setDeletedTracks(false)
+    }
+}, [modalShow])
+
 //RENDERING_______________________________________________________________________________________________________________________________________
 
     return(
@@ -124,7 +134,7 @@ useEffect(() => {
                 </Col>
             </Card>
             
-            {modalShow&&<PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} currentUser={userInfo} showFooter={null} updateSinglePlaylist={updateSinglePlaylist}/>}
+            {modalShow&&<PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} currentUser={userInfo} showFooter={null} setDeletedTracks={()=>setDeletedTracks(true)}/>}
             {modalDeleteShow&&<ModalDeletePlaylist show={modalDeleteShow}  onClose={() => {setModalDeleteShow(false)}} playlist={playlist} setRemovedPlaylist={setRemovedPlaylist}/> }
             {modalModifyShow&&<ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist} updatePlaylists={updatePlaylists}/>}
         </>
