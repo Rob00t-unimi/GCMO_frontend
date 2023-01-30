@@ -100,10 +100,16 @@ function PersonalArea() {
               uri: item.uri,
             }
         })
-        const newResults = playlistResults.concat(playlists)
+        let newResults = playlistResults.concat(playlists)
         setPlaylistResults(newResults)
         console.log("Playlist Results", playlists)
 
+        setOffset(offset + limit)
+
+        if(result.body.next === null) {
+          setOffset(0)
+        }
+        console.log(offset)
         if(currentUser){
           let onlyMyPlaylists = playlistResults.filter(item => {           //inserisco tutte le playlist create dall'utente nel local storage
           return item.ownerId === currentUser.id
@@ -111,12 +117,6 @@ function PersonalArea() {
           localStorage.setItem('playlist_list', JSON.stringify(onlyMyPlaylists));
         }
         setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano
-
-        setOffset(offset + limit)
-
-        if(result.body.next === null) {
-          setOffset(0)
-        }
 
       })
       .catch(err => {
@@ -173,13 +173,16 @@ useEffect(() => {
 
 const updatePlaylists = () => {
   setOffset(0)
-  .then(
-    getAllPlaylist() 
-  )               //passo la funzione agli altri livelli, quando un livello la chiama vengono richieste le playlist nuove, all'interno di getAllPlaylist viene cambiato update quindi vengono anche filtrate 
+  setPlaylistFiltered([])
+  setPlaylistResults([])
+  setTimeout(() => {
+    getAllPlaylist()
+  }, 500);
+             //passo la funzione agli altri livelli, quando un livello la chiama vengono richieste le playlist nuove, all'interno di getAllPlaylist viene cambiato update quindi vengono anche filtrate 
 }
 
-const updateSinglePlaylist = (playlistId) => {
-  spotifyApi.getPlaylist(playlistId)
+const updateSinglePlaylist = (playlist) => {
+  spotifyApi.getPlaylist(playlist.id)
   .then(res => {
     return {
       image: res.body.images && res.body.images.length > 0 ? res.body.images[0].url : null,
@@ -197,7 +200,7 @@ const updateSinglePlaylist = (playlistId) => {
     ErrorStatusCheck(err)
   })
 }
-
+console.log("playlistresults",playlistResults)
 //RENDERIZZO IL BANNER__________________________________________________________________________________________________________________________________________________________________________________________________________
 
   //se non c'è il token restituisco un banner nella pagina personale altrimenti proseguo
@@ -251,7 +254,7 @@ const updateSinglePlaylist = (playlistId) => {
             <Form.Control className="searchPersonalArea" type="search" placeholder="Cerca Playlist" value={searchWord} onChange={(e)=>{setSearchWord(e.target.value)}}/>
           </Col>
         </Row>   
-        <Container className="playlists">
+        {<Container className="playlists">
           {searchResult&&<div >
             <div>La ricerca ha prodotto i seguenti risultati:</div>
             {(searchResult.length===0)&&<div className="text-center">Nessun Risultato</div>}
@@ -262,10 +265,10 @@ const updateSinglePlaylist = (playlistId) => {
                   let newPlaylists = [...prevPlaylists];    //imposto la playlist rimossa a null nella lista, se una playlist è null non viene renderizzata
                   newPlaylists[index] = null;
                   return newPlaylists
-                })}
+                })} 
                 updateSinglePlaylist={()=>setSearchResult(prevPlaylists =>{
                   let newPlaylists = [...prevPlaylists];    //imposto la playlist cambiata con la nuova playlist restituita
-                  newPlaylists[index] = updateSinglePlaylist(playlist.id);
+                  newPlaylists[index] = updateSinglePlaylist(playlist);
                   return newPlaylists
                 })}
                 />
@@ -283,17 +286,17 @@ const updateSinglePlaylist = (playlistId) => {
               })}
               updateSinglePlaylist={()=>setPlaylistFiltered(prevPlaylists =>{
                 let newPlaylists = [...prevPlaylists];    //imposto la playlist cambiata con la nuova playlist restituita
-                newPlaylists[index] = updateSinglePlaylist(playlist.id);
+                newPlaylists[index] = updateSinglePlaylist(playlist);
                 return newPlaylists
               })}
               />
             ))}
           </div>
           {offset!==0&&<div className="text-center"><Button className="btn-light" onClick={getAllPlaylist}>Show more</Button></div>}
-        </Container>
+        </Container>}
       </div>
 
-      {modal&&<ModalCreatePlaylist show={modal} onClose={()=>{setModal(false)}} updatePlaylists={updatePlaylists}/>}
+      <ModalCreatePlaylist show={modal} onClose={()=>{setModal(false)}} updatePlaylists={updatePlaylists}/>
       {currentUser&&<ModalModifyUser show={userModal} onClose={()=>{setUserModal(false)}} userInfo={currentUser}/>}
 
       </>

@@ -73,8 +73,8 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                 </Modal.Body>
 
                 <Modal.Footer className='d-flex justify-content-center bg-dark text-light'>
-                    <Button className='btn-light btn-lg' onClick={async () => await onConfirmFunction()}> Salva </Button>
-                    <Button className='btn-success btn-lg' onClick={async () => await onConfirmFunctionAndGo()}> Salva e Aggiungi brani </Button>
+                    <Button className='btn-light btn-lg' onClick={async () => onConfirmFunction()}> Salva </Button>
+                    <Button className='btn-success btn-lg' onClick={async () => onConfirmFunctionAndGo()}> Salva e Aggiungi brani </Button>
                 </Modal.Footer>
             </Modal>
 
