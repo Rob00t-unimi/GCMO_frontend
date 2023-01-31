@@ -481,7 +481,7 @@ useEffect(() => {
       <NavigationBar/>
 
       {/* FORM DI RICERCA */}
-        <Container className="search d-flex flex-row">
+        <Container className="search d-flex flex-row ">
           <Form.Control disabled={optionCategory!==""} className="width-100" type="search mb-3" placeholder="Cerca Playlist o Traccia musicale" value={searchWord} onChange={(e)=>{setSearchWord(e.target.value)}}/>
         </Container>
 

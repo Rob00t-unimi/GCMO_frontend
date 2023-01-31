@@ -105,3 +105,29 @@
 .pencil{
     margin-left:3px;
 }
+
+.setPreferencesContainer {
+    position: fixed;
+    margin-left:10%;
+    border-radius: 15px;
+    margin-top: 5vh;
+    height: 93vh;
+    width: 80%;
+}
+.setPreferencesContainer h2{
+    padding-top: 2vh;
+}
+
+.setPreferencesButton {
+    position: absolute;
+    bottom: 3vh;
+    left: 48.5%
+}
+.setPreferencesSearch{
+    width: 50%;
+}
+.containerRisultati {
+    width: 100%;
+    height: 75vh;
+    overflow-y: auto;
+}

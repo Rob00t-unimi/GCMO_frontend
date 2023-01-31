@@ -23,7 +23,7 @@ function ButtonLogin(props) {
 
 
     if (localStorage.getItem('accessToken')) {      //se sono loggato mando alla personal area
-        window.location= '/personalArea'
+        window.location= '/preferences'
     }
 
     console.log('codeParam', codeParam)             //se non lo sono avvio la funzione useAuth passandogli il code ottenuto
