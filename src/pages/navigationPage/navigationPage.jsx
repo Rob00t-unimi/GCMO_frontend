@@ -343,11 +343,12 @@ useEffect(() => {
   //GET TOP PLAYLIST_____________________________________________________________________________________________________________
 
   const [topPlaylists, setTopPlaylists] = useState()
-  const [topTracks, setTopTracks] = useState()
-    
+  const [topTracks, setTopTracks] = useState()  
 
   function getTop() {
     const currentUser = JSON.parse(localStorage.getItem('user'))
+    if (!currentUser) return
+    
     spotifyApi.getFeaturedPlaylists({ limit: 10, offset: 0, country: currentUser.country })
     .then(result => {
       const topPlaylists = result.body.playlists.items.map(item => {   //ricevo e ciclo su una map di items
@@ -406,15 +407,18 @@ useEffect(() => {
   }
 }, [searchWord])
 
+
+
 //GET MY TOP TRACKS_______________________________________________________________________________________________________________________________________________________________________________________
 
 const [myTopTracks, setMyTopTracks] = useState()
+const [my50topTracks, setMy50topTracks] = useState()
 
 function getMyTopTracksFunction() {
   spotifyApi.getMyTopTracks({limit: 10, offset: 0})
-  .then(res => {
+  .then(res=>{
     const myCurrentTopTracks = res.body.items.map((item, index) => {
-      const duration = new Date(item.duration_ms).toISOString().slice(14, 19);     //prendo la durata in ms della traccia, creo l'oggetto data, converto in stringa, prendo solo dal carattere 14 a 19 ovvero ore, minuti, secondi
+      const duration = new Date(item.duration_ms).toISOString().slice(14, 19);
       return {
         image: item.album.images[0].url,
         name: item.name,
@@ -437,34 +441,6 @@ function getMyTopTracksFunction() {
 }
 
 
- //PLAYLIST CONSIGLIATE ___________________________________________________________________________________________________________________________________________________________________________________
-
-// function getPlaylistConsigliate(){
-//   //chiedo la lista di generi consigliati per l'utente 
-//   spotifyApi.getAvailableGenreSeeds()
-//   .then(res => {
-//       console.log("generiConsigliati", res)
-//       const generiConsigliati = res
-//       //chiedo le raccomandazioni
-//       spotifyApi.getRecommendations({ min_energy: 0.4, seed_genres: generiConsigliati, min_popularity: 50 })
-//       .then(data => {
-//         console.log("raccomandazioni", data)
-//       }) 
-//       .catch(e => {
-//         console.log("erroreRaccomandazioni", e)
-//         if (e.response.status === 401 || e.response.status === 403) {
-//             refreshToken()
-//         }
-//       })
-//     }) 
-//   .catch(e => {
-//     console.log("errore", e)
-//     if (e.response.status === 401 || e.response.status === 403) {
-//         refreshToken()
-//     }
-//   })
-// }
-
 
 //LIMITE DI RICERCA_______________________________________________________________________________________________________________________________________________________________________________________
 
@@ -483,7 +459,7 @@ useEffect(() => {
 
 //RENDERIZZO IL BANNER____________________________________________________________________________________________________________________________________________________________________________________
 
-    if (!(localStorage.getItem("accessToken"))||(localStorage.getItem("accessToken")==="undefined")) {
+    if (!(accessToken)) {
       return(
         <>
         <div className="wallpaper"> 
@@ -514,6 +490,28 @@ useEffect(() => {
 
       {/* LISTA DELLE PLAYLIST */}
       {lista&&<Playlist_list lista={lista} showFooter={showFooter} setShowFooter={()=>setShowFooter(true)}></Playlist_list>}
+
+      {/* CAROSELLO 10 DAILY MIX
+      {dailyMix&&(!searchWord||searchWord==="")&&optionCategory===""&&<Container fluid className="cardsTop" >
+            <hr/>
+            <div><h3>My Daily Mix</h3></div>
+            <Carousel indicators={false} controls={false}>
+              <Carousel.Item interval={5000}>
+                  <Row>
+                    {dailyMix.map((currentPlaylist, index) => (                    
+                        index<5 ? <Col><PlaylistCardVertical playlist={currentPlaylist} key={currentPlaylist.id} showFooter={showFooter} createdPlaylist={createdPlaylist}/></Col> : null
+                      ))}
+                  </Row>
+                </Carousel.Item>
+              <Carousel.Item interval={5000}>
+                  <Row>
+                    {dailyMix.map((currentPlaylist, index) => (                    
+                        index>=5 ? <Col><PlaylistCardVertical playlist={currentPlaylist} key={currentPlaylist.id} showFooter={showFooter} createdPlaylist={createdPlaylist}/></Col> : null
+                      ))}
+                  </Row>
+              </Carousel.Item>
+            </Carousel>
+        </Container>} */}
 
         {/* CAROSELLO MY TOP TRACK */}
         {myTopTracks&&(!searchWord||searchWord==="")&&optionCategory===""&&<Container fluid className="cardsTop" >
