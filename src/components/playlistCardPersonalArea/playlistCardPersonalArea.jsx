@@ -115,7 +115,7 @@ useEffect(() => {
                     { 
                     type === 'FOLLOWED' ? 
                                 <div className= ' d-flex'>
-                                    <div className='buttonCardOrizzontale' style={{width: "44px"}}/> {/*ho aggiunto questo div con la stessa larghezza di uno degli altri btn in modo da avere tutto allineato */}
+                                    <div className='buttonCardOrizzontale' style={{width: "100px"}}/> {/*ho aggiunto questo div con la stessa larghezza di uno degli altri btn in modo da avere tutto allineato */}
                                     <Button className='buttonCardOrizzontale' onClick={()=>setModalDeleteShow(true)}><StarFill/></Button>
                                 </div> :
                     type === 'PUBLIC' ? 

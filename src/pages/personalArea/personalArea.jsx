@@ -25,10 +25,7 @@ function PersonalArea() {
   const [filterName, setFilterName] = useState('ALL')   //nome dei filtri dei button nella pagina personale
   const [modal, setModal] = useState(false)             //impostiamo uno stato iniziale alla modale --> false chiusa, true aperta
   const [userModal, setUserModal] = useState(false)             //impostiamo uno stato iniziale alla modale --> false chiusa, true aperta
-  const [playlistResults, setPlaylistResults] = useState([])     //risultato alla chiamata per ottenere le playlist
-  const [playlistFiltered, setPlaylistFiltered] = useState([])  //playlist filtrate in base al filtro attuale
-  const [limit, setLimit] = useState(50)                        //limite di quante playlist max posso chiedere 
-  const [update, setUpdate] = useState(false)
+  
   
   const [currentUser, setCurrentUser] = useState();   //dati attuali dell'utente
 
@@ -73,6 +70,10 @@ function PersonalArea() {
 
 //OTTENERE LE PLAYLIST____________________________________________________________________________________________________________________________________________________________________________________________________________________
 
+  const [playlistResults, setPlaylistResults] = useState([])     //risultato alla chiamata per ottenere le playlist
+  const [playlistFiltered, setPlaylistFiltered] = useState([])  //playlist filtrate in base al filtro attuale
+  const [update, setUpdate] = useState(false)
+
    useEffect(() => {  
     if(localStorage.getItem('createdPlaylist')) {
       localStorage.removeItem('createdPlaylist')
@@ -80,39 +81,62 @@ function PersonalArea() {
     getAllPlaylist()
   }, []);
   
-  const getAllPlaylist = () => {
+  async function getAllPlaylist(){
 
-    spotifyApi.getUserPlaylists({limit: limit})
-    .then(result => {
-        const playlists = result.body.items.map(item => {   //ricevo e ciclo su una map di items
-              return {
-              image: item.images && item.images.length > 0 ? item.images[0].url : null,
-              name: item.name,
-              description: item.description ? item.description : null,
-              id: item.id,
-              ownerId: item.owner.id,
-              ownerName: item.owner.display_name,
-              public: item.public,
-              totalTracks: item.tracks.total,
-              uri: item.uri,
-            }
-        })
-        setPlaylistResults(playlists)
-        console.log("Playlist Results", playlists)
+  const limit = 50
+  let offset = 0
+  let playlistsArr = []
 
-        if(currentUser){
-          let onlyMyPlaylists = playlists.filter(item => {           //inserisco tutte le playlist create dall'utente nel local storage
-          return item.ownerId === currentUser.id
-          });
-          localStorage.setItem('playlist_list', JSON.stringify(onlyMyPlaylists));
+  try {
+    while(true) {     //ai fini del progetto va bene ma con le limitazioni di rating di spotify api nella versione gratuita se si fanno molte iterazioni (si hanno 50*x playlists crea errore 429)
+    const result = await spotifyApi.getUserPlaylists({limit: limit, offset: offset})
+      console.log(result)      
+      playlistsArr = playlistsArr.concat(result.body.items.map(item => {   //ricevo e ciclo su una map di items
+        return {
+          image: item.images && item.images.length > 0 ? item.images[0].url : null,
+          name: item.name,
+          description: item.description ? item.description : null,
+          id: item.id,
+          ownerId: item.owner.id,
+          ownerName: item.owner.display_name,
+          public: item.public,
+          totalTracks: item.tracks.total,
+          uri: item.uri,
         }
-        setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano
-      })
-      .catch(err => {
-        ErrorStatusCheck(err)
-    })
-  }
+      }))
+      offset += limit
+      if(result.body.next === null){
+        break
+      }
+    }
 
+    setPlaylistResults(playlistsArr)
+
+    setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano
+
+    if(currentUser){
+        let onlyMyPlaylists = playlistResults.filter(item => {           //inserisco tutte le playlist create dall'utente nel local storage
+        return item.ownerId === currentUser.id
+        });
+        localStorage.setItem('playlist_list', JSON.stringify(onlyMyPlaylists));
+      }
+
+  } catch (err) {
+    ErrorStatusCheck(err)
+  }
+}
+    
+
+
+
+//METODO PER AGGIORNARE LE PLAYLIST________________________________________________________________________________________________________________________________________________________________________________
+
+function updatePlaylists (){
+  setPlaylistResults([])
+  setPlaylistFiltered([])
+  getAllPlaylist();
+                 //passo la funzione agli altri livelli, quando un livello la chiama vengono richieste le playlist nuove, all'interno di getAllPlaylist viene cambiato update quindi vengono anche filtrate 
+}
 
 //FILTRARE LE PLAYLIST______________________________________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -156,13 +180,6 @@ useEffect(() => {
        setSearchResult(null)
     }
 }, [searchWord]);
-
-
-//METODO PER AGGIORNARE LE PLAYLIST________________________________________________________________________________________________________________________________________________________________________________
-
-const updatePlaylists = () => {
-  getAllPlaylist()                  //passo la funzione agli altri livelli, quando un livello la chiama vengono richieste le playlist nuove, all'interno di getAllPlaylist viene cambiato update quindi vengono anche filtrate 
-}
 
 //RIMOZIONE PLAYLIST DAL RENDERING_____________
 function removePlaylist(playlistId) {
@@ -258,7 +275,6 @@ function removePlaylist(playlistId) {
               playlist&&<PlaylistCardPersonalArea playlist={playlist} updatePlaylists={updatePlaylists} userInfo={currentUser} setRemovedPlaylist={()=>removePlaylist(playlist.id)}/>
             ))}
           </div>
-          
         </Container>
       </div>
 
