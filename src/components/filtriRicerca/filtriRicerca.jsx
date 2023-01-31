@@ -29,7 +29,7 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
     
     useEffect(() => {
 
-        spotifyApi.getCategories()
+        spotifyApi.getCategories({limit: 50})
         .then(res =>{
             const categories = res.body.categories.items.map(item=>{            // è possibile usare le categorie per richiedere un elenco di playlist di quella categoria
                 return {                                                        // oppure per cercare canzoni tramite parola chiave e genere
