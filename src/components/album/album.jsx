@@ -2,7 +2,7 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import { Button, Card, Col } from 'react-bootstrap';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { StarFill, Star} from 'react-bootstrap-icons';
+import { StarFill, Star, Heart, HeartFill} from 'react-bootstrap-icons';
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import AlbumViewModal from '../albumViewModal/albumViewModal';
 import ErrorStatusCheck from '../../util/errorStatusCheck'
@@ -100,10 +100,10 @@ function switchFollow(){
                     { 
                     type === 'FOLLOWED' ? 
                                 <div className='d-flex'>
-                                    <Button className='buttonCardOrizzontale ' onClick={switchFollow}><StarFill/></Button> 
+                                    <Button className='buttonCardOrizzontale btn-dark' onClick={switchFollow}><HeartFill/></Button> 
                                 </div> :
                                 <div className='d-flex'>
-                                    <Button className='buttonCardOrizzontale' onClick={switchFollow}><Star/></Button>
+                                    <Button className='buttonCardOrizzontale btn-dark' onClick={switchFollow}><Heart/></Button>
                                 </div>
                     }
                 </Col>

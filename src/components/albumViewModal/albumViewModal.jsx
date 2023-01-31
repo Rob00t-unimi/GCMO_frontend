@@ -7,7 +7,8 @@ import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import ErrorStatusCheck from '../../util/errorStatusCheck'
 import spotifyLogo from "../../assets/SpotifyLogo01.png"
 import { spotifyApi } from '../../util/costanti';
-
+import spotifyLogoMini from "../../assets/SpotifyLogo02.png"
+import { Heart, HeartFill } from 'react-bootstrap-icons';
 
 
 
@@ -47,7 +48,7 @@ async function getAllTracks() {
         while (true) {
             let res = await spotifyApi.getAlbumTracks(album.id, { offset, limit });
       
-            const tracce = res.body.items.map((trackInfo => {
+            let tracce = res.body.items.map((trackInfo => {
               const duration = new Date(trackInfo.duration_ms).toISOString().slice(14, 19);     //prendo la durata in ms della traccia, creo l'oggetto data, converto in stringa, prendo solo dal carattere 14 a 19 ovvero ore, minuti, secondi
               return {
                   id: trackInfo.id,
@@ -57,6 +58,12 @@ async function getAllTracks() {
                   uri: trackInfo.uri,
               }
           }))
+
+            tracce = await Promise.all(tracce.map(async (item) => {
+            const result = await spotifyApi.containsMySavedTracks([item.id])
+                return {...item, followed: result.body[0]}
+            }))
+
             allTracks = allTracks.concat(tracce);
         
             if (res.body.next === null) {
@@ -75,7 +82,6 @@ async function getAllTracks() {
   useEffect(() =>{
     getAllTracks()
   }, [])
-
 
 
 //RICERCA GENERI_______________________________________________________________________________________________________________
@@ -174,6 +180,43 @@ async function importaAlbum(){
 
 }
 
+//salvare una traccia
+function switchFollow(currentTrack, i) {
+  
+    if (currentTrack.followed) {
+      // chiamata per smettere di seguire
+      spotifyApi
+        .addToMySavedTracks([currentTrack.id])
+        .then((res) => {
+          setTracks((prevTracks) => {
+            let tracce = [...prevTracks];
+            tracce[i].followed = false;
+            return tracce;
+          });
+        })
+        .catch((err) => {
+          ErrorStatusCheck(err);
+        });
+    } else {
+      // chiamata per seguire
+      spotifyApi
+        .removeFromMySavedTracks([currentTrack.id])
+        .then((res) => {
+            console.log(res)
+          setTracks((prevTracks) => {
+            let tracce = [...prevTracks];
+            tracce[i].followed = true;
+            return tracce;
+          });
+        })
+        .catch((err) => {
+          ErrorStatusCheck(err);
+        });
+    }
+  }
+  
+
+console.log(tracks)
 
 
     
@@ -186,13 +229,11 @@ async function importaAlbum(){
                     <Card.Body>
                         <Card.Title> {album.name} </Card.Title>
                         <div>{album.artists.join(', ')}</div>
-                        <Button className='btn-light infoModalView' onClick={importaAlbum}>Importa album in una playlist</Button>
                         <div className='d-flex infoModalView'>
                             <div>
                                 <div>Release date: {album.releaseDate}</div>
                                 {artistGenres&&<div>Generi: <i>{artistGenres.join(', ')}</i></div>}
                             </div>
-                            <a className="spotifyLinkBtn btn btn-success btn-sm" href={album.uri} target="_blank" ><img src={spotifyLogo} /></a>
                         </div>
                     </Card.Body>
                 </Card>
@@ -208,9 +249,14 @@ async function importaAlbum(){
 
                                 return (
                                     <tr key={item.id} >
-                                        <td> {item.duration}</td>
+                                        <td>
+                                            <a href={item.uri} target="_blank" className='btn btn-dark spotifyLinkBtnMini'><img src={spotifyLogoMini} /></a>
+                                            {!item.followed&&<Button className='btn-dark' onClick={()=>switchFollow(item, index)}><Heart></Heart></Button>}
+                                            {item.followed&&<Button className='btn-dark' onClick={()=>switchFollow(item, index)}><HeartFill></HeartFill></Button>}
+                                        </td>
                                         <td>{item.name}</td>
-                                        <td> {item.artists.join(', ')}</td>
+                                        <td><i>{item.artists.join(', ')}</i> </td>
+                                        <td> {item.duration}</td>
                                         {(!traccePlaylist.includes(item.id))&&addBtn&&addBtn[index]&&<td><Button className='btn-success' onClick={() => {addTrack(item, index)}}>Add</Button></td>}
                                     </tr>
                                 );
@@ -223,6 +269,8 @@ async function importaAlbum(){
 
             </Modal.Body>
             <Modal.Footer className='bg-dark'>
+                <Button className='btn-light btnImport' onClick={importaAlbum}>Importa album in una playlist</Button>
+                <a className="spotifyLinkBtn btn btn-success btn-sm" href={album.uri} target="_blank" ><img src={spotifyLogo} /></a>
             </Modal.Footer>
         </Modal>
     )

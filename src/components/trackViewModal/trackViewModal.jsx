@@ -63,15 +63,15 @@ useEffect(() => {
                         <div style={{height: "2vh" }}></div>
 
                         <div style={{width: "43vh" }}>{artistsGenres&&<div>[ {artistsGenres.join(', ')} ]</div>}</div>
-
-                        <a className="spotifyLinkBtn btn btn-success btn-sm" href={currentTrack.uri} target="_blank" ><img src={spotifyLogo} /></a>
                     </Card.Body>
 
                 </Card>
                 <Button className='button btn-dark' onClick={onClose}>Close</Button>
             </Modal.Header>
-
-            <Modal.Footer className='bg-dark'/>
+                
+            <Modal.Footer className='bg-dark'>
+                <a className="spotifyLinkBtn btn btn-success btn-sm" href={currentTrack.uri} target="_blank" ><img src={spotifyLogo} /></a>
+            </Modal.Footer>
         </Modal>
     )
 }

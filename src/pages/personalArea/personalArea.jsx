@@ -114,17 +114,21 @@ function PersonalArea() {
 
     setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano
 
-    if(currentUser){
-        let onlyMyPlaylists = playlistResults.filter(item => {           //inserisco tutte le playlist create dall'utente nel local storage
-        return item.ownerId === currentUser.id
-        });
-        localStorage.setItem('playlist_list', JSON.stringify(onlyMyPlaylists));
-      }
 
   } catch (err) {
     ErrorStatusCheck(err)
   }
 }
+
+useEffect(() => {
+  if(currentUser){
+    let onlyMyPlaylists = playlistResults.filter(item => {           //inserisco tutte le playlist create dall'utente nel local storage
+    return item.ownerId === currentUser.id
+    });
+    localStorage.setItem('playlist_list', JSON.stringify(onlyMyPlaylists));
+  }
+}, [playlistResults])
+
     
 
 
@@ -184,7 +188,7 @@ useEffect(() => {
 //RIMOZIONE PLAYLIST DAL RENDERING_____________
 function removePlaylist(playlistId) {
   playlistFiltered.map((playlist, index) => {
-    if(playlist.id === playlistId){
+    if(playlist&&playlist.id === playlistId){
       setPlaylistFiltered(prevPlaylists =>{
         let newPlaylists = [...prevPlaylists];
         newPlaylists[index] = null;
@@ -205,6 +209,8 @@ function removePlaylist(playlistId) {
     }
   })
 }
+
+console.log(playlistFiltered)
 
 //RENDERIZZO IL BANNER__________________________________________________________________________________________________________________________________________________________________________________________________________
 

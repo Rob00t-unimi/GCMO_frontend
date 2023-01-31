@@ -49,6 +49,7 @@ function switchFollow(){
         //chiamata per smettere di seguire     
         spotifyApi.addToMySavedTracks([currentTrack.id])
         .then(res=>{
+            console.log(res)
             setType(false)
         })
         .catch(err => {
@@ -104,7 +105,7 @@ function addTrack(){
     .then(res=>{
         console.log("added",res)
         setAddBtn(false)
-        alert("Playlist aggiunta correttamente")
+        alert("Traccia aggiunta correttamente")
     })
     .catch(err => {
         ErrorStatusCheck(err)
@@ -134,20 +135,22 @@ const [show, setShow] = useState(false)
                     </div>
             </div>
                 <Col className="d-flex">
-                    <Col>
-                        {addBtn&&<div className="d-flex"><Button className="buttonCardOrizzontale btn-success" onClick={addTrack}><Plus></Plus></Button></div>}
-                        {!addBtn&&<div className="buttonCardOrizzontale" style={{width: "44px"}}/>}
-                    </Col>
+                    {!addBtn&&<Col>
+                        <div className="buttonCardOrizzontale" style={{width: "44px"}}/>
+                    </Col>}
                     <Col>
                         {type  ? 
                             <div className=' d-flex'>
-                                <Button className='buttonCardOrizzontale ' onClick={switchFollow}><HeartFill/></Button> 
+                                <Button className='buttonCardOrizzontale btn-dark ' onClick={switchFollow}><HeartFill/></Button> 
                             </div> :
                             <div className=' d-flex'>
-                                <Button className='buttonCardOrizzontale' onClick={switchFollow}><Heart/></Button>
+                                <Button className='buttonCardOrizzontale btn-dark' onClick={switchFollow}><Heart/></Button>
                             </div>
                         }
                     </Col>
+                    {addBtn&&<Col>
+                        <div className="d-flex"><Button className="buttonCardOrizzontale btn-success" onClick={addTrack}><Plus></Plus></Button></div>
+                    </Col>}
                 </Col>
                 {show&&<TrackViewModal show={show} onClose={()=>setShow(false)} currentTrack={currentTrack}></TrackViewModal>}
         </Card>

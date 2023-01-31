@@ -81,11 +81,25 @@
 
 .spotifyLinkBtn {
     width: 10rem;
-    position: absolute;
-    bottom: 0.5vh;
-    right: 0.5vh;
+}
+.spotifyLinkBtnMini  {
+    width: 50px;
+    margin-right: 1rem;
+}
+.spotifyLinkBtnMini  img{
+    width: 100%;
 }
 
 .spotifyLinkBtn img{
     width: 80%;
+}
+
+
+.btnUserName {
+    transform: translateX(-0.8rem);
+}
+
+.btnImport {
+    height: 3.5vh;
+    margin-right: 1rem;
 }

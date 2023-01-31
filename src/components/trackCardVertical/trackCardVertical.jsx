@@ -102,7 +102,7 @@ function addTrack(){
     .then(res=>{
         console.log("added",res)
         setAddBtn(false)
-        alert("Playlist aggiunta correttamente")
+        alert("Traccia aggiunta correttamente")
     })
     .catch(err => {
         ErrorStatusCheck(err)

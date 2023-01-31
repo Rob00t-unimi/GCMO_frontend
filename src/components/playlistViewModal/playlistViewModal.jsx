@@ -14,7 +14,7 @@ import { spotifyApi } from '../../util/costanti';
 
 
 
-const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter, createdPlaylist, setDeletedTracks}) => {
+const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter, createdPlaylist, setDeletedTracks, updatePlaylists}) => {
 
     if(!currentUser){
         currentUser = JSON.parse(localStorage.getItem('user'))
@@ -35,6 +35,8 @@ const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter,
 const [tracks, setTracks] = useState([])
 
 const [offset, setOffset] = useState(0)
+
+const [showImport, setShowImport] = useState (false)
 
 function getAllTracks() {
     let limit = 50;
@@ -64,6 +66,7 @@ function getAllTracks() {
         setOffset(offset + limit);
 
         if (res.body.next === null) {
+            setShowImport(true)
             setOffset(0)
         } 
               
@@ -149,18 +152,20 @@ function addTrack(currentTrack, i){
  
 
 
-//IMPORTARE IN UNA NUOVA PLAYLIST_____//MAX 50 TRACCE PER I LIMITI DI RICHIESTE __________________________________________________________________________________________________
-async function importaPlaylist(){
+//IMPORTARE IN UNA NUOVA PLAYLIST_____//MAX 50 TRACCE PER I LIMITI DI RICHIESTE ________//se si carica una playlist più grande cliccando ripetutamente show more è possibile anche per playlist con + di 50 tracce__________________________________________________________________________________________
+function importaPlaylist(){
     const tracce = tracks.map(track => track.uri)
-    await spotifyApi.createPlaylist(playlist.name, {public: false})
+    spotifyApi.createPlaylist(playlist.name, {public: false})
     .then(res=>{
 
         spotifyApi.addTracksToPlaylist(res.body.id, tracce)
         .then(data => {
             alert("Playlist importata correttamente.")
+            updatePlaylists()
+
         })
         .catch(err => {
-            alert("Non è stato possibile importare la Playlist.")
+            alert("Non è stato possibile importare la Playlist, assicurati che la Playlist non sia vuota.")
             ErrorStatusCheck(err)
             spotifyApi.unfollowPlaylist(res.body.id)
         })
@@ -181,14 +186,13 @@ const[userModalShow, setUserModalShow] = useState(false)
                 <Card className="headerCardModalView d-flex flex-row bg-dark text-light"  >
                     <Card.Img className="imgCardModalView" src={playlist.image?playlist.image:playlistImage} />
                     <Card.Body>
-                        <Card.Title> {playlist.name} </Card.Title>
-                        <a className='btn btn-dark' onClick={()=>setUserModalShow(true)}>{playlist.ownerName}</a>
+                        <Card.Title > {playlist.name} </Card.Title>
+                        <a className='btn btn-dark btnUserName' onClick={()=>setUserModalShow(true)}>{playlist.ownerName}</a>
 
                         {playlist.description && <p>{playlist.description}</p>}
-                        <Button className='btn-light' onClick={importaPlaylist}>Importa in nuova playlist</Button>
                         <div className='d-flex'>
                             <div></div>
-                            <a className="spotifyLinkBtn btn btn-success btn-sm" href={playlist.uri} target="_blank" ><img src={spotifyLogo} /></a>
+                            
                             
                             {/* tags....genere... */}
                         </div>
@@ -227,6 +231,10 @@ const[userModalShow, setUserModalShow] = useState(false)
                 {userModalShow&&<UserModalView playlistOwnerId={playlist.ownerId} show={userModalShow} onClose={()=>setUserModalShow(false)} showFooter={showFooter} createdPlaylist={createdPlaylist}></UserModalView>}
             </Modal.Body>
             <Modal.Footer className='bg-dark'>
+                <div className='d-flex'>
+                {showImport&&tracks.length>0&&<div><Button className='btn-light btnImport' onClick={importaPlaylist}>Importa in nuova playlist</Button></div>}
+                <a className="spotifyLinkBtn btn btn-success btn-sm" href={playlist.uri} target="_blank" ><img src={spotifyLogo} /></a>
+                </div>
             </Modal.Footer>
         </Modal>
     )
