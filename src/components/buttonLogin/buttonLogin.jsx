@@ -21,8 +21,9 @@ function ButtonLogin(props) {
 
     const codeParam = new URLSearchParams(window.location.search).get("code")
 
-
-    if (localStorage.getItem('accessToken')) {      //se sono loggato mando alla personal area
+    if((localStorage.getItem("visited")==="true")&&(localStorage.getItem('accessToken'))){
+        window.location ='/personalArea'
+    } else if (localStorage.getItem('accessToken')) {      //se sono loggato mando alla personal area
         window.location= '/preferences'
     }
 

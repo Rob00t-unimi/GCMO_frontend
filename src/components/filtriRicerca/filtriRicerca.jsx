@@ -104,7 +104,7 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
         <hr />
         <div className="d-flex flex-row">
             <Col><h6 className="text-center">Numero di risultati:</h6></Col>
-            <Col className="text-end"><input className="text-center inserimentoNumero" type="number" min={5} max={25} placeholder={5} onChange={(e)=>{changeLimit(e.target.value)}}></input></Col>
+            <Col className="text-end"><input className="text-center inserimentoNumero" type="number" min={5} max={50} placeholder={5} onChange={(e)=>{changeLimit(e.target.value)}}></input></Col>
         </div>
         <hr />
     </Col>

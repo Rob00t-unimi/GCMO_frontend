@@ -26,6 +26,7 @@ function TrackCardVertical({currentTrack, showFooter, currentPlaylist}){
     const [type, setType] = useState();
 
 
+
 //controllo che tipo di traccia è ______________________________________________________________
     useEffect(() => {
 
@@ -102,7 +103,7 @@ function addTrack(){
     .then(res=>{
         console.log("added",res)
         setAddBtn(false)
-        alert("Traccia aggiunta correttamente")
+        //setToast("Traccia aggiunta correttamente")
     })
     .catch(err => {
         ErrorStatusCheck(err)
@@ -114,6 +115,7 @@ const [show, setShow] = useState(false)
 //___________________________________________________________________________________________________________________________
 
     return(
+        <>
         <Card className='cardVertical bg-dark text-light' >
             <div className='btn btn-dark text-light text-start' onClick={() => { setShow(true) }}>
                     <Card.Img src={currentTrack.image}/>
@@ -137,6 +139,7 @@ const [show, setShow] = useState(false)
             </div>
                 {show&&<TrackViewModal show={show} onClose={()=>setShow(false)} currentTrack={currentTrack}></TrackViewModal>}
         </Card>
+        </>
     )
 }
 

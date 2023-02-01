@@ -12,8 +12,6 @@ import { spotifyApi } from '../../util/costanti';
 
 
 
-
-
 const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter, createdPlaylist, setDeletedTracks, updatePlaylists}) => {
 
     if(!currentUser){
@@ -29,6 +27,7 @@ const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter,
         if (!accessToken) return;
         spotifyApi.setAccessToken(accessToken);
     }, [accessToken])
+
 
 //________________________________________________________________________________________________________________________
 
@@ -143,7 +142,7 @@ function addTrack(currentTrack, i){
         })
         setAddBtn(newAddbtn)
 
-        alert("Playlist aggiunta correttamente")
+        //setToast("Traccia aggiunta correttamente")
     })
     .catch(err => {
         ErrorStatusCheck(err)
@@ -153,31 +152,43 @@ function addTrack(currentTrack, i){
 
 
 //IMPORTARE IN UNA NUOVA PLAYLIST_____//MAX 50 TRACCE PER I LIMITI DI RICHIESTE ________//se si carica una playlist più grande cliccando ripetutamente show more è possibile anche per playlist con + di 50 tracce__________________________________________________________________________________________
-function importaPlaylist(){
-    const tracce = tracks.map(track => track.uri)
-    spotifyApi.createPlaylist(playlist.name, {public: false})
-    .then(res=>{
-
-        spotifyApi.addTracksToPlaylist(res.body.id, tracce)
-        .then(data => {
-            alert("Playlist importata correttamente.")
-            updatePlaylists()
-
-        })
-        .catch(err => {
-            alert("Non è stato possibile importare la Playlist, assicurati che la Playlist non sia vuota.")
+async function importaPlaylist(){
+    const tracce = tracks.map(track => track.uri)                                        //con una richiesta si possono aggiungere massimo 100 tracce
+    try {
+        const res = await spotifyApi.createPlaylist(playlist.name, {public: false})
+        try {
+            for (let inizio = 0; inizio < tracce.length; inizio+=100) {                     //faccio un ciclo per fare più chiamate in caso ci siano più di 100 tracce
+                let arrayDaInviare
+                if (tracce.length <= 100) {
+                    arrayDaInviare = tracce
+                } else {
+                    if(tracce.length-inizio > 100) {
+                        arrayDaInviare = tracce.slice(inizio, inizio+100)
+                    } else {
+                        arrayDaInviare = tracce.slice(inizio, tracce.lenght)
+                    }
+                }
+                await spotifyApi.addTracksToPlaylist(res.body.id, arrayDaInviare)
+            }
+            //setToast("Playlist importata correttamente.")
+            if(updatePlaylists) {
+                updatePlaylists()
+            }
+        } catch (err) {
+            //setToast("Non è stato possibile importare la Playlist.")
             ErrorStatusCheck(err)
-            spotifyApi.unfollowPlaylist(res.body.id)
-        })
-    })
-    .catch(err => {
-        alert("Non è stato possibile importare la Playlist.")
+            if(res){
+                await spotifyApi.unfollowPlaylist(res.body.id)        //se non è stato possibile importare le tracce elimino la playlist creata
+            }
+        }     
+    } catch (err) {
+        //setToast("Non è stato possibile importare la Playlist.")
         ErrorStatusCheck(err)
-    })
-
+    }
 }
 
 //______________________________________________________________________________________________________________________________
+
 const[userModalShow, setUserModalShow] = useState(false)
 
     return (

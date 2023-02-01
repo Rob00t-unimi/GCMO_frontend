@@ -13,7 +13,6 @@ import { Heart, HeartFill } from 'react-bootstrap-icons';
 
 
 
-
 const AlbumViewModal = ({ show, onClose, album, currentUser, showFooter, createdPlaylist}) => {
 
     if(!currentUser){
@@ -30,7 +29,7 @@ const AlbumViewModal = ({ show, onClose, album, currentUser, showFooter, created
         spotifyApi.setAccessToken(accessToken);
     }, [accessToken])
 
-//PAGINAZIONE________________________________________________________________________________________________________________________
+//________________________________________________________________________________________________________________________
 
 const [tracks, setTracks] = useState(null)
 
@@ -148,8 +147,7 @@ function addTrack(currentTrack, i){
             }
         })
         setAddBtn(newAddbtn)
-
-        alert("Playlist aggiunta correttamente")
+        //setToast(true, "traccia aggiunta correttamente")
     })
     .catch(err => {
         ErrorStatusCheck(err)
@@ -158,23 +156,23 @@ function addTrack(currentTrack, i){
 
 
 //IMPORTARE L'INTERO ALBUM IN UNA PLAYLIST_______________________________________________________________________________________________________
-async function importaAlbum(){
+function importaAlbum(){
     const tracce = tracks.map(track => track.uri)
-    await spotifyApi.createPlaylist(album.name, {public: false})
-    .then(res=>{
+    spotifyApi.createPlaylist(album.name, {public: false})        //limite di canzoni per l'import = 100, tuttavia gli album non hanno quasi mai più di 100 tracce 
+    .then(res=>{                                    
 
         spotifyApi.addTracksToPlaylist(res.body.id, tracce)
         .then(data => {
-            alert("Album importato correttamente.")
+            //setToast(true, "Album importato correttamente.")
         })
         .catch(err => {
-            alert("Non è stato possibile importare l'album.")
+            //setToast(true, "Non è stato possibile importare l'album.")
             ErrorStatusCheck(err)
             spotifyApi.unfollowPlaylist(res.body.id)
         })
     })
     .catch(err => {
-        alert("Non è stato possibile importare l'album.")
+        //setToast(true, "Non è stato possibile importare l'album.")
         ErrorStatusCheck(err)
     })
 
@@ -222,6 +220,7 @@ console.log(tracks)
     
 
     return (
+        <>
         <Modal show={show} size="xl" centered>
             <Modal.Header className='bg-dark'>
                 <Card className="headerCardModalView d-flex flex-row bg-dark text-light"  >
@@ -273,6 +272,7 @@ console.log(tracks)
                 <a className="spotifyLinkBtn btn btn-success btn-sm" href={album.uri} target="_blank" ><img src={spotifyLogo} /></a>
             </Modal.Footer>
         </Modal>
+        </>
     )
 }
 

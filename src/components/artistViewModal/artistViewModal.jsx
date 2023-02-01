@@ -9,7 +9,6 @@ import { spotifyApi } from '../../util/costanti';
 
 
 
-
 const ArtistViewModal = ({ show, onClose, artist, currentUser }) => {
 
     if(!currentUser){
@@ -38,8 +37,8 @@ const ArtistViewModal = ({ show, onClose, artist, currentUser }) => {
 const [tracks, setTracks] = useState()
 
     useEffect(() => {
-        const country = currentUser.country
-        spotifyApi.getArtistTopTracks(artist.id, country)
+        const country = currentUser ? currentUser.country : null
+        spotifyApi.getArtistTopTracks(artist.id, country ? country : "IT" )
         .then(res => {
             console.log(res)
             const tracce = res.body.tracks.map((trackInfo => {
@@ -62,15 +61,29 @@ const [tracks, setTracks] = useState()
     }, [])
 
 
+
 //______________________________________________________________________________________________________________________________
 
+function addTrack(currentTrack){
+    const currentPlaylist = JSON.parse(localStorage.getItem("createdPlaylist"))
+    if (currentPlaylist) {
+        spotifyApi.addTracksToPlaylist(currentPlaylist.id, [currentTrack.uri])
+    .then(res=>{
+        console.log("added",res)
+        setAddBtn(false)
+        //setToast(true, "Traccia aggiunta correttamente")
+    })
+    .catch(err => {
+        ErrorStatusCheck(err)
+    })
+    }
+}
 
 
     
 
     return (
         <Modal show={show} size="xl" centered>
-
             <Modal.Header className='bg-dark'>
                 
                 <Container className='d-flex' >
@@ -108,23 +121,6 @@ const [tracks, setTracks] = useState()
         </Modal>
     )
 
-
-    
-
-    function addTrack(currentTrack){
-        const currentPlaylist = JSON.parse(localStorage.getItem("createdPlaylist"))
-        if (currentPlaylist) {
-            spotifyApi.addTracksToPlaylist(currentPlaylist.id, [currentTrack.uri])
-        .then(res=>{
-            console.log("added",res)
-            setAddBtn(false)
-            alert("Playlist aggiunta correttamente")
-        })
-        .catch(err => {
-            ErrorStatusCheck(err)
-        })
-        }
-    }
 }
 
 export default ArtistViewModal

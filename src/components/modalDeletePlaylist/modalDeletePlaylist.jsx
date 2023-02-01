@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import ErrorStatusCheck from '../../util/errorStatusCheck'
 import { spotifyApi } from '../../util/costanti';
 
+
 function ModalDeletePlaylist({show, onClose, playlist, setRemovedPlaylist}) {
    
     const userInfo = JSON.parse(localStorage.getItem('user'));  
@@ -13,7 +14,6 @@ function ModalDeletePlaylist({show, onClose, playlist, setRemovedPlaylist}) {
         spotifyApi.setAccessToken(accessToken);
     }, [accessToken])
 
-
         
     function deletePlaylist() {
 
@@ -21,7 +21,7 @@ function ModalDeletePlaylist({show, onClose, playlist, setRemovedPlaylist}) {
          spotifyApi.unfollowPlaylist(playlist.id)
          .then(res=>{
              setRemovedPlaylist()
-             alert("Playlist Eliminata")
+             //setToast(true, "Playlist eliminata")
              onClose()
          })
          .catch(err => {

@@ -1,22 +1,12 @@
-import FooterElement from "../components/footerElement/footerElement";
 import React, { useState, useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.min.css' ;
-import NavigationBar from '../components/navigationBar/navigationBar'
-import ButtonLogin from '../components/buttonLogin/buttonLogin'
 import { Form, Container, Row, Col, Button, Carousel} from "react-bootstrap";
-import SpotifyWebApi from 'spotify-web-api-node';
-import PlaylistCardNavigationPage from "../components/playlistCardNavigationPage/playlistCardNavigationPage"
-import PlaylistCardVertical from "../components/playlistCardVertical/playlistCardVertical"
 import TrackCardHorizontal from "../components/trackCardHorizontal/trackCardHorizontal";
 import TrackCardVertical from "../components/trackCardVertical/trackCardVertical";
-import FiltriRicerca from "../components/filtriRicerca/filtriRicerca";
 import Album from "../components/album/album";
 import Artist from "../components/artist/artist";
 import ErrorStatusCheck from '../util/errorStatusCheck'
-import Playlist_list from "../components/playlist_list/playlist_list";
 import { spotifyApi } from '../util/costanti';
-
-
 
 
 
@@ -24,10 +14,6 @@ import { spotifyApi } from '../util/costanti';
 export default function SetPreferencesPage(){
 
 //CONTROLLO IL TOKEN e lo passo all'oggetto spotifyApi____________________________________________________________________________________
-
-if(localStorage.getItem("visited")==="true"){
-    window.location ='/personalArea'
-}
 
   const accessToken = localStorage.getItem('accessToken');
 
@@ -137,6 +123,7 @@ useEffect(() => {
   }
 
   return(
+    <>
     <Container fluid className="bg-dark text-light setPreferencesContainer">
         <h2 className="text-center setPreferencesTitle">
             Fai una ricerca e salva le tue preferenze musicali!
@@ -236,7 +223,7 @@ useEffect(() => {
         </Container>
 
         <div className="text-center setPreferencesButton"><Button className="btn-success" onClick={avanti}>Avanti</Button></div>
-    </Container>
+    </Container></>
   )
 
 

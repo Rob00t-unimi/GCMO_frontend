@@ -103,3 +103,18 @@
     height: 3.5vh;
     margin-right: 1rem;
 }
+
+
+
+
+
+
+
+
+.toastNotify {
+    background-color: aliceblue;
+    position: absolute;
+    z-index: 10;        /*cosi sono sicuro che è sopra qualsiasi altra cosa nel progetto*/
+    left: 50%;
+    transform: translateX(-50%);
+}

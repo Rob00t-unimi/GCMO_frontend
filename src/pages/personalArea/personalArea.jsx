@@ -15,8 +15,6 @@ import PlaylistCardPersonalArea from "../../components/playlistCardPersonalArea/
 import { spotifyApi } from '../../util/costanti';
 
 
-
-
 function PersonalArea() {
 
  
@@ -122,7 +120,8 @@ function PersonalArea() {
 
 useEffect(() => {
   if(currentUser){
-    let onlyMyPlaylists = playlistResults.filter(item => {           //inserisco tutte le playlist create dall'utente nel local storage
+    let onlyMyPlaylists = playlistResults.filter(item => {     
+    if (!item) return null                                      //inserisco tutte le playlist create dall'utente nel local storage
     return item.ownerId === currentUser.id
     });
     localStorage.setItem('playlist_list', JSON.stringify(onlyMyPlaylists));
@@ -150,17 +149,20 @@ function updatePlaylists (){
         setPlaylistFiltered(playlistResults)
         break;
       case 'PUBLIC':
-        setPlaylistFiltered(playlistResults.filter(item => {                 //prendo da playlistResult solo le playlist che rispettano il filtro e le inserisco in playlistFiltered
+        setPlaylistFiltered(playlistResults.filter(item => {   
+          if (!item) return null              //prendo da playlistResult solo le playlist che rispettano il filtro e le inserisco in playlistFiltered
           return item.public === true && item.ownerId === currentUser.id
         }));
         break;
       case 'PRIVATE':
         setPlaylistFiltered(playlistResults.filter(item => {
+          if (!item) return null  
           return item.public === false && item.ownerId === currentUser.id
         }));
         break;
       case 'FOLLOWED':
         setPlaylistFiltered(playlistResults.filter(item => {
+          if (!item) return null  
           return item.ownerId !== currentUser.id
         }));
         break;
@@ -190,6 +192,16 @@ function removePlaylist(playlistId) {
   playlistFiltered.map((playlist, index) => {
     if(playlist&&playlist.id === playlistId){
       setPlaylistFiltered(prevPlaylists =>{
+        let newPlaylists = [...prevPlaylists];
+        newPlaylists[index] = null;
+        return newPlaylists
+      })
+    }
+  })
+
+  playlistResults.map((playlist, index) => {
+    if(playlist&&playlist.id === playlistId){
+      setPlaylistResults(prevPlaylists =>{
         let newPlaylists = [...prevPlaylists];
         newPlaylists[index] = null;
         return newPlaylists

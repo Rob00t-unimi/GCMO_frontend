@@ -14,15 +14,15 @@
 
 -modal delete playlist          (OK --> eliminare sui sistemi di spotify equivale a smettere di seguire una playlist)
 
-- modal create playlist         (attenzione quando si passa ad aggiungere le canzoni, rivedere)
+- modal create playlist         (OK)
 
-- modal modify playlist         (attenzione quando si passa ad aggiungere le canzoni, rivedere)
+- modal modify playlist         (OK)
 
-- track                         ( OK, aggiungere genere, tag e modale)
+- track                         (OK)
 
 - navigation page               (raffinare la ricerca con i vari filtri)
 
--playlist-2                     ( OK, aggiungere tags)
+-playlist-2                     (OK)
 
 
 
@@ -30,23 +30,22 @@
 
 
 cose da fare: 
-- aggiungere canzoni
+- aggiungere canzoni    ok
 - ricerca tramite tag, artista o canzoni interne alla playlist       --> la ricerca di spotify è Fuzzy ovvero non precisa, approssima i risultati, quindi se scrivo un tag, un nome, un genere o altro mi restituisce sempre la cosa più opportuna
                                                                     --> HO SCOPERTO CHE ESISTE getPlaylistForCategory
-- vedere tag e genere delle canzoni
-- aggiungere tag nelle playlist
-- eliminare account utente (o revocare le autorizzazioni)
-- sistemare gestione errori
-- modificare info utente            --> non è possibile farlo con una chiamata alle api quindi siccome per la registrazione ci si registra direttamente in spotify, inserrisco un link alla pagina personale dell'utente di spotify
--se c'è già una canzone in una playlist il tasto per aggiungerla non deve comparire
+- vedere tag e genere delle canzoni         ok
+- aggiungere tag nelle playlist         non si può fare (solo con descrizione)
+- eliminare account utente (o revocare le autorizzazioni)       (non si può fare con api, solo su spotify)
+- sistemare gestione errori         ni
+- modificare info utente            --> non è possibile farlo con una chiamata alle api quindi siccome per la registrazione ci si registra direttamente in spotify, inserrisco un link alla pagina personale dell'utente di spotify, solo lettura
+-se c'è già una canzone in una playlist il tasto per aggiungerla non deve comparire     ok
 
 
-- modal delete playlist         (non serve, da eliminare)
-
-- modal delete track            (ho preferito non usarla)
+- modal delete playlist     ok      
 
 
--importare album in una playlist 
+
+-importare album in una playlist        ok
 
 
 ho provato a fare la ricerca per tag e anche quella per categorie su specifiche parole chiave ma i risultati restituiti sono sempre gli stessi, le richieste vanno a buon fine ma la ricerca non filtra nulla. restituisce sempre cose simili
@@ -59,3 +58,10 @@ filtri alla ricerca di playlist OK ma non so come cercare una playlist per nome 
 paginazione sostuituita, non mi piaceva
 
 aggiungere getRaccomandations --> restituisce sia brani che album che playlists che artisti, fare un carosello di 10 raccomandazioni con card miste
+
+
+sono rimasti i seguenti problemi da rivedere:
+- glitcha quando switcho una playlist da pubblica a privata e viceversa
+- follow di utenti, canzoni, artisti, tracce nelle modali danno problemi
+- ogni alert, alcuni hanno scritte sbagliate, altri escono quando non devono uscire (ad esempio quello dell'import di playlist o album)     fixed
+- problema con pubblico privato anche nella modifica delle playlist

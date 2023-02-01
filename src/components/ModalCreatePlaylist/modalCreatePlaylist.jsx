@@ -88,7 +88,8 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
     function onConfirmFunction() {
 
         if(!title||title==='') {
-            return alert("Non è stato Possibile Creare la playlist: inserire un titolo.")
+            //setToast(true, "Non è stato Possibile Creare la playlist: inserire un titolo.")
+            return
         }
 
         let id = null
@@ -108,7 +109,7 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                         spotifyApi.uploadCustomPlaylistCoverImage(id, base64)
                         .then(data => {
                             updatePlaylists()
-                            alert("Playlist creata con Successo!")
+                            //setToast(true, "Playlist creata con Successo!")
                             close()
                         })
                         .catch(err => {
@@ -117,12 +118,12 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                     }
                 } else {
                     updatePlaylists()
-                    alert("Playlist creata con Successo!")
+                    //setToast(true, "Playlist creata con Successo!")
                     close()
                 }
             })
             .catch(err => {
-                alert("Non siamo riusciti a creare la Playlist")
+                //setToast(true, "Non siamo riusciti a creare la nuova playlist.")
                 ErrorStatusCheck(err)
             })
     }
@@ -132,7 +133,8 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
     function onConfirmFunctionAndGo() {
 
         if(!title||title==='') {
-            return alert("Non è stato Possibile Creare la playlist: inserire un titolo.")
+            //setToast(true, "Non è stato Possibile Creare la playlist: inserire un titolo.")
+            return
         }
 
         let id = null
@@ -154,7 +156,7 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                             finish(id)
                         })
                         .catch(err => {
-                            alert("Non è stato possibile caricare l'immagine di copertina")
+                            setToast(true, "Non è stato possibile caricare l'immagine di copertina")
                             ErrorStatusCheck(err)
                         })
                     }
@@ -186,7 +188,6 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
 
         })
         .catch(err => {
-            console.log("ciaone")
             ErrorStatusCheck(err)
         })
         }

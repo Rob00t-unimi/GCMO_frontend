@@ -28,6 +28,7 @@ function TrackCardHorizontal({currentTrack, showFooter, currentPlaylist}){
     const [type, setType] = useState();
 
 
+
 //controllo che tipo di traccia è ______________________________________________________________
     useEffect(() => {
 
@@ -105,7 +106,7 @@ function addTrack(){
     .then(res=>{
         console.log("added",res)
         setAddBtn(false)
-        alert("Traccia aggiunta correttamente")
+        //setToast("Traccia aggiunta correttamente")
     })
     .catch(err => {
         ErrorStatusCheck(err)
@@ -118,6 +119,7 @@ const [show, setShow] = useState(false)
 //___________________________________________________________________________________________________________________________
 
     return(
+        <>
         <Card className='card d-flex flex-row bg-dark text-light' >
             <div className='btn btn-dark text-light text-start d-flex flex-row' onClick={() => { setShow(true) }}>
                     <Card.Img className='cardImg' src={currentTrack.image}/>
@@ -154,6 +156,7 @@ const [show, setShow] = useState(false)
                 </Col>
                 {show&&<TrackViewModal show={show} onClose={()=>setShow(false)} currentTrack={currentTrack}></TrackViewModal>}
         </Card>
+        </>
     )
 }
 

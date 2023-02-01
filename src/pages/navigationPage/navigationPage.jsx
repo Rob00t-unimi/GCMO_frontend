@@ -20,7 +20,6 @@ import { spotifyApi } from '../../util/costanti';
 
 
 
-
 function NavigationPage(){
 
 //CONTROLLO IL TOKEN e lo passo all'oggetto spotifyApi____________________________________________________________________________________

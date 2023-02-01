@@ -26,6 +26,7 @@ useEffect(() => {
     const [isPublic, setIsPublic] = useState(playlist.public)
     const [title, setTitle] = useState(playlist.name)
     const [image, setImage] = useState();
+    
 
 //INIZIALIZZO description (il value dell'input text non può essere null)
 const [description, setDescription] = useState()
@@ -55,7 +56,6 @@ useEffect(() => {
     return(
         <>
             <Modal className='modal' show={show} size='xl' centered >
-
                 <Modal.Header className='bg-dark text-light' >
                     <Modal.Title>MODIFICA LA TUA PLAYLIST</Modal.Title>
                     <Button className='btn-light' onClick={onClose}>Chiudi</Button>
@@ -114,7 +114,7 @@ useEffect(() => {
     function onConfirmFunction() {
 
         if (!title) {
-            alert("Impossibile modificare la playlist senza un titolo")
+            //setToast(true, "Impossibile modificare la playlist senza un titolo")
             return
         }
 
@@ -138,22 +138,22 @@ useEffect(() => {
                         spotifyApi.uploadCustomPlaylistCoverImage(playlist.id, base64)
                         .then(data => {
                             updatePlaylists()
-                            alert("Playlist modificata con Successo!")
+                            //setToast(true, "Playlist modificata con Successo!")
                             onClose()
                         })
                         .catch(err => {
-                            alert("Non è stato Possibile caricare l'immagine della playlist")
+                            //setToast(true, "Non è stato Possibile caricare l'immagine della playlist")
                             ErrorStatusCheck(err)
                         })
                     }
             } else {
                 updatePlaylists()
-                alert("Playlist modificata con Successo!")
+                //setToast(true, "Playlist modificata con Successo!")
                 onClose()
             }
         })
         .catch(err => {
-            alert("Le Modifiche non sono state attuate.")
+            //setToast(true, "Le Modifiche non sono state attuate.")
             ErrorStatusCheck(err)
         })
     }
