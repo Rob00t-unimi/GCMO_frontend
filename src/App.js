@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
+import React, { createContext, useState, useEffect, useContext } from 'react'
 
 
 import PersonalArea from "./pages/personalArea/personalArea"
@@ -8,19 +9,23 @@ import NavigationPage from "./pages/navigationPage/navigationPage"
 import SetPreferencesPage from "./pages/setPreferencesPage";
 import ToastNotify from "./components/toastNotify/toastNotify"
 
+export const ToastContext = React.createContext();
 
 function App() {
 
   const [showToast, setShowToast] = useState(false)
   const [toastText, setToastText] = useState("")
 
-  const setToast = ({show, text}) => { 
-  setShowToast(show)
-  setToastText(text)
-}
+  function setToast(show, text) {
+    setShowToast(show)
+    setToastText(text)
+  }
 
 
   return (
+  <>
+  <ToastContext.Provider value={ {setToast} }>
+    <ToastNotify showToast={showToast} onClose={()=>{setShowToast(false)}} toastText={toastText}/>
     <Router>
       <div id="container">
         
@@ -30,10 +35,10 @@ function App() {
             <Route path="/navigate" element ={<NavigationPage />} />
             <Route path="/preferences" element ={<SetPreferencesPage/>}/>
           </Routes>
-
-          <ToastNotify show={showToast} onClose={()=>setShowToast(false)} text={toastText}/>
       </div>
     </Router>
+    </ToastContext.Provider>
+    </>
   );
 }
 

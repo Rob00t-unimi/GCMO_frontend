@@ -111,10 +111,13 @@
 
 
 
-.toastNotify {
-    background-color: aliceblue;
+.toastNotifyPosition {
     position: absolute;
-    z-index: 10;        /*cosi sono sicuro che è sopra qualsiasi altra cosa nel progetto*/
-    left: 50%;
-    transform: translateX(-50%);
+    position: fixed;
+    z-index: 9999;        /*cosi sono sicuro che è sopra qualsiasi altra cosa nel progetto*/
+    /* left: 50%;
+    transform: translateX(-50%); */
+    bottom: 0vh;
+    right: 0vh;
+    margin: 1rem;
 }

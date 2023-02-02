@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react'
-import { useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react'
 import { Button, ListGroup, Modal } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
 import  'bootstrap/dist/css/bootstrap.min.css' ;
 import '../ModalCreatePlaylist/style.css'
 import ErrorStatusCheck from '../../util/errorStatusCheck'
 import { spotifyApi } from '../../util/costanti';
-
+import { ToastContext } from '../../App';
 
 
 
 function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
+
+    const {setToast} = useContext(ToastContext)
 
 //CONTROLLO IL TOKEN E LO AGGIUNGO ALL'OGGETTO SPOTIFYAPI____________________________
 
@@ -55,7 +56,7 @@ useEffect(() => {
 //RENDERING____________________________________________________________________________________________________________________________________________________________________________________________________________
     return(
         <>
-            <Modal className='modal' show={show} size='xl' centered >
+            <Modal className='modal' show={show} animation={true} size='xl' centered >
                 <Modal.Header className='bg-dark text-light' >
                     <Modal.Title>MODIFICA LA TUA PLAYLIST</Modal.Title>
                     <Button className='btn-light' onClick={onClose}>Chiudi</Button>
@@ -114,7 +115,7 @@ useEffect(() => {
     function onConfirmFunction() {
 
         if (!title) {
-            //setToast(true, "Impossibile modificare la playlist senza un titolo")
+            setToast(true, "Impossibile modificare la playlist senza un titolo")
             return
         }
 
@@ -138,22 +139,22 @@ useEffect(() => {
                         spotifyApi.uploadCustomPlaylistCoverImage(playlist.id, base64)
                         .then(data => {
                             updatePlaylists()
-                            //setToast(true, "Playlist modificata con Successo!")
+                            setToast(true, "Playlist modificata con Successo!")
                             onClose()
                         })
                         .catch(err => {
-                            //setToast(true, "Non è stato Possibile caricare l'immagine della playlist")
+                            setToast(true, "Non è stato Possibile caricare l'immagine della playlist")
                             ErrorStatusCheck(err)
                         })
                     }
             } else {
                 updatePlaylists()
-                //setToast(true, "Playlist modificata con Successo!")
+                setToast(true, "Playlist modificata con Successo!")
                 onClose()
             }
         })
         .catch(err => {
-            //setToast(true, "Le Modifiche non sono state attuate.")
+            setToast(true, "Le Modifiche non sono state attuate.")
             ErrorStatusCheck(err)
         })
     }

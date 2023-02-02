@@ -1,17 +1,19 @@
-import React, { useEffect } from 'react'
-import { useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react'
+
 import { Button, Modal} from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
 import  'bootstrap/dist/css/bootstrap.min.css' ;
 import './style.css';
 import ErrorStatusCheck from '../../util/errorStatusCheck'
 import { spotifyApi } from '../../util/costanti';
-
+import { ToastContext } from '../../App';
 
 
 
 
 function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
+
+    const {setToast} = useContext(ToastContext)
 
 //CONTROLLO IL TOKEN E LO AGGIUNGO ALL'OGGETTO SPOTIFYAPI____________________________
 
@@ -42,7 +44,7 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
 
     return(
         <>
-            <Modal className='modal' show={show} size='xl' centered >
+            <Modal className='modal' show={show} animation={true} size='xl' centered >
 
                 <Modal.Header className='bg-dark text-light' >
                     <Modal.Title>CREA LA TUA PLAYLIST</Modal.Title>
@@ -88,7 +90,7 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
     function onConfirmFunction() {
 
         if(!title||title==='') {
-            //setToast(true, "Non è stato Possibile Creare la playlist: inserire un titolo.")
+            setToast(true, "Non è stato Possibile Creare la playlist: inserire un titolo.")
             return
         }
 
@@ -109,7 +111,7 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                         spotifyApi.uploadCustomPlaylistCoverImage(id, base64)
                         .then(data => {
                             updatePlaylists()
-                            //setToast(true, "Playlist creata con Successo!")
+                            setToast(true, "Playlist creata con Successo!")
                             close()
                         })
                         .catch(err => {
@@ -118,12 +120,12 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                     }
                 } else {
                     updatePlaylists()
-                    //setToast(true, "Playlist creata con Successo!")
+                    setToast(true, "Playlist creata con Successo!")
                     close()
                 }
             })
             .catch(err => {
-                //setToast(true, "Non siamo riusciti a creare la nuova playlist.")
+                setToast(true, "Non siamo riusciti a creare la nuova playlist.")
                 ErrorStatusCheck(err)
             })
     }
@@ -133,7 +135,7 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
     function onConfirmFunctionAndGo() {
 
         if(!title||title==='') {
-            //setToast(true, "Non è stato Possibile Creare la playlist: inserire un titolo.")
+            setToast(true, "Non è stato Possibile Creare la playlist: inserire un titolo.")
             return
         }
 

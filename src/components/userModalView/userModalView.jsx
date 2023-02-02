@@ -116,7 +116,7 @@ function unfollow() {
 
 
 return (
-    <Modal className='bg-light bg-opacity-25' show={show} size="xl" centered>
+    <Modal className='bg-light bg-opacity-25' show={show} animation={true} size="xl" centered>
 
     <Modal.Header className='bg-dark'>
         

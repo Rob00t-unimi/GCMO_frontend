@@ -1,25 +1,27 @@
-import {Toast } from 'react-bootstrap'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { Toast } from 'react-bootstrap'
 import'../general.css'
+import { Modal } from 'react-bootstrap'
 
-export default function ToastNotify({show, onClose, text}){
+
+
+export default function ToastNotify({showToast, onClose, toastText}){
 
     useEffect(() => {
-        if(show){
+        if(showToast){
             setTimeout(() => {
-                onClose()
-            }, 2500) 
+                onClose();
+            }, 3000) 
         }
-    }, [show])
+    }, [showToast])
 
     return (
-        <Toast show={show} onClose={onClose} animation={true} className={"toastNotify"}>
+        <Toast show={showToast} onClose={onClose} animation={true} className="toastNotifyPosition">
             <Toast.Header>
-                <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
                 <strong className="me-auto">GCMO</strong>
                 <small>just now</small>
             </Toast.Header>
-            <Toast.Body>{text}</Toast.Body>
+            <Toast.Body>{toastText}</Toast.Body>
         </Toast>
     )
 }

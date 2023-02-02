@@ -49,7 +49,7 @@ useEffect(() => {
 //___________________________________________________________________________________________________________________________
 
     return(
-        <Modal className="bg-light bg-opacity-25" show={show} size="xl" centered>
+        <Modal className="bg-light bg-opacity-25" show={show} animation={true} size="xl" centered>
             <Modal.Header className='bg-dark'>
                 <Card className="headerCardModalView d-flex flex-row bg-dark text-light"  >
                     <Card.Img className="imgCardModalView" src={currentTrack?currentTrack.image:null} />

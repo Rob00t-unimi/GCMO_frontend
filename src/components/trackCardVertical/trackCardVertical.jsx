@@ -1,20 +1,18 @@
-import React from "react";
+import React, { useEffect, useState, useContext } from 'react'
 import {Card, Button} from 'react-bootstrap'
 import '../general.css'
 import SpotifyWebApi from 'spotify-web-api-node';
-import { useState } from 'react';
-import { useEffect } from 'react';
 import { Heart, HeartFill, Plus} from 'react-bootstrap-icons';
 import TrackViewModal from "../trackViewModal/trackViewModal";
 import ErrorStatusCheck from '../../util/errorStatusCheck'
 import { spotifyApi } from '../../util/costanti';
-
+import { ToastContext } from '../../App';
 
 
 
 function TrackCardVertical({currentTrack, showFooter, currentPlaylist}){
 
-
+    const {setToast} = useContext(ToastContext)
     
     const accessToken = localStorage.getItem('accessToken');
 
@@ -103,7 +101,7 @@ function addTrack(){
     .then(res=>{
         console.log("added",res)
         setAddBtn(false)
-        //setToast("Traccia aggiunta correttamente")
+        setToast(true, "Traccia aggiunta correttamente")
     })
     .catch(err => {
         ErrorStatusCheck(err)

@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Button, Card, Modal, Container, Table, Row, Col } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
 import'./style.css'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import ErrorStatusCheck from '../../util/errorStatusCheck'
 import { spotifyApi } from '../../util/costanti';
-
+import { ToastContext } from '../../App';
 
 
 
 const ArtistViewModal = ({ show, onClose, artist, currentUser }) => {
+
+    const {setToast} = useContext(ToastContext)
 
     if(!currentUser){
         currentUser = JSON.parse(localStorage.getItem('user'))
@@ -71,7 +73,7 @@ function addTrack(currentTrack){
     .then(res=>{
         console.log("added",res)
         setAddBtn(false)
-        //setToast(true, "Traccia aggiunta correttamente")
+        setToast(true, "Traccia aggiunta correttamente")
     })
     .catch(err => {
         ErrorStatusCheck(err)
@@ -83,7 +85,7 @@ function addTrack(currentTrack){
     
 
     return (
-        <Modal show={show} size="xl" centered>
+        <Modal show={show} animation={true} size="xl" centered>
             <Modal.Header className='bg-dark'>
                 
                 <Container className='d-flex' >

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Button, Card, Modal, Col, Table, Row, Container } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
 import'../general.css'
@@ -8,11 +8,13 @@ import spotifyLogo from "../../assets/SpotifyLogo01.png"
 import UserModalView from '../userModalView/userModalView';
 import TrackCardHorizontal from '../trackCardHorizontal/trackCardHorizontal'
 import { spotifyApi } from '../../util/costanti';
-
+import { ToastContext } from '../../App';
 
 
 
 const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter, createdPlaylist, setDeletedTracks, updatePlaylists}) => {
+
+    const {setToast} = useContext(ToastContext)
 
     if(!currentUser){
         currentUser = JSON.parse(localStorage.getItem('user'))
@@ -142,7 +144,7 @@ function addTrack(currentTrack, i){
         })
         setAddBtn(newAddbtn)
 
-        //setToast("Traccia aggiunta correttamente")
+        setToast(true, "Traccia aggiunta correttamente")
     })
     .catch(err => {
         ErrorStatusCheck(err)
@@ -170,19 +172,19 @@ async function importaPlaylist(){
                 }
                 await spotifyApi.addTracksToPlaylist(res.body.id, arrayDaInviare)
             }
-            //setToast("Playlist importata correttamente.")
+            setToast(true, "Playlist importata correttamente.")
             if(updatePlaylists) {
                 updatePlaylists()
             }
         } catch (err) {
-            //setToast("Non è stato possibile importare la Playlist.")
+            setToast(true, "Non è stato possibile importare la Playlist.")
             ErrorStatusCheck(err)
             if(res){
                 await spotifyApi.unfollowPlaylist(res.body.id)        //se non è stato possibile importare le tracce elimino la playlist creata
             }
         }     
     } catch (err) {
-        //setToast("Non è stato possibile importare la Playlist.")
+        setToast(true, "Non è stato possibile importare la Playlist.")
         ErrorStatusCheck(err)
     }
 }

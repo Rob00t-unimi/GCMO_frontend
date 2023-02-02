@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Button, Card, Modal, Pagination, Table } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node';
 import'../general.css'
@@ -9,11 +9,13 @@ import spotifyLogo from "../../assets/SpotifyLogo01.png"
 import { spotifyApi } from '../../util/costanti';
 import spotifyLogoMini from "../../assets/SpotifyLogo02.png"
 import { Heart, HeartFill } from 'react-bootstrap-icons';
-
+import { ToastContext } from '../../App';
 
 
 
 const AlbumViewModal = ({ show, onClose, album, currentUser, showFooter, createdPlaylist}) => {
+
+    const {setToast} = useContext(ToastContext)
 
     if(!currentUser){
         currentUser = JSON.parse(localStorage.getItem('user'))
@@ -147,7 +149,7 @@ function addTrack(currentTrack, i){
             }
         })
         setAddBtn(newAddbtn)
-        //setToast(true, "traccia aggiunta correttamente")
+        setToast(true, "traccia aggiunta correttamente")
     })
     .catch(err => {
         ErrorStatusCheck(err)
@@ -163,16 +165,16 @@ function importaAlbum(){
 
         spotifyApi.addTracksToPlaylist(res.body.id, tracce)
         .then(data => {
-            //setToast(true, "Album importato correttamente.")
+            setToast(true, "Album importato correttamente.")
         })
         .catch(err => {
-            //setToast(true, "Non è stato possibile importare l'album.")
+            setToast(true, "Non è stato possibile importare l'album.")
             ErrorStatusCheck(err)
             spotifyApi.unfollowPlaylist(res.body.id)
         })
     })
     .catch(err => {
-        //setToast(true, "Non è stato possibile importare l'album.")
+        setToast(true, "Non è stato possibile importare l'album.")
         ErrorStatusCheck(err)
     })
 
@@ -221,7 +223,7 @@ console.log(tracks)
 
     return (
         <>
-        <Modal show={show} size="xl" centered>
+        <Modal show={show} animation={true} size="xl" centered>
             <Modal.Header className='bg-dark'>
                 <Card className="headerCardModalView d-flex flex-row bg-dark text-light"  >
                     <Card.Img className="imgCardModalView" src={album.image?album.image:playlistImage} />

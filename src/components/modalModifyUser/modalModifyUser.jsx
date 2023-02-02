@@ -51,7 +51,7 @@ function cancellazioneAccount() {
 
      return(
         !statoModale ? 
-        <Modal show={show} size='lg' centered>
+        <Modal show={show} animation={true} size='lg' centered>
              <Modal.Header>
                 <Modal.Title>MODIFICA INFORMAZIONI UTENTE</Modal.Title>
                 <Button className='btn-dark' onClick={onClose}>Chiudi</Button>
