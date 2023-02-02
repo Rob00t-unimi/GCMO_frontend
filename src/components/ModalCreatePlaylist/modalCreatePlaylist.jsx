@@ -155,7 +155,7 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
                         //UPLOAD IMMAGINE DI COPERTINA
                         spotifyApi.uploadCustomPlaylistCoverImage(id, base64)
                         .then(data => {
-                            finish(id)
+                                finish(id, image)
                         })
                         .catch(err => {
                             setToast(true, "Non è stato possibile caricare l'immagine di copertina")
@@ -172,9 +172,12 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
             })
     }
 
-    function finish(id) {  //CHIEDO E SALVO NEL LOCAL STORAGE LA NUOVA PLAYLIST 
+    function finish(id, image) {  //CHIUDO E SALVO NEL LOCAL STORAGE LA NUOVA PLAYLIST 
         spotifyApi.getPlaylist(id)
         .then(item =>{
+            console.log(item)
+            if(image&&(!item.body.image||item.body.image.length===0)) {     //nel caso in cui image esiste significa che è stata inviata l'immagine correttamente, 
+            }                                                               //tuttavia se nella get della playlist significa che le api non l'hanno ancora impostata, quindi faccio ricorsioni, quando arriva continuo
             const createdPlaylist =  {
                 image: item.body.images && item.body.images.length > 0 ? item.body.images[0].url : null,
                 name: item.body.name,
@@ -188,9 +191,6 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
 
               addPlaylistInStorage(createdPlaylist) 
 
-        })
-        .catch(err => {
-            ErrorStatusCheck(err)
         })
         }
 
