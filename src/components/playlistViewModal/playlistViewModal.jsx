@@ -173,7 +173,7 @@ async function importaPlaylist(){
                 await spotifyApi.addTracksToPlaylist(res.body.id, arrayDaInviare)
             }
             setToast(true, "Playlist importata correttamente.")
-            if(addPlaylist){
+           
                 spotifyApi.getPlaylist(res.body.id)
                 .then(data=>{
                     const newPlaylist = {
@@ -187,9 +187,16 @@ async function importaPlaylist(){
                         totalTracks: data.body.tracks.total,
                         uri: data.body.uri
                     }
-                    addPlaylist(newPlaylist)
+                    if(addPlaylist){
+                        addPlaylist(newPlaylist)
+                    } else {
+                        let lista = [newPlaylist];
+                        let lista2 = JSON.parse(localStorage.getItem("playlist_list")) || [];
+                        lista = [...lista, ...lista2];
+                        console.log("lista", lista);
+                        localStorage.setItem("playlist_list", JSON.stringify( lista))
+                    }
                 })
-            }
         } catch (err) {
             setToast(true, "Non è stato possibile importare la Playlist.")
             ErrorStatusCheck(err)

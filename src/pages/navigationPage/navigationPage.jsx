@@ -449,12 +449,13 @@ const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il comp
 //ESTRAGGO LA LISTA DI PLAYLIST_____________________
 
 const [lista, setLista] = useState()
+const [updateList, setUpdateList] = useState(false)
 
 useEffect(() => {
   if(localStorage.getItem('playlist_list')) {
     setLista((JSON.parse(localStorage.getItem('playlist_list'))))
   }
-}, [])
+}, [localStorage.getItem('playlist_list')])
 
 //RENDERIZZO IL BANNER____________________________________________________________________________________________________________________________________________________________________________________
 

@@ -66,12 +66,12 @@ sono rimasti i seguenti problemi da rivedere:
 - ogni alert, alcuni hanno scritte sbagliate, altri escono quando non devono uscire (ad esempio quello dell'import di playlist o album)     fixed
 
 
-- ancora problemi con immagine e descrizione alla creazione di playlist						risolto
+- ancora problemi con immagine e descrizione alla creazione di playlist							risolto
 - problemi alla modifica della playlist, a volte fallisce, a volte non aggiorna, 				risolto
 	a volte se modifico rimuove l'immagine di default di spotify								risolto
 	non mi fa switchare nella modale tra public e private, problemi con immagine e descrizione	risolto
 
-	
+
 - quasi tutti i follow-unfollow creano problemi
 
 - problemi con sovrapposizione di filtri, bisogna bloccare quelli non consentiti etc..

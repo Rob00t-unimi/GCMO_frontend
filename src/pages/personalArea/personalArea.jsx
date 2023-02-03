@@ -129,18 +129,7 @@ useEffect(() => {
   }
 }, [playlistResults])
 
-    
 
-
-
-//METODO PER AGGIORNARE LE PLAYLIST________________________________________________________________________________________________________________________________________________________________________________
-
-function updatePlaylists (){
-  setPlaylistResults([])
-  setPlaylistFiltered([])
-  getAllPlaylist();
-                 //passo la funzione agli altri livelli, quando un livello la chiama vengono richieste le playlist nuove, all'interno di getAllPlaylist viene cambiato update quindi vengono anche filtrate 
-}
 
 //FILTRARE LE PLAYLIST______________________________________________________________________________________________________________________________________________________________________________________________________________________
 
