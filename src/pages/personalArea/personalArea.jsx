@@ -222,7 +222,10 @@ function removePlaylist(playlistId) {
   setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano per rifiltrarle
 }
 
-//Aggiungi una playlist all'elenco di playlists
+
+
+//AGGIUNGI UNA PLAYLIST ALL'ELENCO_________________________________________________________________________________________________
+
 function addPlaylist(newPlaylist) {
   setPlaylistResults([newPlaylist, ...playlistResults])
   setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano
@@ -352,14 +355,14 @@ function modifySinglePlaylist(playlistId, playlistModificata) {
             {(searchResult.length===0)&&<div className="text-center">Nessun Risultato</div>}
             <div>
             {searchResult.map((playlist) => (                    
-              playlist&&<PlaylistCardPersonalArea playlist={playlist} userInfo={currentUser} setRemovedPlaylist={()=>removePlaylist(playlist.id)} modifyVisibility={()=>modifyVisibility(playlist.id)} modifyPlaylist={(newPlaylist)=>modifySinglePlaylist(playlist.id, newPlaylist)}/>
+              playlist&&<PlaylistCardPersonalArea playlist={playlist} userInfo={currentUser} setRemovedPlaylist={()=>removePlaylist(playlist.id)} modifyVisibility={()=>modifyVisibility(playlist.id)} modifyPlaylist={(newPlaylist)=>modifySinglePlaylist(playlist.id, newPlaylist)} addPlaylist={(newPlaylist)=>addPlaylist(newPlaylist)}/>
             ))}
             </div>
             <hr/>
             </div>}
           <div>
             {playlistFiltered.map((playlist) => (                     
-              playlist&&<PlaylistCardPersonalArea playlist={playlist} userInfo={currentUser} setRemovedPlaylist={()=>removePlaylist(playlist.id)} modifyVisibility={()=>modifyVisibility(playlist.id)} modifyPlaylist={(newPlaylist)=>modifySinglePlaylist(playlist.id, newPlaylist)} />
+              playlist&&<PlaylistCardPersonalArea playlist={playlist} userInfo={currentUser} setRemovedPlaylist={()=>removePlaylist(playlist.id)} modifyVisibility={()=>modifyVisibility(playlist.id)} modifyPlaylist={(newPlaylist)=>modifySinglePlaylist(playlist.id, newPlaylist)} addPlaylist={(newPlaylist)=>addPlaylist(newPlaylist)}/>
             ))}
           </div>
         </Container>

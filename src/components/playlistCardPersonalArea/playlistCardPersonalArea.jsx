@@ -16,7 +16,7 @@ import { spotifyApi } from '../../util/costanti';
 
 
 
-function PlaylistCardPersonalArea({playlist, modifyPlaylist, userInfo, setRemovedPlaylist, modifyVisibility}){
+function PlaylistCardPersonalArea({playlist, modifyPlaylist, userInfo, setRemovedPlaylist, modifyVisibility, addPlaylist}){
 
 //INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
@@ -90,9 +90,9 @@ useEffect(() => {
 
 //quando chiudo la modale per vidualizzare il contenuto di una playlist se ho cancellato dei brani faccio una get e richiedo di nuovo la playlist
 //questo perchè potrebbe cambiare la copertina e il numero di canzoni all'interno
-const [deletedTracks, setDeletedTracks] = useState(false)
+const [updatePlaylist, setUpdatePlaylist] = useState(false)
 useEffect(() => {
-    if(!modalShow&&deletedTracks) {
+    if(!modalShow&&updatePlaylist){
         spotifyApi.getPlaylist(playlist.id)
         .then(data=>{
             const newPlaylist = {
@@ -107,7 +107,7 @@ useEffect(() => {
                 uri: data.body.uri
             }
             console.log("nuova playlist", newPlaylist)
-            setDeletedTracks(false)
+            setUpdatePlaylist(false)
             modifyPlaylist(newPlaylist)
         })
         .catch(err=>{
@@ -160,7 +160,7 @@ useEffect(() => {
                 </Col>
             </Card>
             
-            {modalShow&&<PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => {setModalShow(false)}} currentUser={userInfo} showFooter={null} setDeletedTracks={()=>setDeletedTracks(true)}/>}
+            {modalShow&&<PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => {setModalShow(false)}} currentUser={userInfo} showFooter={null} setDeletedTracks={()=>setUpdatePlaylist(true)} addPlaylist={addPlaylist ? addPlaylist : null}/>}
             {modalDeleteShow&&<ModalDeletePlaylist show={modalDeleteShow}  onClose={() => {setModalDeleteShow(false)}} playlist={playlist} setRemovedPlaylist={setRemovedPlaylist}/> }
             {modalModifyShow&&<ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist} modifyPlaylist={modifyPlaylist}/>}
         </>

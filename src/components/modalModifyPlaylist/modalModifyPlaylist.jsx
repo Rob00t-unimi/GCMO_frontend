@@ -9,7 +9,7 @@ import { ToastContext } from '../../App';
 
 
 
-function ModalModifyPlaylist({show, onClose, playlist, updatePlaylists}) {
+function ModalModifyPlaylist({show, onClose, playlist, modifyPlaylist }) {
 
     const {setToast} = useContext(ToastContext)
 
@@ -27,7 +27,7 @@ useEffect(() => {
     const [isPublic, setIsPublic] = useState(playlist.public)
     const [title, setTitle] = useState(playlist.name)
     const [image, setImage] = useState();
-    
+
 
 //INIZIALIZZO description (il value dell'input text non può essere null)
 const [description, setDescription] = useState()
@@ -43,7 +43,7 @@ useEffect(() => {
     useEffect(() => {
         if (playlist.image) 
         setImage({url: playlist.image})
-    }, [playlist.public])
+    }, [])
 
     function impostaImmagine(immagine){
         const immagineUrl = URL.createObjectURL(immagine)
@@ -86,33 +86,33 @@ useEffect(() => {
                 </Modal.Body>
 
                 <Modal.Footer className='d-flex justify-content-center bg-dark text-light'>
-                    <Button className='btn-light btn-lg' onClick={async () => await onConfirmFunction()}> Salva </Button>
-                    <Button className='btn-success btn-lg' onClick={async () => await onConfirmFunctionAndGo()}> Aggiungi brani </Button>
+                    <Button className='btn-light btn-lg' onClick={async () => onConfirmFunction()}> Salva </Button>
+                    <Button className='btn-success btn-lg' onClick={async () => onConfirmFunction("ADDTRACKS")}> Aggiungi brani </Button>
                 </Modal.Footer>
             </Modal>
         </>
     )
 
-//CHIUSURA_____________________________________________________________________________________________________________
 
-    // function close(){           
+    async function addingImage() {
+        if(image&&image.url!==playlist.image) {
 
-    //     setIsPublic(playlist.public)                //se chiudo senza salvare ripristino i valori su quelli precedenti
-    //     setTitle(playlist.name)
-    //     setDescription(playlist.description)
-    //     if (playlist.image){
-    //         setImage(playlist.image)
-    //     } else {
-    //         setImage()
-    //     }
+            const reader = new FileReader();            //l'immagine è richiesta in base64, la converto con l'oggetto reader
+            reader.readAsDataURL(image.immagine);
+            reader.onloadend = async () => {
+                const base64 = reader.result.split(',')[1];
+                //UPLOAD IMMAGINE DI COPERTINA
+                spotifyApi.uploadCustomPlaylistCoverImage(playlist.id, base64)
+                .catch(err => {
+                    setToast(true, "Non siamo riusciti ad aggiungere l'immagine alla playlist.")
+                    ErrorStatusCheck(err)
+                })
+            }
+        }
+        return
+    }
 
-    //     onClose()
-    // }
-
-
-//SALVA________________________________________________________________________________________________________________
-
-    function onConfirmFunction() {
+    async function onConfirmFunction(seAddTracks) {
 
         if (!title) {
             setToast(true, "Impossibile modificare la playlist senza un titolo")
@@ -120,82 +120,62 @@ useEffect(() => {
         }
 
         //creo l'oggetto per la chiamata
-        let Modifiche = {}
-        if (title) {Modifiche.name = title}
-        if (description&&description!=="") {Modifiche.description = description}
-        if (isPublic) {Modifiche.public = isPublic}
-
-        //MODIFICA DETTAGLI
-        spotifyApi.changePlaylistDetails(playlist.id, Modifiche)
-        .then(data => {
-
-            if(image&&image.url!==playlist.image) {
-
-                const reader = new FileReader();            //l'immagine è richiesta in base64, la converto con l'oggetto reader
-                    reader.readAsDataURL(image.immagine);
-                    reader.onloadend = async () => {
-                        const base64 = reader.result.split(',')[1];
-                        //UPLOAD COVER
-                        spotifyApi.uploadCustomPlaylistCoverImage(playlist.id, base64)
-                        .then(data => {
-                            updatePlaylists()
-                            setToast(true, "Playlist modificata con Successo!")
-                            onClose()
-                        })
-                        .catch(err => {
-                            setToast(true, "Non è stato Possibile caricare l'immagine della playlist")
-                            ErrorStatusCheck(err)
-                        })
-                    }
-            } else {
-                updatePlaylists()
-                setToast(true, "Playlist modificata con Successo!")
-                onClose()
-            }
-        })
-        .catch(err => {
-            setToast(true, "Le Modifiche non sono state attuate.")
-            ErrorStatusCheck(err)
-        })
-    }
-
-//SALVA e VAI AI BRANI______________________________________________________________________________________________________
-
-    function onConfirmFunctionAndGo() {
-    
-        onConfirmFunction()
-
-        const  newPlaylist = {
-            image: image ? image.url : null,
+        let Modifiche = {
             name: title,
-            description: description ? description : null,      //se la modifica è andata a buon fine creo una playlist modificata senza richiederla di nuovo alle api
-            id: playlist.id,
-            ownerId: playlist.ownerId,
-            ownerName: playlist.ownerName,
-            public: isPublic ? isPublic : null,
+            description: description,
+            public: isPublic==="true" ? true : false
         }
 
-        addPlaylistInStorage(newPlaylist)                   //inserisco la playlist e le sue tracce nel local storage per prenderla dalla navigationPage
-               
+        //MODIFICA DETTAGLI
+        try {
+            const data = await spotifyApi.changePlaylistDetails(playlist.id, Modifiche)
+            await addingImage()
+
+            let modifiedPlaylist = {
+                image: image&&image.url ? image.url : null,
+                name: Modifiche.name,
+                description: Modifiche.description,
+                id: playlist.id,
+                ownerId: playlist.ownerId,
+                ownerName: playlist.ownerName,
+                public: Modifiche.public,
+                totalTracks: playlist.totalTracks,
+                uri: playlist.uri,
+                oldImage: image.url!==playlist.image ? playlist.image : null        //se ho cambiato immagine salvo anche l'url di quella vecchia
+            }                                                                      //problema con foto, e pubblico/privato
+
+            if (seAddTracks==="ADDTRACKS") {
+                addPlaylistInStorage(modifiedPlaylist)
+            } else {
+                modifyPlaylist(modifiedPlaylist)
+                setToast(true, "Playlist Modificata con Successo!")
+                onClose() 
+            }
+        } catch (err) {
+            setToast(true, "Non siamo riusciti ad attuare le modifiche.")
+            ErrorStatusCheck(err)
+        }
     }
 
-
-    function addPlaylistInStorage(playlist){
+    function addPlaylistInStorage(thisPlaylist){
         
-            spotifyApi.getPlaylistTracks(playlist.id)
-            .then((tracks) => {
-                console.log(tracks)
-                const tracce = tracks.body.items.map(traccia=>{
-                    return traccia.track.id
-                })
-                localStorage.setItem('createdPlaylistTracks', JSON.stringify(tracce))
-                localStorage.setItem("createdPlaylist", JSON.stringify(playlist))
+        thisPlaylist.image = thisPlaylist.image!==null ? "ASK" : null
+        
+        spotifyApi.getPlaylistTracks(thisPlaylist.id)
+        .then((tracks) => {
+            console.log(tracks)
+            const tracce = tracks.body.items.map(traccia=>{
+                return traccia.track.id
+            })
 
-                window.location = "http://localhost:3000/navigate"      //mando alla navigation page
-            })
-            .catch(e=>{
-                ErrorStatusCheck()
-            })
+            localStorage.setItem('createdPlaylistTracks', JSON.stringify(tracce))
+            localStorage.setItem("createdPlaylist", JSON.stringify(thisPlaylist))
+
+            window.location = "http://localhost:3000/navigate"      //mando alla navigation page
+        })
+        .catch(e=>{
+            ErrorStatusCheck()
+        })
          
     }
     

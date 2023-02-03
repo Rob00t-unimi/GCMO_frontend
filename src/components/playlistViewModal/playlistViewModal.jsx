@@ -12,7 +12,7 @@ import { ToastContext } from '../../App';
 
 
 
-const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter, createdPlaylist, setDeletedTracks, updatePlaylists}) => {
+const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter, createdPlaylist, setDeletedTracks, addPlaylist}) => {
 
     const {setToast} = useContext(ToastContext)
 
@@ -173,8 +173,22 @@ async function importaPlaylist(){
                 await spotifyApi.addTracksToPlaylist(res.body.id, arrayDaInviare)
             }
             setToast(true, "Playlist importata correttamente.")
-            if(updatePlaylists) {
-                updatePlaylists()
+            if(addPlaylist){
+                spotifyApi.getPlaylist(res.body.id)
+                .then(data=>{
+                    const newPlaylist = {
+                        image: data.body.images && data.body.images.length > 0 ? data.body.images[0].url : null,
+                        name: data.body.name,
+                        description: data.body.description ? data.body.description : null,
+                        id: data.body.id,
+                        ownerId: data.body.owner.id,
+                        ownerName: data.body.owner.display_name,
+                        public: data.body.public,
+                        totalTracks: data.body.tracks.total,
+                        uri: data.body.uri
+                    }
+                    addPlaylist(newPlaylist)
+                })
             }
         } catch (err) {
             setToast(true, "Non è stato possibile importare la Playlist.")
