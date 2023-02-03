@@ -16,7 +16,7 @@ import { spotifyApi } from '../../util/costanti';
 
 
 
-function PlaylistCardPersonalArea({playlist, updatePlaylists, userInfo, setRemovedPlaylist, modifyVisibility}){
+function PlaylistCardPersonalArea({playlist, modifyPlaylist, userInfo, setRemovedPlaylist, modifyVisibility}){
 
 //INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
@@ -86,15 +86,39 @@ useEffect(() => {
         }
     }
     
-//quando chiudo la modale per vidualizzare il contenuto di una playlist, potrei aver cancellato dei brani quindi refresho le playlist
-//questo serve poichè una playlist senza una specifica copertina quando viene svuotata spotify rimuove la copertina
+//MODIFICA DOPO RIMOZIONE TRACCE_______________________________________________________________________________________________________________________
+
+//quando chiudo la modale per vidualizzare il contenuto di una playlist se ho cancellato dei brani faccio una get e richiedo di nuovo la playlist
+//questo perchè potrebbe cambiare la copertina e il numero di canzoni all'interno
 const [deletedTracks, setDeletedTracks] = useState(false)
 useEffect(() => {
     if(!modalShow&&deletedTracks) {
-        updatePlaylists()
-        setDeletedTracks(false)
+        spotifyApi.getPlaylist(playlist.id)
+        .then(data=>{
+            const newPlaylist = {
+                image: data.body.images && data.body.images.length > 0 ? data.body.images[0].url : null,
+                name: data.body.name,
+                description: data.body.description ? data.body.description : null,
+                id: data.body.id,
+                ownerId: data.body.owner.id,
+                ownerName: data.body.owner.display_name,
+                public: data.body.public,
+                totalTracks: data.body.tracks.total,
+                uri: data.body.uri
+            }
+            console.log("nuova playlist", newPlaylist)
+            setDeletedTracks(false)
+            modifyPlaylist(newPlaylist)
+        })
+        .catch(err=>{
+            ErrorStatusCheck(err)
+        })
     }
 }, [modalShow])
+
+//________________________________________________________________________________________________________________________________________________
+
+
 
 //RENDERING_______________________________________________________________________________________________________________________________________
 
@@ -136,9 +160,9 @@ useEffect(() => {
                 </Col>
             </Card>
             
-            {modalShow&&<PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => { setModalShow(false) }} currentUser={userInfo} showFooter={null} setDeletedTracks={()=>setDeletedTracks(true)} updatePlaylists={updatePlaylists}/>}
+            {modalShow&&<PlaylistViewModal show={modalShow} playlist={playlist} onClose={() => {setModalShow(false)}} currentUser={userInfo} showFooter={null} setDeletedTracks={()=>setDeletedTracks(true)}/>}
             {modalDeleteShow&&<ModalDeletePlaylist show={modalDeleteShow}  onClose={() => {setModalDeleteShow(false)}} playlist={playlist} setRemovedPlaylist={setRemovedPlaylist}/> }
-            {modalModifyShow&&<ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist} updatePlaylists={updatePlaylists}/>}
+            {modalModifyShow&&<ModalModifyPlaylist show={modalModifyShow} onClose={() => {setModalModifyShow(false)}} playlist={playlist} modifyPlaylist={modifyPlaylist}/>}
         </>
     )
 }

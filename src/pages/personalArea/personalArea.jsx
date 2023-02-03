@@ -120,6 +120,7 @@ function PersonalArea() {
 
 useEffect(() => {
   if(currentUser){
+    console.log(playlistResults)
     let onlyMyPlaylists = playlistResults.filter(item => {     
     if (!item) return null                                      //inserisco tutte le playlist create dall'utente nel local storage
     return item.ownerId === currentUser.id
@@ -187,7 +188,10 @@ useEffect(() => {
     }
 }, [searchWord, playlistFiltered]);
 
-//RIMOZIONE PLAYLIST DAL RENDERING_____________
+
+
+
+//RIMOZIONE DI UNA PLAYLIST IN LOCALE_____________________________________________________________________________________________________________________________________
 function removePlaylist(playlistId) {
 
   playlistResults.map((playlist, index) => {
@@ -224,7 +228,10 @@ function addPlaylist(newPlaylist) {
   setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano
 }
 
-//modifica la visibilità di una playlist specifica
+
+
+
+//MODIFICA VISIBILITA' DI UNA PLAYLIST________________________________________________________________________________________________________________________
 function modifyVisibility(playlistId) {
   playlistResults.map((playlist, index) => {
     if(playlist&&playlist.id === playlistId){
@@ -246,6 +253,38 @@ function modifyVisibility(playlistId) {
       setSearchResult(prevPlaylists =>{
         let newPlaylists = [...prevPlaylists];
         newPlaylists[index].public = !newPlaylists[index].public;
+        return newPlaylists
+      })
+    }
+  })
+
+  setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano per rifiltrarle
+}
+
+//MODIFICA COMPLETA DI UNA PLAYLIST_________________________________________________________________________________________________________________________________
+function modifySinglePlaylist(playlistId, playlistModificata) {
+  playlistResults.map((playlist, index) => {
+    if(playlist&&playlist.id === playlistId){
+      setPlaylistResults(prevPlaylists =>{
+        let newPlaylists = [...prevPlaylists];
+        newPlaylists[index]= playlistModificata;
+        return newPlaylists
+      })
+    }
+  })
+
+
+
+  if(!searchResult){
+    setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano per rifiltrarle 
+    return
+   }
+
+   searchResult.map((playlist,index)=>{
+    if(playlist&&playlist.id === playlistId){
+      setSearchResult(prevPlaylists =>{
+        let newPlaylists = [...prevPlaylists];
+        newPlaylists[index]= playlistModificata;
         return newPlaylists
       })
     }
@@ -313,14 +352,14 @@ function modifyVisibility(playlistId) {
             {(searchResult.length===0)&&<div className="text-center">Nessun Risultato</div>}
             <div>
             {searchResult.map((playlist) => (                    
-              playlist&&<PlaylistCardPersonalArea playlist={playlist} updatePlaylists={updatePlaylists} userInfo={currentUser} setRemovedPlaylist={()=>removePlaylist(playlist.id)} modifyVisibility={()=>modifyVisibility(playlist.id)}/>
+              playlist&&<PlaylistCardPersonalArea playlist={playlist} userInfo={currentUser} setRemovedPlaylist={()=>removePlaylist(playlist.id)} modifyVisibility={()=>modifyVisibility(playlist.id)} modifyPlaylist={(newPlaylist)=>modifySinglePlaylist(playlist.id, newPlaylist)}/>
             ))}
             </div>
             <hr/>
             </div>}
           <div>
             {playlistFiltered.map((playlist) => (                     
-              playlist&&<PlaylistCardPersonalArea playlist={playlist} updatePlaylists={updatePlaylists} userInfo={currentUser} setRemovedPlaylist={()=>removePlaylist(playlist.id)} modifyVisibility={()=>modifyVisibility(playlist.id)} />
+              playlist&&<PlaylistCardPersonalArea playlist={playlist} userInfo={currentUser} setRemovedPlaylist={()=>removePlaylist(playlist.id)} modifyVisibility={()=>modifyVisibility(playlist.id)} modifyPlaylist={(newPlaylist)=>modifySinglePlaylist(playlist.id, newPlaylist)} />
             ))}
           </div>
         </Container>
