@@ -185,19 +185,10 @@ useEffect(() => {
   } else {
        setSearchResult(null)
     }
-}, [searchWord]);
+}, [searchWord, playlistFiltered]);
 
 //RIMOZIONE PLAYLIST DAL RENDERING_____________
 function removePlaylist(playlistId) {
-  playlistFiltered.map((playlist, index) => {
-    if(playlist&&playlist.id === playlistId){
-      setPlaylistFiltered(prevPlaylists =>{
-        let newPlaylists = [...prevPlaylists];
-        newPlaylists[index] = null;
-        return newPlaylists
-      })
-    }
-  })
 
   playlistResults.map((playlist, index) => {
     if(playlist&&playlist.id === playlistId){
@@ -209,7 +200,10 @@ function removePlaylist(playlistId) {
     }
   })
 
-  if(!searchResult) return 
+  if(!searchResult){
+    setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano per rifiltrarle 
+    return
+   }
 
   searchResult.map((playlist,index)=>{
     if(playlist.id === playlistId){
@@ -220,9 +214,45 @@ function removePlaylist(playlistId) {
       })
     }
   })
+
+  setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano per rifiltrarle
 }
 
-console.log(playlistFiltered)
+//Aggiungi una playlist all'elenco di playlists
+function addPlaylist(newPlaylist) {
+  setPlaylistResults([newPlaylist, ...playlistResults])
+  setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano
+}
+
+//modifica la visibilità di una playlist specifica
+function modifyVisibility(playlistId) {
+  playlistResults.map((playlist, index) => {
+    if(playlist&&playlist.id === playlistId){
+      setPlaylistResults(prevPlaylists =>{
+        let newPlaylists = [...prevPlaylists];
+        newPlaylists[index].public = !newPlaylists[index].public;
+        return newPlaylists
+      })
+    }
+  })
+
+  if(!searchResult){
+   setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano per rifiltrarle 
+   return
+  }
+
+  searchResult.map((playlist,index)=>{
+    if(playlist.id === playlistId){
+      setSearchResult(prevPlaylists =>{
+        let newPlaylists = [...prevPlaylists];
+        newPlaylists[index].public = !newPlaylists[index].public;
+        return newPlaylists
+      })
+    }
+  })
+
+  setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano per rifiltrarle
+}
 
 //RENDERIZZO IL BANNER__________________________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -283,20 +313,20 @@ console.log(playlistFiltered)
             {(searchResult.length===0)&&<div className="text-center">Nessun Risultato</div>}
             <div>
             {searchResult.map((playlist) => (                    
-              playlist&&<PlaylistCardPersonalArea playlist={playlist} updatePlaylists={updatePlaylists} userInfo={currentUser} setRemovedPlaylist={()=>removePlaylist(playlist.id)}/>
+              playlist&&<PlaylistCardPersonalArea playlist={playlist} updatePlaylists={updatePlaylists} userInfo={currentUser} setRemovedPlaylist={()=>removePlaylist(playlist.id)} modifyVisibility={()=>modifyVisibility(playlist.id)}/>
             ))}
             </div>
             <hr/>
             </div>}
           <div>
             {playlistFiltered.map((playlist) => (                     
-              playlist&&<PlaylistCardPersonalArea playlist={playlist} updatePlaylists={updatePlaylists} userInfo={currentUser} setRemovedPlaylist={()=>removePlaylist(playlist.id)}/>
+              playlist&&<PlaylistCardPersonalArea playlist={playlist} updatePlaylists={updatePlaylists} userInfo={currentUser} setRemovedPlaylist={()=>removePlaylist(playlist.id)} modifyVisibility={()=>modifyVisibility(playlist.id)} />
             ))}
           </div>
         </Container>
       </div>
 
-      <ModalCreatePlaylist show={modal} onClose={()=>{setModal(false)}} updatePlaylists={updatePlaylists}/>
+      {modal&&<ModalCreatePlaylist show={modal} onClose={()=>{setModal(false)}} addPlaylist={(newPlaylist)=>addPlaylist(newPlaylist)}/>}
       {currentUser&&<ModalModifyUser show={userModal} onClose={()=>{setUserModal(false)}} userInfo={currentUser}/>}
 
       </>

@@ -98,7 +98,7 @@ function switchFollow(){
                 </div>
                 <Col>
                     { 
-                    type === 'FOLLOWED' ? 
+                    type ? 
                                 <div className='d-flex'>
                                     <Button className='buttonCardOrizzontale btn-dark' onClick={switchFollow}><HeartFill/></Button> 
                                 </div> :

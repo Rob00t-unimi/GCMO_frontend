@@ -11,7 +11,7 @@ import { ToastContext } from '../../App';
 
 
 
-function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
+function ModalCreatePlaylist({show, onClose, addPlaylist}) {
 
     const {setToast} = useContext(ToastContext)
 
@@ -31,24 +31,13 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
     const [description, setDescription] = useState('')
     const [image, setImage] = useState(null);
 
-//CHIUDI MODALE_______________________________________________________________________
-
-    function close() {  
-        
-        setIsPublic(false)
-        setTitle('')
-        setDescription('')
-        setImage(null)    
-        onClose();
-    }
-
     return(
         <>
             <Modal className='modal' show={show} animation={true} size='xl' centered >
 
                 <Modal.Header className='bg-dark text-light' >
                     <Modal.Title>CREA LA TUA PLAYLIST</Modal.Title>
-                    <Button className='btn-light' onClick={close}>Chiudi</Button>
+                    <Button className='btn-light' onClick={onClose}>Chiudi</Button>
                 </Modal.Header>
 
                 <Modal.Body className='bg-dark text-light'>
@@ -76,7 +65,7 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
 
                 <Modal.Footer className='d-flex justify-content-center bg-dark text-light'>
                     <Button className='btn-light btn-lg' onClick={async () => onConfirmFunction()}> Salva </Button>
-                    <Button className='btn-success btn-lg' onClick={async () => onConfirmFunctionAndGo()}> Salva e Aggiungi brani </Button>
+                    <Button className='btn-success btn-lg' onClick={async () => onConfirmFunction("ADDTRACKS")}> Salva e Aggiungi brani </Button>
                 </Modal.Footer>
             </Modal>
 
@@ -85,135 +74,91 @@ function ModalCreatePlaylist({show, onClose, updatePlaylists}) {
     )
 
 
+
 //SALVA_______________________________________________________________________________________________
 
-    function onConfirmFunction() {
+    async function addingImage(id) {
+        if (image) {
 
-        if(!title||title==='') {
-            setToast(true, "Non è stato Possibile Creare la playlist: inserire un titolo.")
-            return
-        }
-
-        let id = null
-        //MODIFICA DETTAGLI
-            spotifyApi.createPlaylist(title, {description: description, public: isPublic})
-            .then(data => {
-                console.log(data)
-                id = data.body.id
-
-                if (image) {
-
-                    const reader = new FileReader();            //l'immagine è richiesta in base64, la converto con l'oggetto reader
-                    reader.readAsDataURL(image);
-                    reader.onloadend = async () => {
-                        const base64 = reader.result.split(',')[1];
-                        //UPLOAD IMMAGINE DI COPERTINA
-                        spotifyApi.uploadCustomPlaylistCoverImage(id, base64)
-                        .then(data => {
-                            updatePlaylists()
-                            setToast(true, "Playlist creata con Successo!")
-                            close()
-                        })
-                        .catch(err => {
-                            ErrorStatusCheck(err)
-                        })
-                    }
-                } else {
-                    updatePlaylists()
-                    setToast(true, "Playlist creata con Successo!")
-                    close()
-                }
-            })
-            .catch(err => {
-                setToast(true, "Non siamo riusciti a creare la nuova playlist.")
-                ErrorStatusCheck(err)
-            })
-    }
-
-    //SALVA E VAI AD AGGIUNGERE TRACCE__________________________________________________________________
-
-    function onConfirmFunctionAndGo() {
-
-        if(!title||title==='') {
-            setToast(true, "Non è stato Possibile Creare la playlist: inserire un titolo.")
-            return
-        }
-
-        let id = null
-        //MODIFICA DEI DETTAGLI
-            spotifyApi.createPlaylist(title, {description: description, public: isPublic})
-            .then(item => {
-                console.log(item)
-                id = item.body.id
-
-                if (image) {
-
-                    const reader = new FileReader();            //l'immagine è richiesta in base64, la converto con l'oggetto reader
-                    reader.readAsDataURL(image);
-                    reader.onloadend = async () => {
-                        const base64 = reader.result.split(',')[1];
-                        //UPLOAD IMMAGINE DI COPERTINA
-                        spotifyApi.uploadCustomPlaylistCoverImage(id, base64)
-                        .then(data => {
-                                finish(id, image)
-                        })
-                        .catch(err => {
-                            setToast(true, "Non è stato possibile caricare l'immagine di copertina")
-                            ErrorStatusCheck(err)
-                        })
-                    }
-                    
-                } else {
-                    finish(id)
-                }
-            })
-            .catch(err => {
-                ErrorStatusCheck(err)
-            })
-    }
-
-    function finish(id, image) {  //CHIUDO E SALVO NEL LOCAL STORAGE LA NUOVA PLAYLIST 
-        spotifyApi.getPlaylist(id)
-        .then(item =>{
-            console.log(item)
-            if(image&&(!item.body.image||item.body.image.length===0)) {     //nel caso in cui image esiste significa che è stata inviata l'immagine correttamente, 
-            }                                                               //tuttavia se nella get della playlist significa che le api non l'hanno ancora impostata, quindi faccio ricorsioni, quando arriva continuo
-            const createdPlaylist =  {
-                image: item.body.images && item.body.images.length > 0 ? item.body.images[0].url : null,
-                name: item.body.name,
-                description: item.body.description ? item.body.description : null,
-                id: item.body.id,
-                ownerId: item.body.owner.id,
-                ownerName: item.body.owner.display_name,
-                public: item.body.public,
-              }
-              console.log("createdplaylist", createdPlaylist)
-
-              addPlaylistInStorage(createdPlaylist) 
-
-        })
-        }
-
-        function addPlaylistInStorage(playlist){
-        
-            spotifyApi.getPlaylistTracks(playlist.id)
-            .then((tracks) => {
-                console.log(tracks)
-                const tracce = tracks.body.items.map(traccia=>{
-                    return traccia.track.id
+            const reader = new FileReader();            //l'immagine è richiesta in base64, la converto con l'oggetto reader
+            reader.readAsDataURL(image);
+            reader.onloadend = async () => {
+                const base64 = reader.result.split(',')[1];
+                //UPLOAD IMMAGINE DI COPERTINA
+                spotifyApi.uploadCustomPlaylistCoverImage(id, base64)
+                .catch(err => {
+                    setToast(true, "Non siamo riusciti ad aggiungere l'immagine alla playlist.")
+                    ErrorStatusCheck(err)
                 })
-                localStorage.setItem('createdPlaylistTracks', JSON.stringify(tracce))
-                localStorage.setItem("createdPlaylist", JSON.stringify(playlist))
+            }
+        }
+        return
+    }
 
-                onClose()
+    async function onConfirmFunction(seAddTracks) {
 
-                //REINDIRIZZO ALLA PAGINA DI NAVIGAZIONE PER AGGIUNGERE LE CANZONI
-                window.location = "http://localhost:3000/navigate" 
+        if(!title||title==='') {
+            setToast(true, "Non è stato Possibile Creare la playlist: inserire un titolo.")
+            return
+        }
+
+        let id = null
+        
+        try {
+            const data = await spotifyApi.createPlaylist(title, {description: description, public: isPublic})
+            id = data.body.id
+            console.log(data)
+            await addingImage(data.body.id)
+            let addedPlaylist = {
+                image: image ? URL.createObjectURL(image) : null,
+                name: data.body.name,
+                description: description,
+                id: data.body.id,
+                ownerId: data.body.owner.id,
+                ownerName: data.body.owner.display_name,
+                public: data.body.public,
+                totalTracks: data.body.tracks.total,
+                uri: data.body.uri}
+            
+            if (seAddTracks==="ADDTRACKS") {
+                addPlaylistInStorage(addedPlaylist)
+            } else {
+                addPlaylist(addedPlaylist)
+                setToast(true, "Playlist creata con Successo!")
+                onClose() 
+            }
+
+        } catch (err) {
+            setToast(true, "Non siamo riusciti a creare la nuova playlist.")
+            ErrorStatusCheck(err)
+        }
+    }
+
+    function addPlaylistInStorage(playlist){
+
+        //in questo caso rimuovo il blob image perchè scadrebbe passando alla prossima pagina, 
+        //gli assegno un valore speciale per marcare che qui dovrebbe esserci un immagine ma non c'è e richiederla in seguito
+        //questo perchè se la richiedessi ora mi verrebbe restituito null, i server api non l'hanno ancora impostata
+        //lo stesso accade per la descrizione
+        playlist.image = playlist.image ? "ASK" : null
+
+        spotifyApi.getPlaylistTracks(playlist.id)
+        .then((tracks) => {
+            console.log(tracks)
+            const tracce = tracks.body.items.map(traccia=>{
+                return traccia.track.id
             })
-            .catch(e=>{
-                ErrorStatusCheck()
-            })
-         
+            localStorage.setItem('createdPlaylistTracks', JSON.stringify(tracce))
+            localStorage.setItem("createdPlaylist", JSON.stringify(playlist))
+
+            onClose()
+
+            //REINDIRIZZO ALLA PAGINA DI NAVIGAZIONE PER AGGIUNGERE LE CANZONI
+            window.location = "http://localhost:3000/navigate" 
+        })
+        .catch(e=>{
+            ErrorStatusCheck()
+        })
     }
 }
 

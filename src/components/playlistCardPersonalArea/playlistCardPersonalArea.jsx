@@ -16,7 +16,7 @@ import { spotifyApi } from '../../util/costanti';
 
 
 
-function PlaylistCardPersonalArea({playlist, updatePlaylists, userInfo, setRemovedPlaylist}){
+function PlaylistCardPersonalArea({playlist, updatePlaylists, userInfo, setRemovedPlaylist, modifyVisibility}){
 
 //INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
@@ -68,7 +68,8 @@ useEffect(() => {
         if (type === 'PUBLIC') {
             spotifyApi.changePlaylistDetails(playlist.id, {public: false})
             .then(data => {
-                updatePlaylists()
+                modifyVisibility()
+                setType('PRIVATE')
             })
             .catch(err => {
                 ErrorStatusCheck(err)
@@ -76,7 +77,8 @@ useEffect(() => {
         } else if (type === 'PRIVATE'){
             spotifyApi.changePlaylistDetails(playlist.id, {public: true})
             .then(data => {
-                updatePlaylists()
+                modifyVisibility()
+                setType('PUBLIC')
             })
             .catch(err => {
                 ErrorStatusCheck(err)

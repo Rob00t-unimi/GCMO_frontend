@@ -270,7 +270,7 @@ console.log(tracks)
 
             </Modal.Body>
             <Modal.Footer className='bg-dark'>
-                <Button className='btn-light btnImport' onClick={importaAlbum}>Importa album in una playlist</Button>
+                {window.location.pathname!=="/preferences"&&<Button className='btn-light btnImport' onClick={importaAlbum}>Importa album in una playlist</Button>}
                 <a className="spotifyLinkBtn btn btn-success btn-sm" href={album.uri} target="_blank" ><img src={spotifyLogo} /></a>
             </Modal.Footer>
         </Modal>
