@@ -166,6 +166,24 @@ function importaAlbum(){
         spotifyApi.addTracksToPlaylist(res.body.id, tracce)
         .then(data => {
             setToast(true, "Album importato correttamente.")
+            if(window.location.pathname === "/navigate"){
+                const newPlaylist = {
+                    image: res.body.images && res.body.images.length > 0 ? res.body.images[0].url : null,
+                    name: res.body.name,
+                    description: res.body.description ? res.body.description : null,
+                    id: res.body.id,
+                    ownerId: res.body.owner.id,
+                    ownerName: res.body.owner.display_name,
+                    public: res.body.public,
+                    totalTracks: res.body.tracks.total,
+                    uri: res.body.uri
+                }
+                let lista = [newPlaylist];
+                        let lista2 = JSON.parse(localStorage.getItem("playlist_list")) || [];
+                        lista = [...lista, ...lista2];
+                        console.log("lista", lista);
+                        localStorage.setItem("playlist_list", JSON.stringify( lista))
+                }
         })
         .catch(err => {
             setToast(true, "Non è stato possibile importare l'album.")
