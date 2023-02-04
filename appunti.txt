@@ -65,19 +65,21 @@ sono rimasti i seguenti problemi da rivedere:
 - follow di utenti, canzoni, artisti, tracce nelle modali danno problemi
 - ogni alert, alcuni hanno scritte sbagliate, altri escono quando non devono uscire (ad esempio quello dell'import di playlist o album)     fixed
 
-
-- ancora problemi con immagine e descrizione alla creazione di playlist							risolto
+- ancora problemi con immagine e descrizione alla creazione di playlist						risolto
 - problemi alla modifica della playlist, a volte fallisce, a volte non aggiorna, 				risolto
-	a volte se modifico rimuove l'immagine di default di spotify								risolto
+	a volte se modifico rimuove l'immagine di default di spotify						risolto
 	non mi fa switchare nella modale tra public e private, problemi con immagine e descrizione	risolto
 
 
+- problemi con sovrapposizione di filtri, bisogna bloccare quelli non consentiti etc..			risolto
+- quando si importa una playlist bisogna aggiungerla anche a playlist list					risolto
+- aggiornare la ricerca quando aggiorno i filtri									risolto
+- aggiornare la ricerca quando aggiorno il numero di ricerche							risolto
+- mantenere la categoria selezionata quando attivo o disattivo playlists					risolto
+
 - quasi tutti i follow-unfollow creano problemi
-
-- problemi con sovrapposizione di filtri, bisogna bloccare quelli non consentiti etc..
-
-- quando si importa una playlist bisogna aggiungerla anche a playlist list
-
-- aggiornare la ricerca quando aggiorno i filtri
-
 - all'apertura delle pagine se il token è scaduto devo anche rifare le prime funzioni
+- problemi refresh??? maybe
+
+
+aggiungere aggiornamento playlist list quando importo da album		risolto

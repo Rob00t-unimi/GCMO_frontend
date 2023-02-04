@@ -11,7 +11,7 @@ import { spotifyApi } from '../../util/costanti';
 
 
 
-export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, userSelection,*/ cosaCercare, /*comeCercare*/ setOptionCategory}){
+export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, userSelection,*/ cosaCercare, /*comeCercare*/ setOptionCategory, activeCategory}){
 
     //CONTROLLO IL TOKEN e lo passo all'oggetto spotifyApi____________________________________________________________________________________
 
@@ -64,16 +64,18 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
         }  
     }
 
-
+const [disabled, setDisabled] = useState([false, false, false, false])
 
     function setCategoryPlaylist(idCategoria){
         setOptionCategory(idCategoria)
         if (idCategoria!=="") {
             const newFilterArr = [true, false, false, false];
             cosaCercare(newFilterArr);
+            setDisabled([false, true, true, true])
         } else {
             const newFilterArr = [true, true, true, true];
             cosaCercare(newFilterArr);
+            setDisabled([false, false, false, false])
         }
     }
     console.log(filterArr)
@@ -82,11 +84,11 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
         <h4 className="text-center">Filtri di Ricerca:</h4>
         <hr />
         
-        <Row><Col><h5 className="text-center">Playlist</h5></Col><Col><Form.Check  className="switchFilter" type="switch"  checked={filterArr[0] } onChange={()=>switchingValues(0)}></Form.Check></Col></Row>          
+        <Row><Col><h5 className="text-center">Playlist</h5></Col><Col><Form.Check  className="switchFilter" type="switch" disabled={disabled[0]}  checked={filterArr[0] } onChange={()=>switchingValues(0)}></Form.Check></Col></Row>          
 
         {showCheckbox&&categorie&&<>
             <div className="CategorieTitle text-center"><h6>Puoi scegliere una categoria di ricerca per le playlist: </h6></div> 
-            <select class="form-control selectCategory" onChange={(e) => setCategoryPlaylist(e.target.value)}>
+            <select class="form-control selectCategory" value={activeCategory ? activeCategory : ""} onChange={(e) => setCategoryPlaylist(e.target.value)}>
                 <option value="" selected className="text-center">Seleziona una categoria</option>
                 {/* <option value="nomeTraccia" selected className="text-center">Nome di una traccia</option> */}
                 {categorie.map((category) => (
@@ -95,11 +97,11 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
             </select>
         </>}
         <hr />
-        <Row><Col><h5 className="text-center">Canzoni</h5></Col><Col><Form.Check custom className="switchFilter" type="switch"  checked={filterArr[1] }  onChange={()=>switchingValues(1)}></Form.Check></Col></Row>                
+        <Row><Col><h5 className="text-center">Canzoni</h5></Col><Col><Form.Check custom className="switchFilter" type="switch" disabled={disabled[1]} checked={filterArr[1] }  onChange={()=>switchingValues(1)}></Form.Check></Col></Row>                
         <hr />
-        <Row><Col><h5 className="text-center">Album</h5></Col><Col> <Form.Check className="switchFilter" type="switch"  checked={filterArr[2] } onChange={()=>switchingValues(2)}></Form.Check></Col></Row>                   
+        <Row><Col><h5 className="text-center">Album</h5></Col><Col> <Form.Check className="switchFilter" type="switch" disabled={disabled[2]} checked={filterArr[2] } onChange={()=>switchingValues(2)}></Form.Check></Col></Row>                   
         <hr />
-        <Row><Col><h5 className="text-center">Artisti</h5></Col><Col><Form.Check  className="switchFilter" type="switch"  checked={filterArr[3] } onChange={()=>switchingValues(3)}></Form.Check></Col></Row>                 
+        <Row><Col><h5 className="text-center">Artisti</h5></Col><Col><Form.Check  className="switchFilter" type="switch" disabled={disabled[3]} checked={filterArr[3] } onChange={()=>switchingValues(3)}></Form.Check></Col></Row>                 
 
         <hr />
         <div className="d-flex flex-row">

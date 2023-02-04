@@ -80,7 +80,25 @@ useEffect(() => {
 
 
 
- //RICERCA______________________________________________________________________________________________________________________
+ 
+
+ //LIMITE DI RICERCA_______________________________________________________________________________________________________________________________________________________________________________________
+
+const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il componente filtri di ricerca
+
+
+//ESTRAGGO LA LISTA DI PLAYLIST_____________________
+
+const [lista, setLista] = useState()
+
+useEffect(() => {
+  if(localStorage.getItem('playlist_list')) {
+    setLista((JSON.parse(localStorage.getItem('playlist_list'))))
+  }
+}, [localStorage.getItem('playlist_list')])
+
+
+//RICERCA______________________________________________________________________________________________________________________
 
  const [optionCategory, setOptionCategory] = useState("");
 //  //cosa cercare
@@ -161,7 +179,7 @@ useEffect(() => {
       setSearchResultAlbums(null)
       setSearchResultArtists(null)
     }
-  },[searchWord, showFooter])
+  },[searchWord, showFooter, filterArr, searchLimit])
 
 
 
@@ -290,7 +308,9 @@ function ricerca(){
 
 useEffect(() => {
 
-  if(searchWord&&searchWord!=="") return
+  if(searchWord&&searchWord!==""&&optionCategory!=="") {
+    setSearchWord("")
+  }
 
   if (optionCategory&&optionCategory!==""/*&&optionCategory!=="nomeTraccia"*/) {
       
@@ -326,7 +346,7 @@ useEffect(() => {
   //   })
   // }
 
-}, [optionCategory, searchWord])
+}, [optionCategory, searchWord, filterArr[0], searchLimit])
 
 
 
@@ -441,22 +461,6 @@ function getMyTopTracksFunction() {
 
 
 
-//LIMITE DI RICERCA_______________________________________________________________________________________________________________________________________________________________________________________
-
-const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il componente filtri di ricerca
-
-
-//ESTRAGGO LA LISTA DI PLAYLIST_____________________
-
-const [lista, setLista] = useState()
-const [updateList, setUpdateList] = useState(false)
-
-useEffect(() => {
-  if(localStorage.getItem('playlist_list')) {
-    setLista((JSON.parse(localStorage.getItem('playlist_list'))))
-  }
-}, [localStorage.getItem('playlist_list')])
-
 //RENDERIZZO IL BANNER____________________________________________________________________________________________________________________________________________________________________________________
 
     if (!(accessToken)) {
@@ -486,7 +490,7 @@ useEffect(() => {
         </Container>
 
       {/* FILTRI DI RICERCA */}
-        <FiltriRicerca changeLimit={(childNumber)=>setSearchLimit(childNumber)} filterArr={filterArr} cosaCercare={(filtriSelezionati)=>setFilterArr(filtriSelezionati)} setOptionCategory={(categoria)=>setOptionCategory(categoria)}/>
+        <FiltriRicerca changeLimit={(childNumber)=>setSearchLimit(childNumber)} filterArr={filterArr} cosaCercare={(filtriSelezionati)=>setFilterArr(filtriSelezionati)} setOptionCategory={(categoria)=>setOptionCategory(categoria)} activeCategory={optionCategory}/>
 
       {/* LISTA DELLE PLAYLIST */}
       {lista&&<Playlist_list lista={lista} showFooter={showFooter} setShowFooter={()=>setShowFooter(true)}></Playlist_list>}
