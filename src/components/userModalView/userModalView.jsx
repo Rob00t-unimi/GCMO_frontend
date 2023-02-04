@@ -81,14 +81,13 @@ useEffect(() => {
     .catch(err => {
         ErrorStatusCheck(err)
     })
-}, [])
+}, [user])
 
 
 
 function follow() {
     spotifyApi.followUsers([user.id])
     .then(result => {
-        console.log("followed?",result)
         const newUser = {
             ...user,
             followed: true
@@ -101,7 +100,7 @@ function follow() {
 }
 
 function unfollow() {
-    spotifyApi.followUsers([user.id])
+    spotifyApi.unfollowUsers([user.id])
     .then(result => {
         const newUser = {
             ...user,

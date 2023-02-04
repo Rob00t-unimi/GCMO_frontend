@@ -521,7 +521,7 @@ function getMyTopTracksFunction() {
         </Container>} */}
 
         {/* CAROSELLO MY TOP TRACK */}
-        {myTopTracks&&(!searchWord||searchWord==="")&&optionCategory===""&&<Container fluid className="cardsTop" >
+        {myTopTracks&&myTopTracks.length>0&&(!searchWord||searchWord==="")&&optionCategory===""&&<Container fluid className="cardsTop" >
           <hr/>
             <div><h3>My Top Tracks</h3></div>
             <Carousel indicators={false} controls={false}>
