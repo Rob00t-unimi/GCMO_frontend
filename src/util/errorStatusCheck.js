@@ -5,6 +5,7 @@ export default function ErrorStatusCheck(errore) {
 
     if (errore.body.error.status === 401 || errore.body.error.status === 403) {
         refreshToken()
+        return "401-403"
     }
     
     //aggiungere un controllo quando error status è 429 ovvero troope richieste 

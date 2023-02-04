@@ -113,7 +113,8 @@ useEffect(() => {
         console.log("Top 10 Spotify Tracks",currentTopTracks)
       }) 
       .catch(err => {
-        ErrorStatusCheck(err)
+        const status = ErrorStatusCheck(err)
+        if(status === "401-403") {getTopTracks()}
     })
   }
 

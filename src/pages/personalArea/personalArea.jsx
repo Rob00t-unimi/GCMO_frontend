@@ -40,7 +40,10 @@ function PersonalArea() {
 //OTTENERE INFO UTENTE________________________________________________________________________________________________________________________________________
 
   useEffect(() => {                 //quando cambia l'access token eseguo lo use effect
+    getInfoUtente()
+  }, [userModal, accessToken])
 
+  function getInfoUtente() {
     if(localStorage.getItem('user')) {
       setCurrentUser(JSON.parse(localStorage.getItem('user')))
       return
@@ -61,10 +64,10 @@ function PersonalArea() {
             setCurrentUser(JSON.parse(localStorage.getItem('user')))
         })
         .catch(err => {
-          ErrorStatusCheck(err)
+          const status = ErrorStatusCheck(err)
+          if(status === "401-403") { getInfoUtente()}
       })
-
-  }, [userModal, accessToken])
+  }
 
 //OTTENERE LE PLAYLIST____________________________________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -114,7 +117,8 @@ function PersonalArea() {
 
 
   } catch (err) {
-    ErrorStatusCheck(err)
+    const status = ErrorStatusCheck(err)
+    if(status === "401-403") {getAllPlaylist()}
   }
 }
 
