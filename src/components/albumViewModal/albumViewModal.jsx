@@ -203,8 +203,7 @@ function switchFollow(currentTrack, i) {
   
     if (currentTrack.followed) {
       // chiamata per smettere di seguire
-      spotifyApi
-        .addToMySavedTracks([currentTrack.id])
+      spotifyApi.removeFromMySavedTracks([currentTrack.id])
         .then((res) => {
           setTracks((prevTracks) => {
             let tracce = [...prevTracks];
@@ -217,8 +216,7 @@ function switchFollow(currentTrack, i) {
         });
     } else {
       // chiamata per seguire
-      spotifyApi
-        .removeFromMySavedTracks([currentTrack.id])
+      spotifyApi.addToMySavedTracks([currentTrack.id])
         .then((res) => {
             console.log(res)
           setTracks((prevTracks) => {

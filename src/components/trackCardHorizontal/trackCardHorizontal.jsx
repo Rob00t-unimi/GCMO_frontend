@@ -46,9 +46,8 @@ function TrackCardHorizontal({currentTrack, showFooter, currentPlaylist}){
 function switchFollow(){
     if (type) {
         //chiamata per smettere di seguire     
-        spotifyApi.addToMySavedTracks([currentTrack.id])
+        spotifyApi.removeFromMySavedTracks([currentTrack.id])
         .then(res=>{
-            console.log(res)
             setType(false)
         })
         .catch(err => {
@@ -56,7 +55,7 @@ function switchFollow(){
         })
     } else {
         //chiamata per seguire 
-        spotifyApi.removeFromMySavedTracks([currentTrack.id])
+        spotifyApi.addToMySavedTracks([currentTrack.id])
         .then(res=>{
             setType(true)
         })
