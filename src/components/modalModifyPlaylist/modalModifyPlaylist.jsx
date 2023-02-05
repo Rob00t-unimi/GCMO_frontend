@@ -175,7 +175,6 @@ useEffect(() => {
         })
         .catch(e=>{
             ErrorStatusCheck()
-            addPlaylistInStorage(thisPlaylist)
         })
          
     }

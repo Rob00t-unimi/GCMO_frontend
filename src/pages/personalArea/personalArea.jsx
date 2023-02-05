@@ -64,7 +64,8 @@ function PersonalArea() {
             setCurrentUser(JSON.parse(localStorage.getItem('user')))
         })
         .catch(err => {
-          ErrorStatusCheck(err)
+          const status = ErrorStatusCheck(err)
+          if(status === "401-403") { getInfoUtente()}
       })
   }
 
@@ -79,7 +80,7 @@ function PersonalArea() {
       localStorage.removeItem('createdPlaylist')
     }
     getAllPlaylist()
-  }, [accessToken]);
+  }, []);
   
   async function getAllPlaylist(){
 
@@ -116,7 +117,8 @@ function PersonalArea() {
 
 
   } catch (err) {
-    ErrorStatusCheck(err)
+    const status = ErrorStatusCheck(err)
+    if(status === "401-403") {getAllPlaylist()}
   }
 }
 

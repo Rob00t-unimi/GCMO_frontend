@@ -73,13 +73,19 @@ function getAllTracks() {
               
     }) 
     .catch(err => {
+        // let retryAfter = err.response.headers['Retry-After'];
+        // if (err.body.error&&err.body.error.status === 429 ) {
+        //     setTimeout(() => {
+        //         getAllTracks()
+        //     }, retryAfter);
+        // }
         ErrorStatusCheck(err)
     })
   }
 
   useEffect(() => {
     getAllTracks()
-  }, [accessToken])
+  }, [])
   
     
 //REMOVE TRACK_______________________________________________________________________________________________________________________

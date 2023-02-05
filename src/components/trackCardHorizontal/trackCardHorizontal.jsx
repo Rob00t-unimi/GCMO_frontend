@@ -32,6 +32,7 @@ function TrackCardHorizontal({currentTrack, showFooter, currentPlaylist}){
 
         spotifyApi.containsMySavedTracks([currentTrack.id])
         .then(res =>{
+            console.log('risposta', res)
             setType(res.body[0])
             })
             .catch(err => {
