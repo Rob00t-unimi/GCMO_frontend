@@ -38,7 +38,7 @@ useEffect(() => {
         setArtists([])
         getTopTracks()
     }
-}, [searchWord])
+}, [searchWord, accessToken])
 
 
   function ricerca(){
@@ -113,8 +113,7 @@ useEffect(() => {
         console.log("Top 10 Spotify Tracks",currentTopTracks)
       }) 
       .catch(err => {
-        const status = ErrorStatusCheck(err)
-        if(status === "401-403") {getTopTracks()}
+        ErrorStatusCheck(err)
     })
   }
 

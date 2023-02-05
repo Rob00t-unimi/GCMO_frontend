@@ -79,7 +79,9 @@ sono rimasti i seguenti problemi da rivedere:
 
 - quasi tutti i follow-unfollow creano problemi
 - all'apertura delle pagine se il token è scaduto devo anche rifare le prime funzioni
-- problemi refresh??? maybe
 
 
 aggiungere aggiornamento playlist list quando importo da album		risolto
+
+- il problema rimasto non è il refresh che funziona bene.. il problema è rilevare i cambiamenti del token nello storage 
+	per poter ri-renderizzare i componenti e rieseguire determinate funzioni

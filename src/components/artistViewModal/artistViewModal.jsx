@@ -34,7 +34,7 @@ const ArtistViewModal = ({ show, onClose, artist, currentUser }) => {
         spotifyApi.setAccessToken(accessToken);
     }, [accessToken])
 
-//GET TOP 5 ARTIST TRACKS_________________________________________________________________________________________________________
+//GET TOP ARTIST TRACKS_________________________________________________________________________________________________________
 
 const [tracks, setTracks] = useState()
 
@@ -60,7 +60,7 @@ const [tracks, setTracks] = useState()
             ErrorStatusCheck(err)
         })
 
-    }, [])
+    }, [accessToken])
 
 
 

@@ -28,20 +28,25 @@ function PersonalArea() {
   const [currentUser, setCurrentUser] = useState();   //dati attuali dell'utente
 
   //CONTROLLO IL TOKEN e lo passo all'oggetto spotifyApi____________________________________________________________________________________
+  useEffect(() => {  
+    if(localStorage.getItem('createdPlaylist')) {
+      localStorage.removeItem('createdPlaylist')
+    }
+  }, []);
 
   const accessToken = localStorage.getItem('accessToken');
 
-  useEffect(() => {
-    if (!accessToken) return;
-    spotifyApi.setAccessToken(accessToken);
-  }, [accessToken])
 
+  useEffect(() => {
+    if (!accessToken) return;  
+    spotifyApi.setAccessToken(accessToken);
+
+    getInfoUtente();
+    getAllPlaylist();
+  }, [accessToken, userModal])
 
 //OTTENERE INFO UTENTE________________________________________________________________________________________________________________________________________
-
-  useEffect(() => {                 //quando cambia l'access token eseguo lo use effect
-    getInfoUtente()
-  }, [userModal, accessToken])
+ 
 
   function getInfoUtente() {
     if(localStorage.getItem('user')) {
@@ -49,7 +54,6 @@ function PersonalArea() {
       return
     }
 
-    spotifyApi.setAccessToken(accessToken);     //se l'access token non è nullo eseguo la richiesta di informazioni dell'utente e le salvo nel local storage
     spotifyApi.getMe()
         .then(result => {
             localStorage.setItem('user', JSON.stringify({
@@ -64,8 +68,7 @@ function PersonalArea() {
             setCurrentUser(JSON.parse(localStorage.getItem('user')))
         })
         .catch(err => {
-          const status = ErrorStatusCheck(err)
-          if(status === "401-403") { getInfoUtente()}
+          ErrorStatusCheck(err)
       })
   }
 
@@ -75,12 +78,7 @@ function PersonalArea() {
   const [playlistFiltered, setPlaylistFiltered] = useState([])  //playlist filtrate in base al filtro attuale
   const [update, setUpdate] = useState(false)
 
-   useEffect(() => {  
-    if(localStorage.getItem('createdPlaylist')) {
-      localStorage.removeItem('createdPlaylist')
-    }
-    getAllPlaylist()
-  }, []);
+
   
   async function getAllPlaylist(){
 
@@ -117,8 +115,7 @@ function PersonalArea() {
 
 
   } catch (err) {
-    const status = ErrorStatusCheck(err)
-    if(status === "401-403") {getAllPlaylist()}
+    ErrorStatusCheck(err)
   }
 }
 
@@ -132,7 +129,6 @@ useEffect(() => {
     localStorage.setItem('playlist_list', JSON.stringify(onlyMyPlaylists));
   }
 }, [playlistResults])
-
 
 
 //FILTRARE LE PLAYLIST______________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -292,7 +288,7 @@ function modifySinglePlaylist(playlistId, playlistModificata) {
 //RENDERIZZO IL BANNER__________________________________________________________________________________________________________________________________________________________________________________________________________
 
   //se non c'è il token restituisco un banner nella pagina personale altrimenti proseguo
-  if (!accessToken){ return(
+  if (!localStorage.getItem("accessToken")){ return(
     <>
     <div className="wallpaper">
       <NavigationBar/>

@@ -385,8 +385,7 @@ useEffect(() => {
       console.log("Top 10 Spotify Playlists",topPlaylists)
     })
     .catch(err => {
-      const status = ErrorStatusCheck(err)
-      if(status === "401-403") {getTop()}
+      ErrorStatusCheck(err)
   })
 
 
@@ -415,8 +414,7 @@ useEffect(() => {
       console.log("Top 10 Spotify Tracks",currentTopTracks)
     }) 
     .catch(err => {
-      const status = ErrorStatusCheck(err)
-      if(status === "401-403") {getTop()}
+      ErrorStatusCheck(err)
   })
  
 }
@@ -426,7 +424,7 @@ useEffect(() => {
     getTop()
     getMyTopTracksFunction()
   }
-}, [searchWord])
+}, [searchWord, accessToken])
 
 
 
@@ -457,8 +455,7 @@ function getMyTopTracksFunction() {
       console.log('User Top Tracks', myCurrentTopTracks)
     }) 
     .catch(err => {
-      const status = ErrorStatusCheck(err)
-      if(status === "401-403") {getMyTopTracksFunction()}
+      ErrorStatusCheck(err)
   })
 }
 
