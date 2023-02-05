@@ -34,12 +34,12 @@ const ArtistViewModal = ({ show, onClose, artist, currentUser }) => {
         spotifyApi.setAccessToken(accessToken);
     }, [accessToken])
 
-//GET TOP 5 ARTIST TRACKS_________________________________________________________________________________________________________
+//GET TOP ARTIST TRACKS_________________________________________________________________________________________________________
 
 const [tracks, setTracks] = useState()
 
-    useEffect(() => {
-        const country = currentUser ? currentUser.country : null
+function getTopArtistTracks() {
+    const country = currentUser ? currentUser.country : null
         spotifyApi.getArtistTopTracks(artist.id, country ? country : "IT" )
         .then(res => {
             console.log(res)
@@ -58,8 +58,12 @@ const [tracks, setTracks] = useState()
         })
         .catch(err => {
             ErrorStatusCheck(err)
+            getTopArtistTracks()
         })
+}
 
+    useEffect(() => {
+        getTopArtistTracks()
     }, [])
 
 

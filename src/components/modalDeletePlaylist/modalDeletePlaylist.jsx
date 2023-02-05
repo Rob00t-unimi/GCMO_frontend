@@ -23,7 +23,7 @@ function ModalDeletePlaylist({show, onClose, playlist, setRemovedPlaylist}) {
          //chiamata per smettere di seguire = cancellare (spotify non rimuove veramente le playlist quindi non c'è nemmeno una chiamata per farlo)   
          spotifyApi.unfollowPlaylist(playlist.id)
          .then(res=>{
-            setToast(true, "Platlist Eliminata")
+            setToast(true, "Platlist Eliminata.")
             setRemovedPlaylist()
             onClose()
          })

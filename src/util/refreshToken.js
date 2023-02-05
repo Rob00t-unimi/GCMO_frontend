@@ -4,6 +4,7 @@ const SERVER_BASIC_URL = 'http://localhost:9000';
 
 export default function refreshToken() {
 
+    console.log("Refresh")
   
     const refreshToken = localStorage.getItem('refreshToken')       
 

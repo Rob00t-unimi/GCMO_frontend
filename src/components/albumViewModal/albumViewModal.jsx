@@ -82,7 +82,7 @@ async function getAllTracks() {
   
   useEffect(() =>{
     getAllTracks()
-  }, [])
+  }, [accessToken])
 
 
 //RICERCA GENERI_______________________________________________________________________________________________________________
