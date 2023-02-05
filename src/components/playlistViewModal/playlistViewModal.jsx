@@ -137,9 +137,7 @@ function addTrack(currentTrack, i){
             }
         })
         setAddBtn(newAddbtn)
-        let tracce = JSON.parse(localStorage.getItem("createdPlaylistTracks"))
-        tracce = [currentTrack.id, ...tracce]
-        localStorage.setItem("createdPlaylistTracks", JSON.stringify(tracce))
+
         setToast(true, "Traccia aggiunta correttamente")
     })
     .catch(err => {

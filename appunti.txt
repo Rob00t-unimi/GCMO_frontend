@@ -77,8 +77,8 @@ sono rimasti i seguenti problemi da rivedere:
 - aggiornare la ricerca quando aggiorno il numero di ricerche							risolto
 - mantenere la categoria selezionata quando attivo o disattivo playlists					risolto
 
-- quasi tutti i follow-unfollow creano problemi												risolto
-- all'apertura delle pagine se il token è scaduto devo anche rifare le prime funzioni		risolto
+- quasi tutti i follow-unfollow creano problemi
+- all'apertura delle pagine se il token è scaduto devo anche rifare le prime funzioni
 - problemi refresh??? maybe
 
 
