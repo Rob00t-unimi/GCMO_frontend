@@ -81,7 +81,7 @@ useEffect(() => {
     .catch(err => {
         ErrorStatusCheck(err)
     })
-}, [])
+}, [user])
 
 
 
@@ -101,7 +101,7 @@ function follow() {
 }
 
 function unfollow() {
-    spotifyApi.followUsers([user.id])
+    spotifyApi.unfollowUsers([user.id])
     .then(result => {
         const newUser = {
             ...user,

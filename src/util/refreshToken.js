@@ -8,10 +8,10 @@ export default function refreshToken() {
     
     const refreshToken = localStorage.getItem('refreshToken')       
 
-    if (!refreshToken) {
-        window.location='/';        //se non c'è il refresh token non sono loggato, mando alla root
+     if (!refreshToken) {
+        // window.location='/';        //se non c'è il refresh token non sono loggato, mando alla root
         return;
-    }
+     }
     return axios.post(`${SERVER_BASIC_URL}/refresh`, {          //se c'è invio richiesta al mio server
                 refreshToken
             })

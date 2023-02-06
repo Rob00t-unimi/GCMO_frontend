@@ -36,9 +36,16 @@ function NavigationPage(){
      const [showFooter, setShowFooter] = useState(false);
      const [createdPlaylist, setCreatedPlaylist] = useState();
 
+
+
      useEffect(() => {
       if(localStorage.getItem("createdPlaylist")) {
         setCreatedPlaylist(JSON.parse(localStorage.getItem('createdPlaylist')))
+      }  
+      if(!showFooter) {
+        localStorage.removeItem('createdPlaylist')
+        localStorage.removeItem('createdPlaylistTracks')
+        setCreatedPlaylist(null)
       }
     }, [showFooter])
 
@@ -48,15 +55,6 @@ function NavigationPage(){
         setShowFooter(true)
       }
     }, [])
-
-//REMOVE CREATED PLAYLIST FROM LOCAL STORAGE_______________________________________________________________________________________________
-
-useEffect(() => {
-  if(!showFooter) {
-    localStorage.removeItem('createdPlaylist')
-    localStorage.removeItem('createdPlaylistTracks')
-  }
-}, [showFooter])
 
 
 
@@ -463,7 +461,7 @@ function getMyTopTracksFunction() {
 
 //RENDERIZZO IL BANNER____________________________________________________________________________________________________________________________________________________________________________________
 
-    if (!(accessToken)) {
+    if (!localStorage.getItem("accessToken")) {
       return(
         <>
         <div className="wallpaper"> 

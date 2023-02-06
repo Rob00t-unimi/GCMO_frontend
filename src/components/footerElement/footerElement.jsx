@@ -13,9 +13,9 @@ function FooterElement({close, playlist}){
     useEffect(() => {
         if(playlist.image!=="ASK"){    //se l'immagine ha il valore speciale "ASK" significa che non c'è ma dovrebbe esserci quindi chiedo l'immagine altrimenti inserisco quello che c'è (l'immagine o null)
             setImmagine(playlist.image)
-            return
+        } else{
+            recuperaImmagine()
         }
-        recuperaImmagine()
     }, [])
 
     function recuperaImmagine() {
