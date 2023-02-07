@@ -274,7 +274,7 @@ console.log(tracks)
                                         <td>{item.name}</td>
                                         <td><i>{item.artists.join(', ')}</i> </td>
                                         <td> {item.duration}</td>
-                                        {(!traccePlaylist.includes(item.id))&&addBtn&&addBtn[index]&&<td><Button className='btn-success' onClick={() => {addTrack(item, index)}}>Add</Button></td>}
+                                        {(!traccePlaylist.includes(item.id))&&addBtn&&addBtn[index]&&<td><Button className='btn-success' onClick={() => {addTrack(item, index)}}>+</Button></td>}
                                     </tr>
                                 );
                             })}
