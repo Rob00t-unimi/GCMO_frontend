@@ -6,7 +6,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react'
 import PersonalArea from "./pages/personalArea/personalArea"
 import IndexPage from "./pages/indexPage/indexPage"
 import NavigationPage from "./pages/navigationPage/navigationPage"
-import SetPreferencesPage from "./pages/setPreferencesPage";
+import SetPreferencesPage from "./pages/setPreferencesPage/setPreferencesPage";
 import ToastNotify from "./components/toastNotify/toastNotify"
 
 export const ToastContext = React.createContext();

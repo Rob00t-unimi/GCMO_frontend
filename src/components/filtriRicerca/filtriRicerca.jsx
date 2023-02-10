@@ -71,14 +71,17 @@ const [disabled, setDisabled] = useState([false, false, false, false])
         if (idCategoria!=="") {
             const newFilterArr = [true, false, false, false];
             cosaCercare(newFilterArr);
-            setDisabled([false, true, true, true])
+            setDisabled([true, true, true, true])
         } else {
             const newFilterArr = [true, true, true, true];
             cosaCercare(newFilterArr);
             setDisabled([false, false, false, false])
         }
     }
-    console.log(filterArr)
+
+
+
+
     return(
     <Col className="colonnaFiltri bg-dark text-light">
         <h4 className="text-center">Filtri di Ricerca:</h4>

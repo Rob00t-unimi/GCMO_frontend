@@ -78,7 +78,7 @@ function NavigationPage(){
 const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il componente filtri di ricerca
 
 
-//ESTRAGGO LA LISTA DI PLAYLIST_____________________
+//ESTRAGGO LA LISTA DI PLAYLIST_______________________________________________________________________________________________________________________________________________________________________
 
 const [lista, setLista] = useState()
 
@@ -337,7 +337,7 @@ useEffect(() => {
   //   })
   // }
 
-}, [optionCategory, searchWord, filterArr[0], searchLimit])
+}, [optionCategory, filterArr[0], searchLimit])
 
 
 
