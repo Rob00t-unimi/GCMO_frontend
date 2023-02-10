@@ -85,3 +85,62 @@ aggiungere aggiornamento playlist list quando importo da album		risolto
 
 - il problema rimasto non è il refresh che funziona bene.. il problema è rilevare i cambiamenti del token nello storage 
 	per poter ri-renderizzare i componenti e rieseguire determinate funzioni
+
+
+
+
+
+
+ALBERATURA
+
+
+App
+	IndexPage
+		NavigationBar
+			ButtonLogin
+		ButtonLogin
+	SetPreferencesPage
+		TrackCardVertical
+			TrackViewModal
+		TrackCardHorizontal
+			TrackViewModal
+		Album
+			AlbumViewModal
+		Artist
+			ArtistViewModal
+	PersonalArea
+		NavigationBar
+		ModalCreatePlaylist
+		ModalModifyUser
+		PlaylistCardPersonalArea
+			PlaylistViewModal
+				UserViewModal
+					PlaylistCardNavigationPage
+						PlaylistViewModal…..
+				TrackCardHorizontal
+					TrackViewModal
+			ModalDeletePlaylist
+			ModalModifyPlaylist
+	NavigationPage
+		NavigationBar
+		PlaylisList
+		FiltriRicerca
+		FooterElement
+		TrackCardVertical
+			TrackViewModal
+		TrackCardHorizontal
+			TrackViewModal
+		Album
+			AlbumViewModal
+		Artist
+			ArtistViewModal
+		PlaylistCardNavigationPage
+			PlaylistViewModal
+				UserViewModal
+					PlaylistCardNavigationPage
+						PlaylistViewModal…..
+		PlaylistCardVertical
+			PlaylistViewModal
+					UserViewModal
+						PlaylistCardNavigationPage
+							PlaylistViewModal…..

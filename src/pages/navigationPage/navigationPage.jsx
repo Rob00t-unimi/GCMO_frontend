@@ -36,28 +36,21 @@ function NavigationPage(){
      const [showFooter, setShowFooter] = useState(false);
      const [createdPlaylist, setCreatedPlaylist] = useState();
 
-
-
      useEffect(() => {
-      if(localStorage.getItem("createdPlaylist")) {
-        setCreatedPlaylist(JSON.parse(localStorage.getItem('createdPlaylist')))
-      }  
-      if(!showFooter) {
-        localStorage.removeItem('createdPlaylist')
-        localStorage.removeItem('createdPlaylistTracks')
-        setCreatedPlaylist(null)
-      }
-    }, [showFooter])
-
-    useEffect(() => {
-      if(localStorage.getItem("createdPlaylist")) {
+      if(JSON.parse(localStorage.getItem('createdPlaylist'))) {
         setCreatedPlaylist(JSON.parse(localStorage.getItem('createdPlaylist')))
         setShowFooter(true)
       }
     }, [])
 
 
-
+    useEffect(() => {
+      if(showFooter) {
+        setCreatedPlaylist(JSON.parse(localStorage.getItem('createdPlaylist')))
+      } else {
+        setCreatedPlaylist(null)
+      }
+    }, [showFooter])
 
 
 

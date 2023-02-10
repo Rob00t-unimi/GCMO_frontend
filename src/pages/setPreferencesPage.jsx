@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.min.css' ;
 import { Form, Container, Row, Col, Button, Carousel} from "react-bootstrap";
+
+import ErrorStatusCheck from '../util/errorStatusCheck'
+import { spotifyApi } from '../util/costanti';
+
 import TrackCardHorizontal from "../components/trackCardHorizontal/trackCardHorizontal";
 import TrackCardVertical from "../components/trackCardVertical/trackCardVertical";
 import Album from "../components/album/album";
 import Artist from "../components/artist/artist";
-import ErrorStatusCheck from '../util/errorStatusCheck'
-import { spotifyApi } from '../util/costanti';
-
-
 
 
 export default function SetPreferencesPage(){

@@ -103,6 +103,8 @@ function addTrack(){
     .then(res=>{
         console.log("added",res)
         setAddBtn(false)
+        let traccePlaylist = JSON.parse(localStorage.getItem('createdPlaylistTracks'))
+        //traccePlaylist.concat
         setToast(true, "Traccia aggiunta correttamente")
     })
     .catch(err => {

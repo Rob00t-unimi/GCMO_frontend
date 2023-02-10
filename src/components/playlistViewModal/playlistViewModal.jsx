@@ -105,54 +105,6 @@ function removeTrack(trackUri, i){
     })
 }
 
-
-//AGGIUNGERE TRACCIA A PLAYLIST SELEZIONATA_________________________________________________________________________________
-//se la createdPlaylist non è nel local storage showFooter sarà false e non renderizzo il Btn
-//se showFooter è true ma la traccia è già presente nella playlist non renderizzo il Btn 
-
-const [addBtn, setAddBtn] = useState()
-const [traccePlaylist, setTraccePlaylist] = useState([])
-
-useEffect(() => {
-    if(!tracks) return
-    if(showFooter===null) {return}
-
-    if(localStorage.getItem('createdPlaylistTracks')) {
-            setTraccePlaylist(JSON.parse(localStorage.getItem('createdPlaylistTracks')))
-    }
-    
-    const newAddbtn = tracks.map((item, index) => {
-        return showFooter
-    })
-    setAddBtn(newAddbtn)   
-
-}, [showFooter, tracks] )
-
-
-function addTrack(currentTrack, i){
-    if(!tracks) return
-    spotifyApi.addTracksToPlaylist(createdPlaylist.id, [currentTrack.uri])
-    .then(res=>{
-        console.log("added",res)
-
-        const newAddbtn = tracks.map((item, index) => {
-            if(i===index){
-                return false
-            } else {
-                return addBtn[index]
-            }
-        })
-        setAddBtn(newAddbtn)
-
-        setToast(true, "Traccia aggiunta correttamente")
-    })
-    .catch(err => {
-        ErrorStatusCheck(err)
-    })
-}
- 
-
-
 //IMPORTARE IN UNA NUOVA PLAYLIST_____//MAX 50 TRACCE PER I LIMITI DI RICHIESTE ________//se si carica una playlist più grande cliccando ripetutamente show more è possibile anche per playlist con + di 50 tracce__________________________________________________________________________________________
 async function importaPlaylist(){
     const tracce = tracks.map(track => track.uri)                                        //con una richiesta si possono aggiungere massimo 100 tracce

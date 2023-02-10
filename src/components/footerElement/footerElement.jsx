@@ -31,6 +31,12 @@ function FooterElement({close, playlist}){
         })
     }
 
+    function chiudi() {
+        localStorage.removeItem('createdPlaylist')
+        localStorage.removeItem('createdPlaylistTracks')
+        close()
+    }
+
 //RENDER COMPONENTE________________________________________________________________________________________________________________________
     
         return (
@@ -46,7 +52,7 @@ function FooterElement({close, playlist}){
                         </Col>
                         <Col className='text-end'>
                             <Card.Body className='footer-text'><h2 >Aggiungi delle Tracce alla playlist</h2></Card.Body>
-                            <Button className='footer-button btn-light' onClick={close}>Chiudi</Button>
+                            <Button className='footer-button btn-light' onClick={chiudi}>Chiudi</Button>
                         </Col>
                     </Row>
                 </Card>

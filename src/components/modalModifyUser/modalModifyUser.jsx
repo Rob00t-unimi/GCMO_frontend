@@ -72,7 +72,7 @@ function cancellazioneAccount() {
 
         <Modal show={show} size='lg' centered>
         <Modal.Header>
-           <Modal.Title>MODIFICA INFORMAZIONI UTENTE</Modal.Title>
+           <Modal.Title>CHIUSURA PROFILO UTENTE</Modal.Title>
            <Button className='btn-dark' onClick={()=>setStatoModale(false)}>Indietro</Button>
       </Modal.Header>
       <Modal.Body>
