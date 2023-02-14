@@ -123,14 +123,16 @@ const [traccePlaylist, setTraccePlaylist] = useState([])
 useEffect(() => {
     
     if(localStorage.getItem('createdPlaylistTracks')) {
-        setTraccePlaylist(JSON.parse(localStorage.getItem('createdPlaylistTracks')))
+        setTraccePlaylist(JSON.parse(localStorage.getItem('createdPlaylistTracks'))) 
+        
+        if(tracks&&traccePlaylist) {
+            const newAddbtn = tracks.map((item, index) => {
+                return showFooter&&(!traccePlaylist.some(obj => obj.id === item.id))
+            })
+            setAddBtn(newAddbtn) 
+        }    
     }
-    if(tracks) {
-       const newAddbtn = tracks.map((item, index) => {
-        return showFooter
-    })
-    setAddBtn(newAddbtn) 
-    }    
+   
 }, [showFooter, tracks] )
 
 
@@ -139,7 +141,10 @@ function addTrack(currentTrack, i){
     
     spotifyApi.addTracksToPlaylist(createdPlaylist.id, [currentTrack.uri])
     .then(res=>{
-        console.log("added",res)
+        let tmp = traccePlaylist
+        tmp = tmp.concat([currentTrack])
+        setTraccePlaylist(tmp)
+        localStorage.setItem('createdPlaylistTracks', JSON.stringify(tmp))
 
         const newAddbtn = tracks.map((item, index) => {
             if(i===index){

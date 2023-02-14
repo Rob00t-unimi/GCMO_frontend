@@ -17,14 +17,6 @@ const ArtistViewModal = ({ show, onClose, artist, currentUser }) => {
         currentUser = JSON.parse(localStorage.getItem('user'))
     }
 
-    const[addBtn, setAddBtn] = useState(false)
-    useEffect(() => {
-        if (localStorage.getItem('createdPlaylist')) {
-            setAddBtn(true)
-        }
-    }, [])
-
-
 //CONTROLLO IL TOKEN________________________________________________________________________________________________________________
 
  const accessToken = localStorage.getItem('accessToken');
@@ -40,7 +32,7 @@ const [tracks, setTracks] = useState()
 
     useEffect(() => {
         const country = currentUser ? currentUser.country : null
-        spotifyApi.getArtistTopTracks(artist.id, country ? country : "IT" )
+        spotifyApi.getArtistTopTracks(artist.id, country ? country : currentUser.country )
         .then(res => {
             console.log(res)
             const tracce = res.body.tracks.map((trackInfo => {
@@ -62,27 +54,7 @@ const [tracks, setTracks] = useState()
 
     }, [accessToken])
 
-
-
-//______________________________________________________________________________________________________________________________
-
-function addTrack(currentTrack){
-    const currentPlaylist = JSON.parse(localStorage.getItem("createdPlaylist"))
-    if (currentPlaylist) {
-        spotifyApi.addTracksToPlaylist(currentPlaylist.id, [currentTrack.uri])
-    .then(res=>{
-        console.log("added",res)
-        setAddBtn(false)
-        setToast(true, "Traccia aggiunta correttamente")
-    })
-    .catch(err => {
-        ErrorStatusCheck(err)
-    })
-    }
-}
-
-
-    
+   
 
     return (
         <Modal show={show} animation={true} size="xl" centered>
@@ -110,7 +82,6 @@ function addTrack(currentTrack){
                                 <td>{track.name}</td>
                                 <td> {track.artist}</td>
                                 <td>{track.duration} </td>
-                                {addBtn&&<td><Button className='btn-success' onClick={addTrack(track)}>Add</Button></td>}
                             </tr>
                         )) : null
                         }
