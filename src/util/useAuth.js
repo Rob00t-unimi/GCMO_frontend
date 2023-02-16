@@ -7,9 +7,10 @@ export default function useAuth(code) {
 
     const [ accessToken, setAccessToken ] = useState();
    
-    //eseguita ogni volta che accessToken o code Cambiano
     useEffect(() => {
         if (!code) return window.history.pushState({}, null,'/')    //se code è null rimando alla root
+
+        console.log("Authentication...")
 
         axios.post(`${SERVER_BASIC_URL}/login`, {       //invio una richiesta al mio server con il code 
             code
@@ -20,11 +21,9 @@ export default function useAuth(code) {
             localStorage.setItem('accessToken', res.data.accessToken);
             localStorage.setItem('refreshToken', res.data.refreshToken);
             localStorage.setItem('expiresIn' , res.data.expiresIn);
-            //const expiresIn = res.data.expiresIn
-            //localStorage.setItem('expiresAt', Date.mow()+expiresIn*1000);   //segna il tempo momento di quando scadrà il token in millisecondi
         })
         .catch((err) => {
-            console.log(err)            //se il serve risponde con un errore lo stampo in console
+            console.log(err)
         } )
     }, [accessToken, code])
 

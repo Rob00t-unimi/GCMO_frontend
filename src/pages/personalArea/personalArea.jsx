@@ -3,9 +3,8 @@ import  'bootstrap/dist/css/bootstrap.min.css' ;
 import './style.css';
 import NavigationBar from '../../components/navigationBar/navigationBar'
 import ButtonLogin from '../../components/buttonLogin/buttonLogin'
-import SpotifyWebApi from 'spotify-web-api-node';
 
-import { Button, Container, Form, ListGroup, Modal, Row, Col } from 'react-bootstrap';
+import { Button, Container, Form, Row, Col } from 'react-bootstrap';
 import { Pencil, PlusCircle } from 'react-bootstrap-icons';
 import ModalCreatePlaylist from "../../components/ModalCreatePlaylist/modalCreatePlaylist";
 import fotoProfiloGenerica from '../../assets/fotoProfiloGenericaFullLight.png';
@@ -15,39 +14,38 @@ import PlaylistCardPersonalArea from "../../components/playlistCardPersonalArea/
 import { spotifyApi } from '../../util/costanti';
 
 
+
 function PersonalArea() {
 
  
-//INIZIALIZZO UN PO' DI STATI______________________________________________________________________________________________________________________
+//INIZIALIZZO UN PO' DI STATI_________________________________________________________________________________________________________________________________________________________________________________________
 
   const [filterName, setFilterName] = useState('ALL')   //nome dei filtri dei button nella pagina personale
-  const [modal, setModal] = useState(false)             //impostiamo uno stato iniziale alla modale --> false chiusa, true aperta
-  const [userModal, setUserModal] = useState(false)             //impostiamo uno stato iniziale alla modale --> false chiusa, true aperta
-  
+  const [modal, setModal] = useState(false)             
+  const [userModal, setUserModal] = useState(false)             
   
   const [currentUser, setCurrentUser] = useState();   //dati attuali dell'utente
 
-  //CONTROLLO IL TOKEN e lo passo all'oggetto spotifyApi____________________________________________________________________________________
+//RIMUOVO LA PLAYLIST NEL LOCAL STORAGE________________________________________________________________________________________________________________________________________________________________________________
+
   useEffect(() => {  
     if(localStorage.getItem('createdPlaylist')) {
       localStorage.removeItem('createdPlaylist')
     }
   }, []);
 
-  const accessToken = localStorage.getItem('accessToken');
-
+  //ESEGUIRE LE FUNZIONI PRINCIPALI____________________________________________________________________________________________________________________________________________________________________________________
 
   useEffect(() => {
-    if (!accessToken) return;  
-    spotifyApi.setAccessToken(accessToken);
+    if (!localStorage.getItem('accessToken')) return;  
 
-    getInfoUtente();
     getAllPlaylist();
-  }, [accessToken, userModal])
+    getInfoUtente();  
 
-//OTTENERE INFO UTENTE________________________________________________________________________________________________________________________________________
+  }, [localStorage.getItem('accessToken'), userModal])
+
+//OTTENERE INFO UTENTE________________________________________________________________________________________________________________________________________________________________________________________________
  
-
   function getInfoUtente() {
     if(localStorage.getItem('user')) {
       setCurrentUser(JSON.parse(localStorage.getItem('user')))
@@ -88,9 +86,8 @@ function PersonalArea() {
 
   try {
     while(true) {     //ai fini del progetto va bene ma con le limitazioni di rating di spotify api nella versione gratuita se si fanno molte iterazioni (si hanno 50*x playlists crea errore 429)
-    const result = await spotifyApi.getUserPlaylists({limit: limit, offset: offset})
-      console.log(result)      
-      playlistsArr = playlistsArr.concat(result.body.items.map(item => {   //ricevo e ciclo su una map di items
+    const result = await spotifyApi.getUserPlaylists({limit: limit, offset: offset})   
+      playlistsArr = playlistsArr.concat(result.body.items.map(item => {
         return {
           image: item.images && item.images.length > 0 ? item.images[0].url : null,
           name: item.name,
@@ -119,11 +116,13 @@ function PersonalArea() {
   }
 }
 
+//inserisco tutte le playlist create dall'utente nel local storage________________________________________________________________________________________________________________________________________________________________________
+
 useEffect(() => {
   if(currentUser){
-    console.log(playlistResults)
+    console.log("Elenco Playlists", playlistResults)
     let onlyMyPlaylists = playlistResults.filter(item => {     
-    if (!item) return null                                      //inserisco tutte le playlist create dall'utente nel local storage
+    if (!item) return null                                      
     return item.ownerId === currentUser.id
     });
     localStorage.setItem('playlist_list', JSON.stringify(onlyMyPlaylists));
@@ -161,6 +160,7 @@ useEffect(() => {
     }
   }, [filterName,  update])  //se cambia il filtro selezionato o il booleano update devo filtrare le playlist
 
+
 //RICERCA PLAYLIST (solo tra le playlist dell'utente, in locale)_________________________________________________________________________________________________________________________________________________________________
 
 const [searchWord, setSearchWord] = useState('')
@@ -176,8 +176,6 @@ useEffect(() => {
        setSearchResult(null)
     }
 }, [searchWord, playlistFiltered]);
-
-
 
 
 //RIMOZIONE DI UNA PLAYLIST IN LOCALE_____________________________________________________________________________________________________________________________________
@@ -211,17 +209,12 @@ function removePlaylist(playlistId) {
   setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano per rifiltrarle
 }
 
-
-
 //AGGIUNGI UNA PLAYLIST ALL'ELENCO_________________________________________________________________________________________________
 
 function addPlaylist(newPlaylist) {
   setPlaylistResults([newPlaylist, ...playlistResults])
   setUpdate(!update)  //le playlist sono state aggiornate, cambio il valore booleano
 }
-
-
-
 
 //MODIFICA VISIBILITA' DI UNA PLAYLIST________________________________________________________________________________________________________________________
 function modifyVisibility(playlistId) {

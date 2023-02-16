@@ -1,29 +1,20 @@
 import React from "react";
 import {Card, Button, Modal} from 'react-bootstrap'
-import SpotifyWebApi from 'spotify-web-api-node';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import spotifyLogo from "../../assets/SpotifyLogo01.png"
-import "../general.css"
+import "../generalStyle.css"
 import ErrorStatusCheck from '../../util/errorStatusCheck'
 import { spotifyApi } from '../../util/costanti';
-
 
 
 function TrackViewModal({show, onClose, currentTrack}){
 
 
-    
-    const accessToken = localStorage.getItem('accessToken');
-
-    useEffect(() => {
-        if (!accessToken) return;
-        spotifyApi.setAccessToken(accessToken);
-    }, [accessToken])
-
 const [artistsGenres, setArtistsGenres] = useState()
 
-//RICERCA GENERI
+//RICERCA GENERI DELLA TRACCIA________________________________________________________________________________________________
+
 useEffect(() => {
 
     spotifyApi.getArtists(currentTrack.artistsId)

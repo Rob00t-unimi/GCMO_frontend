@@ -1,9 +1,8 @@
-import SpotifyWebApi from 'spotify-web-api-node';
-import { Button, Card, Container, Col } from 'react-bootstrap';
+import { Button, Card, Col } from 'react-bootstrap';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { StarFill, Lock, Unlock, Trash3, Pencil} from 'react-bootstrap-icons';
-import '../general.css'
+import '../generalStyle.css'
 import PlaylistViewModal from '../playlistViewModal/playlistViewModal'
 import ModalDeletePlaylist from '../modalDeletePlaylist/modalDeletePlaylist';
 import ModalModifyPlaylist from '../modalModifyPlaylist/modalModifyPlaylist';
@@ -18,20 +17,8 @@ import { spotifyApi } from '../../util/costanti';
 
 function PlaylistCardPersonalArea({playlist, modifyPlaylist, userInfo, setRemovedPlaylist, modifyVisibility, addPlaylist}){
 
-//INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
     const [image, setImage] = useState();
-
-    const accessToken = localStorage.getItem('accessToken');
-
-//CONTROLLO IL TOKEN_______________________________________________________________________________________________________________
-
-    useEffect(() => {
-        if (!accessToken) return;
-        spotifyApi.setAccessToken(accessToken);
-    }, [accessToken])
-
-//CONTROLLO IL TIPO DI UNA PLAYLIST__________________________________________________________________________________________________
 
     const [type, setType] = useState();
     const [modalShow, setModalShow] = useState(false);  //ci sarà una modale per aprire le informazioni relative ad una playlist
@@ -39,7 +26,8 @@ function PlaylistCardPersonalArea({playlist, modifyPlaylist, userInfo, setRemove
     const [modalDeleteShow, setModalDeleteShow] = useState(false);
     const [modalModifyShow, setModalModifyShow] = useState(false);
 
-    //controllo che tipo di playlist è 
+//CONTROLLA che tipo di playlist è __________________________________________________________________________________________________________________________________________________________________
+
     useEffect(() => {
         if (playlist.ownerId !== userInfo.id) {     
             setType('FOLLOWED')
@@ -51,7 +39,7 @@ function PlaylistCardPersonalArea({playlist, modifyPlaylist, userInfo, setRemove
     }, [playlist])
 
 
-//IMPOSTO L'IMMAGINE________________________________________________________________________________________________________________
+//IMPOSTA L'IMMAGINE_________________________________________________________________________________________________________________________________________________________________________________
 
 useEffect(() => {
     if (playlist.image) {
@@ -62,7 +50,7 @@ useEffect(() => {
     }, [playlist])
 
 
-//INVERTE IL TIPO DELLA PLAYLIST__________________________________________________________________________________________________
+//INVERTE IL TIPO DELLA PLAYLIST____________________________________________________________________________________________________________________________________________________________________
 
     function switchPublic(){
         if (type === 'PUBLIC') {
@@ -86,7 +74,7 @@ useEffect(() => {
         }
     }
     
-//MODIFICA DOPO RIMOZIONE TRACCE_______________________________________________________________________________________________________________________
+//MODIFICA DOPO RIMOZIONE TRACCE____________________________________________________________________________________________________________________________________________________________________
 
 //quando chiudo la modale per vidualizzare il contenuto di una playlist se ho cancellato dei brani faccio una get e richiedo di nuovo la playlist
 //questo perchè potrebbe cambiare la copertina e il numero di canzoni all'interno
@@ -116,11 +104,8 @@ useEffect(() => {
     }
 }, [modalShow])
 
-//________________________________________________________________________________________________________________________________________________
 
-
-
-//RENDERING_______________________________________________________________________________________________________________________________________
+//RENDERING__________________________________________________________________________________________________________________________________________________________________________________________
 
     return(
         <>

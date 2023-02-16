@@ -1,9 +1,8 @@
-import SpotifyWebApi from 'spotify-web-api-node';
 import { Button, Card, Col } from 'react-bootstrap';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { StarFill, Star} from 'react-bootstrap-icons';
-import '../general.css'
+import '../generalStyle.css'
 import PlaylistViewModal from '../playlistViewModal/playlistViewModal'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import ErrorStatusCheck from '../../util/errorStatusCheck'
@@ -16,28 +15,15 @@ import { spotifyApi } from '../../util/costanti';
 
 function PlaylistCardNavigationPage({playlist, showFooter, createdPlaylist}){
 
-//INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
 
-    const userInfo = JSON.parse(localStorage.getItem('user'));  
-    const accessToken = localStorage.getItem('accessToken');
-
-//CONTROLLO IL TOKEN_______________________________________________________________________________________________________________
-
-    useEffect(() => {
-        if (!accessToken) return;
-        spotifyApi.setAccessToken(accessToken);
-    }, [accessToken])
-
-    
-//CONTROLLO IL TIPO DI UNA PLAYLIST__________________________________________________________________________________________________
+    const userInfo = JSON.parse(localStorage.getItem('user'));     
 
     const [type, setType] = useState();
-    const [modalShow, setModalShow] = useState(false);  //ci sarà una modale per aprire le informazioni relative ad una playlist
+    const [modalShow, setModalShow] = useState(false);
 
-//    const [modalDeleteShow, setModalDeleteShow] = useState(false);
-    const [modalModifyShow, setModalModifyShow] = useState(false);
 
-    //controllo che tipo di playlist è 
+//CONTROLLA che tipo di playlist è ________________________________________________________________________________________________________________________________________________________
+
     useEffect(() => {
         spotifyApi.areFollowingPlaylist(playlist.ownerId, playlist.id, [userInfo.id])
         .then(res =>{
@@ -55,7 +41,7 @@ function PlaylistCardNavigationPage({playlist, showFooter, createdPlaylist}){
         console.log(playlist.name,type)
     }, [playlist])
 
-//INVERTE IL TIPO DELLA PLAYLIST__________________________________________________________________________________________________
+//INVERTE IL TIPO DELLA PLAYLIST____________________________________________________________________________________________________________________________________________________________
 
     function switchFollow(){
         if (type === 'FOLLOWED') {
@@ -79,7 +65,7 @@ function PlaylistCardNavigationPage({playlist, showFooter, createdPlaylist}){
         }
     }
 
-//RENDERING_______________________________________________________________________________________________________________________________________
+//RENDERING_________________________________________________________________________________________________________________________________________________________________________________
 
     return(
         <>

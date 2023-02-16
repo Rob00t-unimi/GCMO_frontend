@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.min.css' ;
 import {Form, Col, Row } from "react-bootstrap";
 import './style.css';
-import SpotifyWebApi from "spotify-web-api-node";
 import ErrorStatusCheck from "../../util/errorStatusCheck";
 import { spotifyApi } from '../../util/costanti';
 
@@ -11,19 +10,12 @@ import { spotifyApi } from '../../util/costanti';
 
 
 
+
 export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, userSelection,*/ cosaCercare, /*comeCercare*/ setOptionCategory, activeCategory}){
 
-    //CONTROLLO IL TOKEN e lo passo all'oggetto spotifyApi____________________________________________________________________________________
-
-    const accessToken = localStorage.getItem('accessToken');
-
-    useEffect(() => {
-    if (!accessToken) return;
-    spotifyApi.setAccessToken(accessToken);
-    }, [accessToken])
 
 
-    //___RICHIEDO LE CATEGORIE DI SPOTIFY (o generi) (sistema ORGANIZZATO TRAMITE TAG)_______________________________________________________________________________________________________________________________________________________________________________
+    //RICHIEDO LE CATEGORIE DI SPOTIFY (o generi) (sistema ORGANIZZATO TRAMITE TAG)_______________________________________________________________________________________________________________________________________________________________________________
 
     const [categorie, setCategorie] = useState()
     
@@ -51,9 +43,9 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
 
 
     
-  //_______________________________________________________________________________________________________________________________________________________________________________________________
+  //CAMBIO LO STATO DI UN FILTRO (attivo/disattivo)_____________________________________________________________________________________________________________________________________________________________________________________________________________________
 
-  const [showCheckbox, setShowCheckbox] = useState(filterArr[0])
+    const [showCheckbox, setShowCheckbox] = useState(filterArr[0])
 
     function switchingValues(index) {
         const newFilterArr = [...filterArr];
@@ -64,7 +56,9 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
         }  
     }
 
-const [disabled, setDisabled] = useState([false, false, false, false])
+  //ABILITO/DISABILITO I FILTRI != da playlist ___________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+    const [disabled, setDisabled] = useState([false, false, false, false])
 
     function setCategoryPlaylist(idCategoria){
         setOptionCategory(idCategoria)
@@ -80,6 +74,7 @@ const [disabled, setDisabled] = useState([false, false, false, false])
     }
 
 
+    //___________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 
     return(

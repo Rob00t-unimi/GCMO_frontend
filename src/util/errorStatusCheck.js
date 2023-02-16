@@ -1,8 +1,10 @@
 import refreshToken from "./refreshToken";
+
 export default function ErrorStatusCheck(errore) {
-    console.log(errore);
+
     if(!errore.body) return
     if(!errore.body.error) return
+    
     console.log(errore.body.error.message);
 
     if (errore.body.error.status === 401 || errore.body.error.status === 403) {
@@ -10,7 +12,6 @@ export default function ErrorStatusCheck(errore) {
             alert("L'utente corrente non ha i permessi per accedere al servizio richiesto.")
         }
         refreshToken()
-        return
     }
 
     if (errore.body.error.status === 429){

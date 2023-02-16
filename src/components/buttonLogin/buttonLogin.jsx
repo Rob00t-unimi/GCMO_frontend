@@ -5,6 +5,7 @@ import useAuth from '../../util/useAuth';
 import spotifyLogo from '../../assets/SpotifyLogo02.png'
 import { CLIENT_ID } from '../../util/costanti';
 
+
 //INIZIALIZZO LE COSTANTI_______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 const BASE_URL = "https://accounts.spotify.com/authorize";
@@ -28,8 +29,7 @@ function ButtonLogin(props) {
     }
 
     console.log('codeParam', codeParam)             //se non lo sono avvio la funzione useAuth passandogli il code ottenuto
-    const accessToken = useAuth(codeParam);
-    
+    useAuth(codeParam)
 
     return (
         <a className="btn btn-dark btn-lg" href={AUTH_URL}>{props.text}<img className="spotifyLogo" src={spotifyLogo} alt="Spotify Logo"/></a>      //il code è ottenuto dal click sul pulsante, il click ci rimanda all'url AUTH_URL per accettare gli scopes e ci rimanda indietro con il code nell'URL di ritorno

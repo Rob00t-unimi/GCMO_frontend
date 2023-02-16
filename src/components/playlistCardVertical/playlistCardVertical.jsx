@@ -1,11 +1,9 @@
-import SpotifyWebApi from 'spotify-web-api-node';
-import { Button, Card, Container } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { StarFill, Star} from 'react-bootstrap-icons';
-import '../general.css'
+import '../generalStyle.css'
 import PlaylistViewModal from '../playlistViewModal/playlistViewModal'
-import ModalModifyPlaylist from '../modalModifyPlaylist/modalModifyPlaylist';
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import ErrorStatusCheck from '../../util/errorStatusCheck'
 import { spotifyApi } from '../../util/costanti';
@@ -18,18 +16,7 @@ import { spotifyApi } from '../../util/costanti';
 
 function PlaylistCardVertical({playlist, showFooter, createdPlaylist}){
 
-//INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
-
     const userInfo = JSON.parse(localStorage.getItem('user'));  
-    const accessToken = localStorage.getItem('accessToken');
-
-//CONTROLLO IL TOKEN_______________________________________________________________________________________________________________
-
-    useEffect(() => {
-        if (!accessToken) return;
-        spotifyApi.setAccessToken(accessToken);
-    }, [accessToken])
-
     
 //CONTROLLO IL TIPO DI UNA PLAYLIST__________________________________________________________________________________________________
 
@@ -51,7 +38,7 @@ function PlaylistCardVertical({playlist, showFooter, createdPlaylist}){
          .catch(err => {
             ErrorStatusCheck(err)
         })
-        console.log(playlist.name,type)
+        //console.log(playlist.name,type)
     }, [playlist])
 
 //INVERTE IL TIPO DELLA PLAYLIST__________________________________________________________________________________________________

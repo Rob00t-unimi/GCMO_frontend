@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { Button, Card, Modal, Col, Table, Row, Container } from 'react-bootstrap'
-import SpotifyWebApi from 'spotify-web-api-node';
-import'../general.css'
+import { Button, Card, Modal, Col, Table, Row } from 'react-bootstrap'
+import'../generalStyle.css'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import ErrorStatusCheck from '../../util/errorStatusCheck'
 import spotifyLogo from "../../assets/SpotifyLogo01.png"
@@ -14,81 +13,71 @@ import { ToastContext } from '../../App';
 
 const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter, createdPlaylist, setDeletedTracks, addPlaylist}) => {
 
+
+
     const {setToast} = useContext(ToastContext)
 
     if(!currentUser){
         currentUser = JSON.parse(localStorage.getItem('user'))
     }
+    
+    const [showImport, setShowImport] = useState (false)
 
+    //RICHIESTA TRACCE___________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    
+    const [tracks, setTracks] = useState([])
+    const [offset, setOffset] = useState(0)
 
-//CONTROLLO IL TOKEN________________________________________________________________________________________________________________
+    function getAllTracks() {
+        let limit = 50;
+    
+        spotifyApi.getPlaylistTracks(playlist.id, { offset, limit })
+        .then(res=>{
+            //console.log(res)
+            const tracce = res.body.items.map((trackInfo => {
+                    const duration = new Date(trackInfo.track.duration_ms).toISOString().slice(14, 19);     //prendo la durata in ms della traccia, creo l'oggetto data, converto in stringa, prendo solo dal carattere 14 a 19 ovvero ore, minuti, secondi
+                    return {
+                        id: trackInfo.track.id,
+                        artists: trackInfo.track.artists.map(artist => artist.name),
+                        duration: duration,
+                        name: trackInfo.track.name,
+                        uri: trackInfo.track.uri,
+                        image: trackInfo.track.album.images[0].url,
+                        artists: trackInfo.track.artists.map(artist => artist.name),
+                        artistsId: trackInfo.track.artists.map(artista => artista.id),
+                        releaseDate: trackInfo.track.album.release_date,
+                    }
+                }))
+            const allTracks = tracks.concat(tracce);
+        
+            setTracks(allTracks)
+            //console.log("Elenco Tracce", allTracks)
+            
+            setOffset(offset + limit);
 
- const accessToken = localStorage.getItem('accessToken');
+            if (res.body.next === null) {
+                setShowImport(true)
+                setOffset(0)
+            } 
+                
+        }) 
+        .catch(err => {
+            // let retryAfter = err.response.headers['Retry-After'];
+            // if (err.body.error&&err.body.error.status === 429 ) {
+            //     setTimeout(() => {
+            //         getAllTracks()
+            //     }, retryAfter);
+            // }
+            ErrorStatusCheck(err)
+        })
+    }
 
     useEffect(() => {
-        if (!accessToken) return;
-        spotifyApi.setAccessToken(accessToken);
-    }, [accessToken])
-
-
-//________________________________________________________________________________________________________________________
-
-const [tracks, setTracks] = useState([])
-
-const [offset, setOffset] = useState(0)
-
-const [showImport, setShowImport] = useState (false)
-
-function getAllTracks() {
-    let limit = 50;
-  
-    spotifyApi.getPlaylistTracks(playlist.id, { offset, limit })
-    .then(res=>{
-        console.log(res)
-        const tracce = res.body.items.map((trackInfo => {
-                const duration = new Date(trackInfo.track.duration_ms).toISOString().slice(14, 19);     //prendo la durata in ms della traccia, creo l'oggetto data, converto in stringa, prendo solo dal carattere 14 a 19 ovvero ore, minuti, secondi
-                return {
-                    id: trackInfo.track.id,
-                    artists: trackInfo.track.artists.map(artist => artist.name),
-                    duration: duration,
-                    name: trackInfo.track.name,
-                    uri: trackInfo.track.uri,
-                    image: trackInfo.track.album.images[0].url,
-                    artists: trackInfo.track.artists.map(artist => artist.name),
-                    artistsId: trackInfo.track.artists.map(artista => artista.id),
-                    releaseDate: trackInfo.track.album.release_date,
-                }
-            }))
-        const allTracks = tracks.concat(tracce);
-    
-        setTracks(allTracks)
-        console.log(allTracks)
-        
-        setOffset(offset + limit);
-
-        if (res.body.next === null) {
-            setShowImport(true)
-            setOffset(0)
-        } 
-              
-    }) 
-    .catch(err => {
-        // let retryAfter = err.response.headers['Retry-After'];
-        // if (err.body.error&&err.body.error.status === 429 ) {
-        //     setTimeout(() => {
-        //         getAllTracks()
-        //     }, retryAfter);
-        // }
-        ErrorStatusCheck(err)
-    })
-  }
-
-  useEffect(() => {
-    getAllTracks()
-  }, [accessToken])
+        getAllTracks()
+    }, [localStorage.getItem("accessToken")])
   
     
-//REMOVE TRACK_______________________________________________________________________________________________________________________
+//REMOVE TRACK_______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 function removeTrack(trackUri, i){
     spotifyApi.removeTracksFromPlaylist(playlist.id, [{uri: trackUri}])
@@ -105,7 +94,7 @@ function removeTrack(trackUri, i){
     })
 }
 
-//IMPORTARE IN UNA NUOVA PLAYLIST_____//MAX 50 TRACCE PER I LIMITI DI RICHIESTE ________//se si carica una playlist più grande cliccando ripetutamente show more è possibile anche per playlist con + di 50 tracce__________________________________________________________________________________________
+//IMPORTARE IN UNA NUOVA PLAYLIST_____//MAX 50 TRACCE PER I LIMITI DI RICHIESTE ________//se si carica una playlist più grande cliccando ripetutamente show more è possibile anche per playlist con + di 50 tracce________________________________________
 async function importaPlaylist(){
     const tracce = tracks.map(track => track.uri)                                        //con una richiesta si possono aggiungere massimo 100 tracce
     try {
@@ -162,7 +151,7 @@ async function importaPlaylist(){
     }
 }
 
-//______________________________________________________________________________________________________________________________
+//________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 const[userModalShow, setUserModalShow] = useState(false)
 

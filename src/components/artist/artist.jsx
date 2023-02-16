@@ -1,8 +1,7 @@
 import React from "react";
 import {Card, Button} from 'react-bootstrap'
 import './style.css'
-import '../general.css'
-import SpotifyWebApi from 'spotify-web-api-node';
+import '../generalStyle.css'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { Heart, HeartFill} from 'react-bootstrap-icons';
@@ -16,15 +15,9 @@ import { spotifyApi } from '../../util/costanti';
 
 
 
+
 function Artist({artist}){
 
-    
-    const accessToken = localStorage.getItem('accessToken');
-
-    useEffect(() => {
-        if (!accessToken) return;
-        spotifyApi.setAccessToken(accessToken);
-    }, [accessToken])
 
     const [type, setType] = useState();
 

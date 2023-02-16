@@ -5,7 +5,6 @@ import './style.css';
 import NavigationBar from '../../components/navigationBar/navigationBar'
 import ButtonLogin from '../../components/buttonLogin/buttonLogin'
 import { Form, Container, Row, Col, Carousel} from "react-bootstrap";
-import SpotifyWebApi from 'spotify-web-api-node';
 import PlaylistCardNavigationPage from "../../components/playlistCardNavigationPage/playlistCardNavigationPage"
 import PlaylistCardVertical from "../../components/playlistCardVertical/playlistCardVertical"
 import TrackCardHorizontal from "../../components/trackCardHorizontal/trackCardHorizontal";
@@ -22,16 +21,7 @@ import { spotifyApi } from '../../util/costanti';
 
 function NavigationPage(){
 
-//CONTROLLO IL TOKEN e lo passo all'oggetto spotifyApi____________________________________________________________________________________
-
-  const accessToken = localStorage.getItem('accessToken');
-
-  useEffect(() => {
-    if (!accessToken) return;
-    spotifyApi.setAccessToken(accessToken);
-  }, [accessToken])
-
-//SHOW FOOTER______________________________________________________________________________________________________________________________
+//SHOW FOOTER________________________________________________________________________________________________________________________________________________________________________________________________________________________________
   
      const [showFooter, setShowFooter] = useState(false);
      const [createdPlaylist, setCreatedPlaylist] = useState();
@@ -53,32 +43,12 @@ function NavigationPage(){
     }, [showFooter])
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
- //LIMITE DI RICERCA_______________________________________________________________________________________________________________________________________________________________________________________
+//LIMITE DI RICERCA____________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il componente filtri di ricerca
 
 
-//ESTRAGGO LA LISTA DI PLAYLIST_______________________________________________________________________________________________________________________________________________________________________
+//ESTRAGGO LA LISTA DI PLAYLIST________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 const [lista, setLista] = useState()
 
@@ -89,18 +59,12 @@ useEffect(() => {
 }, [localStorage.getItem('playlist_list')])
 
 
-//RICERCA______________________________________________________________________________________________________________________
+//IMPOSTAZIONI DI RICERCA_______________________________________________________________________________________________________________________________________________________________________________________________________________________
 
- const [optionCategory, setOptionCategory] = useState("");
+//categoria playlist 
+  const [optionCategory, setOptionCategory] = useState("");
 //  //cosa cercare
    const [filterArr, setFilterArr] = useState([true, true, true, true])  //questo serve per contenere un array di 4 posizioni booleane, 0 playlist, 1 canzoni, 2 albums, 3 artists. TRUE per cercare, FALSE per non cercare
-// //come cercare
-//   const [searchFilter, setSearchFilter] = useState("TITLE")
-// //per quali cose è consentita la ricerca
-//   const [isAllowed, setIsAllowed] = useState([true, true, true, true]) 
-
-// //selezione dei filtri dell'utente
-//   const [userSelection, setUserSelection] = useState([true, true, true, true])
 
   const [searchWord, setSearchWord] = useState('')
   const [searchResultPlaylists, setSearchResultPlaylists] = useState()
@@ -110,60 +74,14 @@ useEffect(() => {
 
 
 
-
-  // function impostaFiltroDiRicerca(){
-  //   let copy = filterArr
-  //   for(let i=0; i<4; i++){
-  //     if(userSelection[i]===isAllowed[i]===true) {
-  //       copy[i]=true
-  //     } else {
-  //       copy[i]=false
-  //     }
-  //   }
-  //   setFilterArr(copy)
-  // }
-
-
   useEffect(() => {
     if (searchWord && searchWord!=='') {
       ricerca()
-      // console.log("filtro attivo: ", searchFilter)
-      //  switch (searchFilter) {                                                  //SPOTIFY OPERA CON UN TIPO DI RICERCA FUZZY, CIO' SIGNIFICA CHE CERCA SEMPRE DI MATCHARE I RISULTATI MIGLIORI, 
-      //        case 'TITLE':                                                      //NON è UNA RICERCA ESATTA, QUINDI SE INSERIAMO GENERE, NOME, TAG, ANNO, O ALTRO VIENE AUTOMATICAMENTE CERCATO UN RISULTATO COMPATBILE
-      //           setIsAllowed([true, true, true, true])                          //HO PROVATO A FILTRARE LE RICERCHE IN MODO PIU' PRECISO, AD ESEMPIO CON LE OPZIONI: //{genre: searchWord, limit : searchLimit, exact: true}
-      //           impostaFiltroDiRicerca()                                        //TUTTAVIA LA RICERCA NON E' PRECISA, CERCA ANCORA IN MODO FUZZY, QUINDI NON HA SENSO INSERIRE UNO SWITCH CHE SPECIFICA SECONDO QUALE CRITERIO CERCARE
-      //           console.log(filterArr)                                          //ho provato anche ad inviare la richiesta con il campo option category_id attivo ma la ricerca pur funzionando dava gli stessi risultati
-      //           ricerca()
-      //         break;
-                
-      //       case 'ARTIST':
-      //         setIsAllowed([true, false, true, true]) //il filtro artista può essere usato solo per la ricerca di canzoni, album, e artisti
-      //         impostaFiltroDiRicerca()
-      //         console.log(filterArr)
-      //         //impostare filtri 
-      //         ricerca()
-                
-      //         break;
-
-      //       case 'TAG':
-      //         setIsAllowed([false, false, false, false]) //il filtro genere può essere usato solo per la ricerca di canzoni e artisti
-      //         impostaFiltroDiRicerca()
-      //         console.log(filterArr)
-      //         //impostare filtri 
-      //           //ricercaPerTag()
-      //         break;
-
-      //       case 'GENERE':
-      //         setIsAllowed([true, false, false, true]) //il filtro genere può essere usato solo per la ricerca di canzoni e artisti
-      //         impostaFiltroDiRicerca()
-      //         console.log(filterArr)
-      //         //impostare filtri 
-      //         ricerca()
-      //         break;
-          
-      //       default:
-      //         break;
-      //     }
+      //SPOTIFY OPERA CON UN TIPO DI RICERCA FUZZY, CIO' SIGNIFICA CHE CERCA SEMPRE DI MATCHARE I RISULTATI MIGLIORI, 
+      //NON è UNA RICERCA ESATTA, QUINDI SE INSERIAMO GENERE, NOME, TAG, ANNO, O ALTRO VIENE AUTOMATICAMENTE CERCATO UN RISULTATO COMPATBILE
+      //HO PROVATO A FILTRARE LE RICERCHE IN MODO PIU' PRECISO, AD ESEMPIO CON LE OPZIONI: //{genre: searchWord, limit : searchLimit, exact: true}
+      //TUTTAVIA LA RICERCA NON E' PRECISA, CERCA ANCORA IN MODO FUZZY, QUINDI NON HA SENSO INSERIRE UNO SWITCH CHE SPECIFICA SECONDO QUALE CRITERIO CERCARE
+      //ho provato anche ad inviare la richiesta con il campo option category_id attivo ma la ricerca pur funzionando dava gli stessi risultati
     } else {
       setSearchResultPlaylists(null)  
       setSearchResultTracks(null)       //se la searchWord si svuota riporto a null
@@ -174,17 +92,15 @@ useEffect(() => {
 
 
 
-//RICERCA PER NOME_______
+//FUNZIONE DI RICERCA _________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 function ricerca(){
-  //if(optionCategory!=="nomeTraccia"){
 
-    //ricerca playlist
     if(filterArr[0]) {
 
       spotifyApi.searchPlaylists(searchWord, { limit : searchLimit})
       .then(result => {
-        const playlists = result.body.playlists.items.map(item => {                                       //ricerca playlist
+        const playlists = result.body.playlists.items.map(item => {                                //ricerca playlist
           return {
             image: item.images && item.images.length > 0 ? item.images[0].url : null,
             name: item.name,
@@ -206,7 +122,7 @@ function ricerca(){
 
   //ricerca canzoni
   if(filterArr[1]) {
-    spotifyApi.searchTracks(searchWord, { limit : searchLimit})    //{genre: searchWord, limit : searchLimit, exact: true}
+    spotifyApi.searchTracks(searchWord, { limit : searchLimit})
     .then(result => {
       const tracks = result.body.tracks.items.map(item => {
         const duration = new Date(item.duration_ms).toISOString().slice(14, 19);     //prendo la durata in ms della traccia, creo l'oggetto data, converto in stringa, prendo solo dal carattere 14 a 19 ovvero ore, minuti, secondi
@@ -216,7 +132,7 @@ function ricerca(){
           album: item.album.name,
           duration: duration,
           id: item.id,
-          releaseDate: item.album.release_date,                                 //ricerca canzoni 
+          releaseDate: item.album.release_date,                                                   //ricerca canzoni 
           artists: item.artists.map(artist => artist.name),
           artistsId: item.artists.map(artista => artista.id),
           uri: item.uri,
@@ -292,65 +208,43 @@ function ricerca(){
 }
 
 
+//RICERCA PLAYLIST PER CATEGORIA _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
+  useEffect(() => {
 
+    if(searchWord&&searchWord!==""&&optionCategory!=="") {
+      setSearchWord("")
+    }
 
-//RICERCA PLAYLIST PER CATEGORIA 
-
-useEffect(() => {
-
-  if(searchWord&&searchWord!==""&&optionCategory!=="") {
-    setSearchWord("")
-  }
-
-  if (optionCategory&&optionCategory!==""/*&&optionCategory!=="nomeTraccia"*/) {
-      
-    //ricerca playlist tramite categoria:
-    spotifyApi.getPlaylistsForCategory(optionCategory, {  limit : searchLimit})
-    .then(result => {
-      const playlists = result.body.playlists.items.map(item => {                                       //ricerca playlist
-        return {
-          image: item.images && item.images.length > 0 ? item.images[0].url : null,
-          name: item.name,
-          description: item.description ? item.description : null,
-          id: item.id,
-          ownerId: item.owner.id,
-          ownerName: item.owner.display_name,
-          totalTracks: item.tracks.total,
-          uri: item.uri,
-        }
+    if (optionCategory&&optionCategory!=="") {
+        
+      //ricerca playlist tramite categoria:
+      spotifyApi.getPlaylistsForCategory(optionCategory, {  limit : searchLimit})
+      .then(result => {
+        const playlists = result.body.playlists.items.map(item => {                                       //ricerca playlist
+          return {
+            image: item.images && item.images.length > 0 ? item.images[0].url : null,
+            name: item.name,
+            description: item.description ? item.description : null,
+            id: item.id,
+            ownerId: item.owner.id,
+            ownerName: item.owner.display_name,
+            totalTracks: item.tracks.total,
+            uri: item.uri,
+          }
+        })
+        console.log("playlists", playlists)  
+        setSearchResultPlaylists(playlists)
       })
-      console.log("playlists", playlists)  
-      setSearchResultPlaylists(playlists)
-    })
-    .catch(err => {
-      ErrorStatusCheck(err)
-    })
+      .catch(err => {
+        ErrorStatusCheck(err)
+      })
 
-   } //else if(optionCategory==="nomeTraccia") {
-  //   spotifyApi.searchPlaylists({track:searchWord}, { limit : searchLimit})
-  //   .then(result => {
-  //     console.log("playlists con una traccia", result)
-  //   })
-  //   .catch(err => {
-  //     ErrorStatusCheck(err)
-  //   })
-  // }
-
-}, [optionCategory, filterArr[0], searchLimit])
+    }
+  }, [optionCategory, filterArr[0], searchLimit])
 
 
-
-
-
-
-
-
-
-
-
-
-  //GET TOP PLAYLIST_____________________________________________________________________________________________________________
+  //GET TOP PLAYLISTS & TRACKS__________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
   const [topPlaylists, setTopPlaylists] = useState()
   const [topTracks, setTopTracks] = useState()  
@@ -415,11 +309,11 @@ useEffect(() => {
     getTop()
     getMyTopTracksFunction()
   }
-}, [searchWord, accessToken])
+}, [searchWord, localStorage.getItem("accessToken")])
 
 
 
-//GET MY TOP TRACKS_______________________________________________________________________________________________________________________________________________________________________________________
+//GET MY TOP TRACKS______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 const [myTopTracks, setMyTopTracks] = useState()
 const [my50topTracks, setMy50topTracks] = useState()
@@ -451,8 +345,7 @@ function getMyTopTracksFunction() {
 }
 
 
-
-//RENDERIZZO IL BANNER____________________________________________________________________________________________________________________________________________________________________________________
+//RENDERIZZO IL BANNER__________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
     if (!localStorage.getItem("accessToken")) {
       return(
@@ -469,7 +362,7 @@ function getMyTopTracksFunction() {
     }
 
 
-//RENDERIZZO LA PAGINA____________________________________________________________________________________________________________________________________________________________________________________
+//RENDERIZZO LA PAGINA___________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
     return(
       <>
@@ -485,28 +378,6 @@ function getMyTopTracksFunction() {
 
       {/* LISTA DELLE PLAYLIST */}
       {lista&&<Playlist_list lista={lista} showFooter={showFooter} setShowFooter={()=>setShowFooter(true)}></Playlist_list>}
-
-      {/* CAROSELLO 10 DAILY MIX
-      {dailyMix&&(!searchWord||searchWord==="")&&optionCategory===""&&<Container fluid className="cardsTop" >
-            <hr/>
-            <div><h3>My Daily Mix</h3></div>
-            <Carousel indicators={false} controls={false}>
-              <Carousel.Item interval={5000}>
-                  <Row>
-                    {dailyMix.map((currentPlaylist, index) => (                    
-                        index<5 ? <Col><PlaylistCardVertical playlist={currentPlaylist} key={currentPlaylist.id} showFooter={showFooter} createdPlaylist={createdPlaylist}/></Col> : null
-                      ))}
-                  </Row>
-                </Carousel.Item>
-              <Carousel.Item interval={5000}>
-                  <Row>
-                    {dailyMix.map((currentPlaylist, index) => (                    
-                        index>=5 ? <Col><PlaylistCardVertical playlist={currentPlaylist} key={currentPlaylist.id} showFooter={showFooter} createdPlaylist={createdPlaylist}/></Col> : null
-                      ))}
-                  </Row>
-              </Carousel.Item>
-            </Carousel>
-        </Container>} */}
 
         {/* CAROSELLO MY TOP TRACK */}
         {myTopTracks&&(!searchWord||searchWord==="")&&optionCategory===""&&<Container fluid className="cardsTop" >

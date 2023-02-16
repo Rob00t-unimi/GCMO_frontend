@@ -1,32 +1,20 @@
-import React, { useEffect, useState, useContext } from 'react'
-import { Button, Card, Modal, Container, Table, Row, Col } from 'react-bootstrap'
-import SpotifyWebApi from 'spotify-web-api-node';
+import React, { useEffect, useState } from 'react'
+import { Button, Modal, Container, Table} from 'react-bootstrap'
 import'./style.css'
-import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import ErrorStatusCheck from '../../util/errorStatusCheck'
 import { spotifyApi } from '../../util/costanti';
-import { ToastContext } from '../../App';
+
 
 
 
 const ArtistViewModal = ({ show, onClose, artist, currentUser }) => {
 
-    const {setToast} = useContext(ToastContext)
 
     if(!currentUser){
         currentUser = JSON.parse(localStorage.getItem('user'))
     }
 
-//CONTROLLO IL TOKEN________________________________________________________________________________________________________________
-
- const accessToken = localStorage.getItem('accessToken');
-
-    useEffect(() => {
-        if (!accessToken) return;
-        spotifyApi.setAccessToken(accessToken);
-    }, [accessToken])
-
-//GET TOP ARTIST TRACKS_________________________________________________________________________________________________________
+//GET TOP ARTIST TRACKS_______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 const [tracks, setTracks] = useState()
 
@@ -52,7 +40,7 @@ const [tracks, setTracks] = useState()
             ErrorStatusCheck(err)
         })
 
-    }, [accessToken])
+    }, [localStorage.getItem('accessToken')])
 
    
 

@@ -1,17 +1,13 @@
-import SpotifyWebApi from 'spotify-web-api-node';
+
 import { Button, Card, Col } from 'react-bootstrap';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { StarFill, Star, Heart, HeartFill} from 'react-bootstrap-icons';
+import { Heart, HeartFill} from 'react-bootstrap-icons';
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import AlbumViewModal from '../albumViewModal/albumViewModal';
 import ErrorStatusCheck from '../../util/errorStatusCheck'
-import '../general.css'
+import '../generalStyle.css'
 import { spotifyApi } from '../../util/costanti';
-
-
-
-
 
 
 
@@ -19,26 +15,12 @@ import { spotifyApi } from '../../util/costanti';
 
 export default function Album({currentAlbum, showFooter, createdPlaylist}){
 
-//INIZIALIZZO DEGLI STATI__________________________________________________________________________________________________________
-
-    const userInfo = JSON.parse(localStorage.getItem('user'));  
-    const accessToken = localStorage.getItem('accessToken');
-
-//CONTROLLO IL TOKEN_______________________________________________________________________________________________________________
-
-    useEffect(() => {
-        if (!accessToken) return;
-        spotifyApi.setAccessToken(accessToken);
-    }, [accessToken])
-
-    
-
 
     const [type, setType] = useState();
     const [modalShow, setModalShow] = useState(false);  //ci sarà una modale per aprire le informazioni relative ad una playlist
 
 
-//controllo che tipo di album è  (salvato o no)______________________________________________________________
+//controllo che tipo di album è  (salvato o no)____________________________________________________________________________________________________
 useEffect(() => {
 
     spotifyApi.containsMySavedAlbums([currentAlbum.id])
@@ -75,7 +57,7 @@ function switchFollow(){
     }
 }
 
-//RENDERING_______________________________________________________________________________________________________________________________________
+//__________________________________________________________________________________________________________________________________________________
 
     return(
         <>

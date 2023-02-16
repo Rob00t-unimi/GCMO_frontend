@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import {Card, Button, Col} from 'react-bootstrap'
-import '../general.css'
-import SpotifyWebApi from 'spotify-web-api-node';
+import '../generalStyle.css'
 import { HeartFill, Heart, Plus} from 'react-bootstrap-icons';
 import TrackViewModal from "../trackViewModal/trackViewModal";
 import ErrorStatusCheck from '../../util/errorStatusCheck'
@@ -12,27 +11,19 @@ import { ToastContext } from '../../App';
 
 function TrackCardHorizontal({currentTrack, showFooter, currentPlaylist}){
 
+
     const {setToast} = useContext(ToastContext)
-
-
-    
-    const accessToken = localStorage.getItem('accessToken');
-
-    useEffect(() => {
-        if (!accessToken) return;
-        spotifyApi.setAccessToken(accessToken);
-    }, [accessToken])
 
     const [type, setType] = useState();
 
 
+//controllo che tipo di traccia è ________________________________________________________________________________________________
 
-//controllo che tipo di traccia è ______________________________________________________________
     useEffect(() => {
 
         spotifyApi.containsMySavedTracks([currentTrack.id])
         .then(res =>{
-            console.log('risposta', res)
+            //console.log('risposta', res)
             setType(res.body[0])
             })
             .catch(err => {

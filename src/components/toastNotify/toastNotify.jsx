@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { Toast } from 'react-bootstrap'
-import'../general.css'
-import { Modal } from 'react-bootstrap'
+import'../generalStyle.css'
 
 
 

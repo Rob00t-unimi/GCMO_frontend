@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { Button, ListGroup, Modal } from 'react-bootstrap'
-import SpotifyWebApi from 'spotify-web-api-node';
+import { Button, Modal } from 'react-bootstrap'
 import  'bootstrap/dist/css/bootstrap.min.css' ;
 import '../ModalCreatePlaylist/style.css'
 import ErrorStatusCheck from '../../util/errorStatusCheck'
@@ -11,34 +10,26 @@ import { ToastContext } from '../../App';
 
 function ModalModifyPlaylist({show, onClose, playlist, modifyPlaylist }) {
 
+
     const {setToast} = useContext(ToastContext)
 
-//CONTROLLO IL TOKEN E LO AGGIUNGO ALL'OGGETTO SPOTIFYAPI____________________________
-
-const accessToken = localStorage.getItem('accessToken');
-
-useEffect(() => {
-    if (!accessToken) return;
-    spotifyApi.setAccessToken(accessToken);
-}, [accessToken])
-
-//INIZIALIZZO UN PO' DI STATI_________________________________________________________
 
     const [isPublic, setIsPublic] = useState(playlist.public)
     const [title, setTitle] = useState(playlist.name)
     const [image, setImage] = useState();
 
 
-//INIZIALIZZO description (il value dell'input text non può essere null)
-const [description, setDescription] = useState()
+//INIZIALIZZO description (il value dell'input text non può essere null)______________________________________________________________________________________________________________________________________________
 
-useEffect(() => {
-    if (playlist.description) {
-    setDescription(playlist.description)
-    }
-},[])
+    const [description, setDescription] = useState()
 
-//IMPOSTA IMMAGINE___________________________________________________________________
+    useEffect(() => {
+        if (playlist.description) {
+        setDescription(playlist.description)
+        }
+    },[])
+
+//IMPOSTA IMMAGINE_____________________________________________________________________________________________________________________________________________________________________________________________________
 
     useEffect(() => {
         if (playlist.image) 
@@ -53,46 +44,7 @@ useEffect(() => {
         })
     }
 
-//RENDERING____________________________________________________________________________________________________________________________________________________________________________________________________________
-    return(
-        <>
-            <Modal className='modal' show={show} animation={true} size='xl' centered >
-                <Modal.Header className='bg-dark text-light' >
-                    <Modal.Title>MODIFICA LA TUA PLAYLIST</Modal.Title>
-                    <Button className='btn-light' onClick={onClose}>Chiudi</Button>
-                </Modal.Header>
-
-                <Modal.Body className='bg-dark text-light'>
-                    <div >
-                        <div className=' d-flex justify-content-center flex-row'>
-                            <input className=' text-center bg-dark text-light' type="text" placeholder={'Titolo'} value={title} onChange={(e)=> {setTitle(e.target.value)}}/>
-                
-                            <select name="visibility" value={isPublic} onChange={(e)=> {setIsPublic(e.target.value)}}>
-                                <option className="text-center" value={true}> Pubblica </option>
-                                <option className="text-center" value={false}> Privata </option>
-                            </select>
-                        </div>
-                    <hr />
-                    <div className=' d-flex justify-content-center flex-column bg-dark text-light' >
-                            <div  className='descrizione bg-dark text-light  '>Descrizione </div>
-                            <div className='d-flex flex-row'>
-                                <textarea className='bg-dark text-light ' type="text" placeholder={'Scrivi una descrizione..'} value={description} onChange={(e)=> {setDescription(e.target.value)}}/>
-                                {image&&<div className='copertina'><img src={image.url}></img></div>}
-                                {!image&&<div className='copertina text-center text-light'><div>Nessuna Immagine</div></div>}
-                            </div>
-                            <div className='d-flex justify-content-end'><div className='inputFoto'><input type="file" accept="image/jpeg" onChange={(event)=>{impostaImmagine(event.target.files[0])}}/></div></div>    
-                        </div>
-                    </div>
-                </Modal.Body>
-
-                <Modal.Footer className='d-flex justify-content-center bg-dark text-light'>
-                    <Button className='btn-light btn-lg' onClick={async () => onConfirmFunction()}> Salva </Button>
-                    <Button className='btn-success btn-lg' onClick={async () => onConfirmFunction("ADDTRACKS")}> Salva e Aggiungi brani </Button>
-                </Modal.Footer>
-            </Modal>
-        </>
-    )
-
+//IMPOSTA L'IMMAGINE DELLA PLAYLIST SU SPOTIFY________________________________________________________________________________________________________________________________________________________________________
 
     async function addingImage() {
         if(image&&image.url!==playlist.image) {
@@ -111,6 +63,8 @@ useEffect(() => {
         }
         return
     }
+
+//FUNZIONE SALVA/CREA PLAYLIST______________________________________________________________________________________________________________________________________________________________________________________
 
     async function onConfirmFunction(seAddTracks) {
 
@@ -157,8 +111,10 @@ useEffect(() => {
         }
     }
 
+//PROSEGUI ALL'AGGIUNTA DEI BRANI_____________________________________________________________________________________________________________________________________________________________________________________
+
     function addPlaylistInStorage(thisPlaylist){
-        
+            
         thisPlaylist.image = thisPlaylist.image!==null ? "ASK" : null
         
         spotifyApi.getPlaylistTracks(thisPlaylist.id)
@@ -176,9 +132,48 @@ useEffect(() => {
         .catch(e=>{
             ErrorStatusCheck()
         })
-         
+        
     }
-    
+
+//RENDERING____________________________________________________________________________________________________________________________________________________________________________________________________________
+    return(
+        <>
+            <Modal className='modal' show={show} animation={true} size='xl' centered >
+                <Modal.Header className='bg-dark text-light' >
+                    <Modal.Title>MODIFICA LA TUA PLAYLIST</Modal.Title>
+                    <Button className='btn-light' onClick={onClose}>Chiudi</Button>
+                </Modal.Header>
+
+                <Modal.Body className='bg-dark text-light'>
+                    <div >
+                        <div className=' d-flex justify-content-center flex-row'>
+                            <input className=' text-center bg-dark text-light' type="text" placeholder={'Titolo'} value={title} onChange={(e)=> {setTitle(e.target.value)}}/>
+                
+                            <select name="visibility" value={isPublic} onChange={(e)=> {setIsPublic(e.target.value)}}>
+                                <option className="text-center" value={true}> Pubblica </option>
+                                <option className="text-center" value={false}> Privata </option>
+                            </select>
+                        </div>
+                    <hr />
+                    <div className=' d-flex justify-content-center flex-column bg-dark text-light' >
+                            <div  className='descrizione bg-dark text-light  '>Descrizione </div>
+                            <div className='d-flex flex-row'>
+                                <textarea className='bg-dark text-light ' type="text" placeholder={'Scrivi una descrizione..'} value={description} onChange={(e)=> {setDescription(e.target.value)}}/>
+                                {image&&<div className='copertina'><img src={image.url}></img></div>}
+                                {!image&&<div className='copertina text-center text-light'><div>Nessuna Immagine</div></div>}
+                            </div>
+                            <div className='d-flex justify-content-end'><div className='inputFoto'><input type="file" accept="image/jpeg" onChange={(event)=>{impostaImmagine(event.target.files[0])}}/></div></div>    
+                        </div>
+                    </div>
+                </Modal.Body>
+
+                <Modal.Footer className='d-flex justify-content-center bg-dark text-light'>
+                    <Button className='btn-light btn-lg' onClick={async () => onConfirmFunction()}> Salva </Button>
+                    <Button className='btn-success btn-lg' onClick={async () => onConfirmFunction("ADDTRACKS")}> Salva e Aggiungi brani </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    ) 
 }
 
 

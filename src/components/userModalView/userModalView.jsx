@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Card, Modal, Container, Table } from 'react-bootstrap'
-import SpotifyWebApi from 'spotify-web-api-node';
-import'../general.css'
-import playlistImage from '../../assets/generalPlaylistImage.jpg'
+import { Button, Modal, Container, Table } from 'react-bootstrap'
+import'../generalStyle.css'
 import ErrorStatusCheck from '../../util/errorStatusCheck'
-import spotifyLogo from "../../assets/SpotifyLogo01.png"
 import PlaylistCardNavigationPage from '../playlistCardNavigationPage/playlistCardNavigationPage'
 import { spotifyApi } from '../../util/costanti';
 
@@ -12,19 +9,11 @@ import { spotifyApi } from '../../util/costanti';
 
 export default function UserModalView({playlistOwnerId, show, onClose, showFooter, createdPlaylist}){
 
-    //CONTROLLO IL TOKEN e lo passo all'oggetto spotifyApi____________________________________________________________________________________
 
-  const accessToken = localStorage.getItem('accessToken');
+    const [user, setUser] = useState()
+    const [userPlaylists, setUserPlaylists] = useState()
 
-  useEffect(() => {
-    if (!accessToken) return;
-    spotifyApi.setAccessToken(accessToken);
-  }, [accessToken])
-
-//_____________________________________________________
-
-const [user, setUser] = useState()
-const [userPlaylists, setUserPlaylists] = useState()
+    //RICHIEDERE INFO UTENTE E PLAYLISTS DELL'UTENTE________________________________________________________________________________
 
     useEffect(() => {
         spotifyApi.getUser(playlistOwnerId)
@@ -65,7 +54,7 @@ const [userPlaylists, setUserPlaylists] = useState()
         })
     }, [])
 
-//_______________________________________________________________________
+//VERIFICA SE L'UTENTE è SEGUITO_________________________________________________________________________________________________________
 
 useEffect(() => {
     if(!user) return
@@ -83,7 +72,7 @@ useEffect(() => {
     })
 }, [user])
 
-
+//SEGUE L'UTENTE__________________________________________________________________________________________________________________________
 
 function follow() {
     spotifyApi.followUsers([user.id])
@@ -100,6 +89,8 @@ function follow() {
     })
 }
 
+//SMETTE DI SEGUIRE L'UTENTE_______________________________________________________________________________________________________________
+
 function unfollow() {
     spotifyApi.unfollowUsers([user.id])
     .then(result => {
@@ -114,6 +105,7 @@ function unfollow() {
     })
 }
 
+//_________________________________________________________________________________________________________________________________________
 
 return (
     <Modal className='bg-light bg-opacity-25' show={show} animation={true} size="xl" centered>

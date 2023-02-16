@@ -6,9 +6,13 @@ import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import { spotifyApi } from '../../util/costanti';
 
 
+
 function FooterElement({close, playlist}){
 
+    
     const [immagine, setImmagine] = useState()
+
+    //CONTROLLO L'IMMAGINE_________________________________________________________________________________________________________________________________________________________________________________________________________________
 
     useEffect(() => {
         if(playlist.image!=="ASK"){    //se l'immagine ha il valore speciale "ASK" significa che non c'è ma dovrebbe esserci quindi chiedo l'immagine altrimenti inserisco quello che c'è (l'immagine o null)
@@ -17,6 +21,8 @@ function FooterElement({close, playlist}){
             recuperaImmagine()
         }
     }, [])
+
+    //RECUPERO L'IMMAGINE CON CHIAMATE RICORSIVE____________________________________________________________________________________________________________________________________________________________________________________________
 
     function recuperaImmagine() {
         spotifyApi.getPlaylist(playlist.id)         //metto una ricorsione altrimenti arriva la risposta quando l'immagine non è ancora stata salvata nella playlist nei server delle api
@@ -31,13 +37,15 @@ function FooterElement({close, playlist}){
         })
     }
 
+    //CHIUDE IL FOOTER e rimuove la playlist dal local storage______________________________________________________________________________________________________________________________________________________________________________
+
     function chiudi() {
         localStorage.removeItem('createdPlaylist')
         localStorage.removeItem('createdPlaylistTracks')
         close()
     }
 
-//RENDER COMPONENTE________________________________________________________________________________________________________________________
+//RENDER COMPONENTE_________________________________________________________________________________________________________________________________________________________________________________________________________________________
     
         return (
             <Container fluid className='footer' >

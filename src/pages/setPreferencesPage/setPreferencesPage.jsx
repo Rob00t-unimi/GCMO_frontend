@@ -11,18 +11,11 @@ import Album from "../../components/album/album";
 import Artist from "../../components/artist/artist";
 
 
+
 export default function SetPreferencesPage(){
 
-//CONTROLLO IL TOKEN e lo passo all'oggetto spotifyApi____________________________________________________________________________________
 
-  const accessToken = localStorage.getItem('accessToken');
-
-  useEffect(() => {
-    if (!accessToken) return;
-    spotifyApi.setAccessToken(accessToken);
-  }, [accessToken])
-
-const[searchWord, setSearchWord] = useState("")
+const [searchWord, setSearchWord] = useState("")
 const [tracks, setTracks]= useState([])
 const [artists, setArtists]= useState([])
 const [albums, setAlbums]= useState([])
@@ -38,8 +31,9 @@ useEffect(() => {
         setArtists([])
         getTopTracks()
     }
-}, [searchWord, accessToken])
+}, [searchWord, localStorage.getItem("accessToken")])
 
+//FUNZIONE DI RICERCA _________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
   function ricerca(){
     spotifyApi.search(searchWord, ["track", "artist", "album"], {limit: 10})
@@ -92,7 +86,7 @@ useEffect(() => {
     })
   }
 
-
+//GET TOP TRACKS______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
   function getTopTracks() {
     spotifyApi.getPlaylistTracks('37i9dQZEVXbMDoHDwVN2tF', {limit: 28, offset: 0})
@@ -121,6 +115,8 @@ useEffect(() => {
     localStorage.setItem("visited", "true")
     window.location = '/personalArea'
   }
+
+//________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
   return(
     <>
@@ -189,11 +185,6 @@ useEffect(() => {
                         index<7&&<Col key={artist.id}><Artist artist={artist}/></Col>
                     ))}
                 </Row>
-                {/* <Row>
-                    {artists.map((artist, index) => (         
-                        index>=5&&index<=10&&<Col key={artist.id}><Artist artist={artist}/></Col>
-                    ))}
-                </Row> */}
             </div>
         }
           {/* TRACKS */}

@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { Button, Card, Modal, Pagination, Table } from 'react-bootstrap'
-import SpotifyWebApi from 'spotify-web-api-node';
-import'../general.css'
+import { Button, Card, Modal, Table } from 'react-bootstrap'
+import'../generalStyle.css'
 import'./style.css'
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import ErrorStatusCheck from '../../util/errorStatusCheck'
@@ -15,28 +14,17 @@ import { ToastContext } from '../../App';
 
 const AlbumViewModal = ({ show, onClose, album, currentUser, showFooter, createdPlaylist}) => {
 
+   
     const {setToast} = useContext(ToastContext)
 
     if(!currentUser){
         currentUser = JSON.parse(localStorage.getItem('user'))
     }
 
-
-//CONTROLLO IL TOKEN________________________________________________________________________________________________________________
-
- const accessToken = localStorage.getItem('accessToken');
-
-    useEffect(() => {
-        if (!accessToken) return;
-        spotifyApi.setAccessToken(accessToken);
-    }, [accessToken])
-
-//________________________________________________________________________________________________________________________
-
-const [tracks, setTracks] = useState(null)
+    const [tracks, setTracks] = useState(null)
 
 
-//RICHIEDERE OGNI TRACCIA   _______________________________________________________________________________________________________
+//RICHIEDERE OGNI TRACCIA   _________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 //le richiedo tutte insieme ciclando poichè a differenza delle playlist difficilmente ci saranno più di 2 iterazioni in un album
 //normalmente una iterazione è più che sufficiente
 
@@ -82,10 +70,10 @@ async function getAllTracks() {
   
   useEffect(() =>{
     getAllTracks()
-  }, [accessToken])
+  }, [localStorage.getItem('accessToken')])
 
 
-//RICERCA GENERI_______________________________________________________________________________________________________________
+//RICERCA GENERI_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 const [artistGenres, setArtistGenres] = useState()
 
@@ -113,7 +101,7 @@ useEffect(() => {
 
 
 
-//AGGIUNGERE TRACCIA A PLAYLIST SELEZIONATA_________________________________________________________________________________
+//AGGIUNGERE TRACCIA A PLAYLIST SELEZIONATA_______________________________________________________________________________________________________________________________________________________________________________________________________________________
 //se la createdPlaylist non è nel local storage showFooter sarà false e non renderizzo il Btn
 //se showFooter è true ma la traccia è già presente nella playlist non renderizzo il Btn 
 
@@ -162,7 +150,8 @@ function addTrack(currentTrack, i){
 }
 
 
-//IMPORTARE L'INTERO ALBUM IN UNA PLAYLIST_______________________________________________________________________________________________________
+//IMPORTARE L'INTERO ALBUM IN UNA PLAYLIST_________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
 function importaAlbum(){
     const tracce = tracks.map(track => track.uri)
     spotifyApi.createPlaylist(album.name, {public: false})        //limite di canzoni per l'import = 100, tuttavia gli album non hanno quasi mai più di 100 tracce 
@@ -203,7 +192,8 @@ function importaAlbum(){
 
 }
 
-//salvare una traccia
+//FOLLOW - UNFOLLOW TRACK___________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
 function switchFollow(currentTrack, i) {
   
     if (currentTrack.followed) {
@@ -235,12 +225,7 @@ function switchFollow(currentTrack, i) {
         });
     }
   }
-  
-
-console.log(tracks)
-
-
-    
+   
 
     return (
         <>

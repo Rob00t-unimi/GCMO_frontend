@@ -1,24 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import  'bootstrap/dist/css/bootstrap.min.css' ;
-import { Container, Form, Col, Row, Button } from "react-bootstrap";
+import {Col, Button } from "react-bootstrap";
 import './style.css';
-import SpotifyWebApi from "spotify-web-api-node";
 import ErrorStatusCheck from "../../util/errorStatusCheck";
 import { spotifyApi } from '../../util/costanti';
 
 
 function Playlist_list({lista, showFooter, setShowFooter}){
 
-    //CONTROLLO IL TOKEN e lo passo all'oggetto spotifyApi____________________________________________________________________________________
-    const accessToken = localStorage.getItem('accessToken');
-
-    useEffect(() => {
-    if (!accessToken) return;
-    spotifyApi.setAccessToken(accessToken);
-    }, [accessToken])
 
 
-//al click inserisco la playlist e le sue tracce nel local storage
+//INSERISCE la playlist e le sue tracce nel local storage_______________________________________________________________________________________________________________
+
     function addPlaylistInStorage(playlist){
         if(!showFooter) {
             spotifyApi.getPlaylistTracks(playlist.id)
@@ -36,6 +29,8 @@ function Playlist_list({lista, showFooter, setShowFooter}){
             })
         }  
     }
+
+    //___________________________________________________________________________________________________________________________________________________________________
 
     return(
         <Col className="colonna-sx-navigationPage bg-dark">

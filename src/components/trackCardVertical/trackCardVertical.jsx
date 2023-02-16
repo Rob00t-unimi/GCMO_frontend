@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import {Card, Button} from 'react-bootstrap'
-import '../general.css'
-import SpotifyWebApi from 'spotify-web-api-node';
+import '../generalStyle.css'
 import { Heart, HeartFill, Plus} from 'react-bootstrap-icons';
 import TrackViewModal from "../trackViewModal/trackViewModal";
 import ErrorStatusCheck from '../../util/errorStatusCheck'
@@ -12,25 +11,19 @@ import { ToastContext } from '../../App';
 
 function TrackCardVertical({currentTrack, showFooter, currentPlaylist}){
 
-    const {setToast} = useContext(ToastContext)
     
-    const accessToken = localStorage.getItem('accessToken');
-
-    useEffect(() => {
-        if (!accessToken) return;
-        spotifyApi.setAccessToken(accessToken);
-    }, [accessToken])
+    const {setToast} = useContext(ToastContext)
 
     const [type, setType] = useState();
 
 
 
-//controllo che tipo di traccia è ______________________________________________________________
+//controllo che tipo di traccia è _____________________________________________________________________________________________
     useEffect(() => {
 
         spotifyApi.containsMySavedTracks([currentTrack.id])
         .then(res =>{
-            console.log('risposta', res)
+            //console.log('risposta', res)
             setType(res.body[0])
             })
             .catch(err => {

@@ -1,12 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useState } from 'react';
-import { Button, ListGroup, Modal, Row, Col } from 'react-bootstrap'
-import SpotifyWebApi from 'spotify-web-api-node';
+import { Button, Modal, } from 'react-bootstrap'
 import  'bootstrap/dist/css/bootstrap.min.css' ;
 import '../ModalCreatePlaylist/style.css'
-import { spotifyApi } from '../../util/costanti'
-import ErrorStatusCheck from '../../util/errorStatusCheck'
-import axios from 'axios';
 import Logout from '../../util/logout'
 
 
@@ -17,26 +13,6 @@ function ModalModifyUser({show, onClose, userInfo}) {
 
     const [statoModale, setStatoModale] = useState(false)
 
-
-// const endpoint = 'https://api.spotify.com/v1/me/tokens';
-
-
-// const accessToken = localStorage.getItem("accessToken");           //non esiste questa chiamata Api
-
-
-// async function cancellazioneUtente() {
-//   try {
-//     const response = await axios.delete(endpoint, {
-//      headers: {
-//        Authorization: `Bearer ${accessToken}`,
-//      },
-//     });
-//     console.log('Accesso utente revocato');
-//     Logout()
-//   } catch (err) {
-//     console.log(err)
-//   }
-// }
 
 function cancellazioneUtente() {
      window.open('https://www.spotify.com/it/account/apps/', '_blank');
@@ -70,27 +46,22 @@ function cancellazioneAccount() {
 
         :
 
-        <Modal show={show} size='lg' centered>
-        <Modal.Header>
-           <Modal.Title>CHIUSURA PROFILO UTENTE</Modal.Title>
-           <Button className='btn-dark' onClick={()=>setStatoModale(false)}>Indietro</Button>
-      </Modal.Header>
-      <Modal.Body>
-           {/* <div>Sei sicuro di voler scollegare il tuo account da GCMO? (L'account su spotify non verrà eliminato.)</div> */}
-           <div>Verrai reindirizzato su spotify dove potrai scollegare il tuo account da GCMO, oppure eliminare l'account di Spotify</div>
-      </Modal.Body>
-      <Modal.Footer className='text-center'>
-          
-          {/* <Button className='btn-danger' onClick={cancellazioneUtente} >Scollegati da GCMO</Button> */}
-          <Button className='btn-danger' onClick={cancellazioneUtente} >Scollegati da GCMO</Button>
-          <Button className='btn-dark' onClick={cancellazioneAccount}>Cancella account su Spotify</Button>
-
-      </Modal.Footer>
+     <Modal show={show} size='lg' centered>
+          <Modal.Header>
+               <Modal.Title>CHIUSURA PROFILO UTENTE</Modal.Title>
+               <Button className='btn-dark' onClick={()=>setStatoModale(false)}>Indietro</Button>
+          </Modal.Header>
+          <Modal.Body>
+               <div>Verrai reindirizzato su spotify dove potrai scollegare il tuo account da GCMO, oppure eliminare l'account di Spotify</div>
+          </Modal.Body>
+          <Modal.Footer className='text-center'>
+               <Button className='btn-danger' onClick={cancellazioneUtente} >Scollegati da GCMO</Button>
+               <Button className='btn-dark' onClick={cancellazioneAccount}>Cancella account su Spotify</Button>
+          </Modal.Footer>
      </Modal>
      )
     
 }
-
 
 export default ModalModifyUser
 
