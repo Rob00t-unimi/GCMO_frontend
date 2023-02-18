@@ -17,6 +17,9 @@ import { spotifyApi } from '../../util/costanti';
 
 function PersonalArea() {
 
+  //MANTENGO UNO STATE DELL'ACCESS TOKEN, il setter viene passato alla gestione errori e poi a refreshToken, al cambiare dello state rieseguo alcune funzioni_________________________________________________________
+  const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken"))
+
  
 //INIZIALIZZO UN PO' DI STATI_________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -38,11 +41,9 @@ function PersonalArea() {
 
   useEffect(() => {
     if (!localStorage.getItem('accessToken')) return;  
-
+    getInfoUtente();
     getAllPlaylist();
-    getInfoUtente();  
-
-  }, [localStorage.getItem('accessToken'), userModal])
+  }, [accessToken, userModal])
 
 //OTTENERE INFO UTENTE________________________________________________________________________________________________________________________________________________________________________________________________
  
@@ -66,7 +67,7 @@ function PersonalArea() {
             setCurrentUser(JSON.parse(localStorage.getItem('user')))
         })
         .catch(err => {
-          ErrorStatusCheck(err)
+          ErrorStatusCheck(err, setAccessToken)
       })
   }
 
@@ -112,7 +113,7 @@ function PersonalArea() {
 
 
   } catch (err) {
-    ErrorStatusCheck(err)
+    ErrorStatusCheck(err, setAccessToken)
   }
 }
 

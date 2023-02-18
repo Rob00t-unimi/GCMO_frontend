@@ -29,6 +29,7 @@ function PlaylistCardPersonalArea({playlist, modifyPlaylist, userInfo, setRemove
 //CONTROLLA che tipo di playlist è __________________________________________________________________________________________________________________________________________________________________
 
     useEffect(() => {
+        if(!userInfo) return
         if (playlist.ownerId !== userInfo.id) {     
             setType('FOLLOWED')
         } else if (playlist.public) {
@@ -36,7 +37,7 @@ function PlaylistCardPersonalArea({playlist, modifyPlaylist, userInfo, setRemove
         } else {
             setType('PRIVATE')
         }       
-    }, [playlist])
+    }, [playlist, userInfo])
 
 
 //IMPOSTA L'IMMAGINE_________________________________________________________________________________________________________________________________________________________________________________

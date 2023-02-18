@@ -9,6 +9,8 @@ import { spotifyApi } from '../../util/costanti';
 
 const ArtistViewModal = ({ show, onClose, artist, currentUser }) => {
 
+  //MANTENGO UNO STATE DELL'ACCESS TOKEN, il setter viene passato alla gestione errori e poi a refreshToken, al cambiare dello state rieseguo alcune funzioni_________________________________________________________
+  const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken"))
 
     if(!currentUser){
         currentUser = JSON.parse(localStorage.getItem('user'))
@@ -37,10 +39,10 @@ const [tracks, setTracks] = useState()
             setTracks(tracce)
         })
         .catch(err => {
-            ErrorStatusCheck(err)
+            ErrorStatusCheck(err, setAccessToken)
         })
 
-    }, [localStorage.getItem('accessToken')])
+    }, [accessToken])
 
    
 

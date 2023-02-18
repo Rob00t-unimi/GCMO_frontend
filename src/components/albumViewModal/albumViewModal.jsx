@@ -14,6 +14,9 @@ import { ToastContext } from '../../App';
 
 const AlbumViewModal = ({ show, onClose, album, currentUser, showFooter, createdPlaylist}) => {
 
+  //MANTENGO UNO STATE DELL'ACCESS TOKEN, il setter viene passato alla gestione errori e poi a refreshToken, al cambiare dello state rieseguo alcune funzioni_________________________________________________________
+  const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken"))
+
    
     const {setToast} = useContext(ToastContext)
 
@@ -64,13 +67,13 @@ async function getAllTracks() {
           console.log(allTracks)
           setTracks(allTracks)
     } catch (err) {
-        ErrorStatusCheck(err)
+        ErrorStatusCheck(err, setAccessToken)
     }
   }
   
   useEffect(() =>{
     getAllTracks()
-  }, [localStorage.getItem('accessToken')])
+  }, [accessToken])
 
 
 //RICERCA GENERI_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________

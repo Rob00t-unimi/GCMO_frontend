@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { spotifyApi } from './costanti';
 
 const SERVER_BASIC_URL = 'http://localhost:9000';
 
@@ -21,6 +22,10 @@ export default function useAuth(code) {
             localStorage.setItem('accessToken', res.data.accessToken);
             localStorage.setItem('refreshToken', res.data.refreshToken);
             localStorage.setItem('expiresIn' , res.data.expiresIn);
+
+            console.log("AccessToken setting...")
+            spotifyApi.setAccessToken(res.data.accessToken);
+            console.log("AccessToken setted:", localStorage.getItem('accessToken'))
         })
         .catch((err) => {
             console.log(err)

@@ -14,6 +14,19 @@ import Artist from "../../components/artist/artist";
 
 export default function SetPreferencesPage(){
 
+const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken"))
+
+  //Set di spotifyApi con l'accessToken corrente    
+useEffect(() => {
+  if (localStorage.getItem('accessToken')) {
+
+    console.log("AccessToken setting...")
+    spotifyApi.setAccessToken(localStorage.getItem('accessToken'));
+    console.log("AccessToken setted:", localStorage.getItem('accessToken'))
+    
+  }
+}, [accessToken])
+
 
 const [searchWord, setSearchWord] = useState("")
 const [tracks, setTracks]= useState([])
@@ -31,7 +44,7 @@ useEffect(() => {
         setArtists([])
         getTopTracks()
     }
-}, [searchWord, localStorage.getItem("accessToken")])
+}, [searchWord, accessToken])
 
 //FUNZIONE DI RICERCA _________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -107,7 +120,7 @@ useEffect(() => {
         console.log("Top 10 Spotify Tracks",currentTopTracks)
       }) 
       .catch(err => {
-        ErrorStatusCheck(err)
+        ErrorStatusCheck(err, setAccessToken)
     })
   }
 

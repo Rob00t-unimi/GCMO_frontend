@@ -21,6 +21,10 @@ import { spotifyApi } from '../../util/costanti';
 
 function NavigationPage(){
 
+  //MANTENGO UNO STATE DELL'ACCESS TOKEN, il setter viene passato alla gestione errori e poi a refreshToken, al cambiare dello state rieseguo alcune funzioni_______________________________________________________________________________
+  const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken"))
+
+
 //SHOW FOOTER________________________________________________________________________________________________________________________________________________________________________________________________________________________________
   
      const [showFooter, setShowFooter] = useState(false);
@@ -270,7 +274,7 @@ function ricerca(){
       console.log("Top 10 Spotify Playlists",topPlaylists)
     })
     .catch(err => {
-      ErrorStatusCheck(err)
+      ErrorStatusCheck(err, setAccessToken)
   })
 
 
@@ -299,7 +303,7 @@ function ricerca(){
       console.log("Top 10 Spotify Tracks",currentTopTracks)
     }) 
     .catch(err => {
-      ErrorStatusCheck(err)
+      ErrorStatusCheck(err, setAccessToken)
   })
  
 }
@@ -309,7 +313,7 @@ useEffect(() => {
     getTop()
     getMyTopTracksFunction()
   }
-}, [searchWord, localStorage.getItem("accessToken")])
+}, [searchWord, accessToken])
 
 
 
@@ -340,7 +344,7 @@ function getMyTopTracksFunction() {
       console.log('User Top Tracks', myCurrentTopTracks)
     }) 
     .catch(err => {
-      ErrorStatusCheck(err)
+      ErrorStatusCheck(err, setAccessToken)
   })
 }
 

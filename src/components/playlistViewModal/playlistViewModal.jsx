@@ -13,6 +13,8 @@ import { ToastContext } from '../../App';
 
 const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter, createdPlaylist, setDeletedTracks, addPlaylist}) => {
 
+  //MANTENGO UNO STATE DELL'ACCESS TOKEN, il setter viene passato alla gestione errori e poi a refreshToken, al cambiare dello state rieseguo alcune funzioni_____________________________________________________________________________________________________
+  const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken"))
 
 
     const {setToast} = useContext(ToastContext)
@@ -68,13 +70,13 @@ const ModalPlaylistDetail = ({ show, onClose, playlist, currentUser, showFooter,
             //         getAllTracks()
             //     }, retryAfter);
             // }
-            ErrorStatusCheck(err)
+            ErrorStatusCheck(err, setAccessToken)
         })
     }
 
     useEffect(() => {
         getAllTracks()
-    }, [localStorage.getItem("accessToken")])
+    }, [accessToken])
   
     
 //REMOVE TRACK_______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
