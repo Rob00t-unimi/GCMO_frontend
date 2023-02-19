@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import  'bootstrap/dist/css/bootstrap.min.css' ;
 import {Col, Button } from "react-bootstrap";
 import './style.css';
@@ -6,9 +6,22 @@ import ErrorStatusCheck from "../../util/errorStatusCheck";
 import { spotifyApi } from '../../util/costanti';
 
 
-function Playlist_list({lista, showFooter, setShowFooter}){
+function Playlist_list({showFooter, setShowFooter}){
 
+//ESTRAGGO LA LISTA DI PLAYLIST________________________________________________________________________________________________________________________________________________________________________________________________________________
+    const [lista, setLista] = useState(null)
 
+    useEffect(() => {
+        let createdPlaylist = JSON.parse(localStorage.getItem('createdPlaylist'))
+        let playlist_list = JSON.parse(localStorage.getItem('playlist_list'))
+
+        if(playlist_list&&createdPlaylist&&!playlist_list.some(playlist => playlist.id === createdPlaylist.id)) {
+            const list = [createdPlaylist].concat(playlist_list);
+            setLista(list)
+        } else if(localStorage.getItem('playlist_list')) {
+            setLista((JSON.parse(localStorage.getItem('playlist_list'))))
+        }
+    }, [])
 
 //INSERISCE la playlist e le sue tracce nel local storage_______________________________________________________________________________________________________________
 
@@ -33,6 +46,7 @@ function Playlist_list({lista, showFooter, setShowFooter}){
     //___________________________________________________________________________________________________________________________________________________________________
 
     return(
+        lista ? 
         <Col className="colonna-sx-navigationPage bg-dark">
             <hr className="text-light"></hr>
             <h2 className="myPlaylistList text-light">My Playlists</h2>
@@ -43,7 +57,8 @@ function Playlist_list({lista, showFooter, setShowFooter}){
                     <div key={index}><Button className="playlistListElements btn-dark" onClick={()=>addPlaylistInStorage(playlist)}>{playlist.name}<hr/></Button></div>
                 ))}
             </div>
-        </Col>
+        </Col> : 
+        <Col className="colonna-sx-navigationPage bg-dark"></Col>
     )
 }
 

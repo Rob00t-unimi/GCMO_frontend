@@ -22,7 +22,6 @@ function ModalCreatePlaylist({show, onClose, addPlaylist}) {
     const [image, setImage] = useState(null);
 
     //IMPOSTA L'IMMAGINE DELLA PLAYLIST SU SPOTIFY________________________________________________________________________________________________________________________________________________________
-
     async function addingImage(id) {
         if (image) {
 
@@ -140,7 +139,18 @@ function ModalCreatePlaylist({show, onClose, addPlaylist}) {
                                 {image&&<div className='copertina'><img src={URL.createObjectURL(image)}></img></div>}
                                 {!image&&<div className='copertina text-center text-light'><div>Nessuna Immagine</div></div>}
                             </div>
-                            <div className='d-flex justify-content-end'><div className='inputFoto'><input type="file" accept="image/jpeg" onChange={(event)=>{setImage(event.target.files[0])}}/></div></div>    
+                            <div className='d-flex justify-content-end'><div className='inputFoto'><input type="file" accept="image/jpeg" onChange={(event)=>{
+                                const img = new Image();
+                                img.src = URL.createObjectURL(event.target.files[0]);
+                                img.onload = () => {
+                                    if(img.width!==img.height) {
+                                        setToast(true, "L'immagine deve essere quadrata.")
+                                        event.target.value=null
+                                    }
+                                    else {
+                                        setImage(event.target.files[0])
+                                    }
+                                }}}/></div></div>    
                         </div>
                     </div>
                 </Modal.Body>

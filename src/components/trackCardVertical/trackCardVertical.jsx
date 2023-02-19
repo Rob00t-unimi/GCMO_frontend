@@ -74,7 +74,7 @@ useEffect(() => {
 
     
     for(let i=0; i<traccePlaylist.length; i++) {
-        if (traccePlaylist[i].id===currentTrack.id) {
+        if (traccePlaylist[i]===currentTrack.id) {
             trackIsJustContained = true
         }
     }
@@ -95,7 +95,7 @@ function addTrack(){
         console.log("added",res)
         setAddBtn(false)
         let traccePlaylist = JSON.parse(localStorage.getItem('createdPlaylistTracks'))
-        traccePlaylist = traccePlaylist.concat([currentTrack])
+        traccePlaylist = traccePlaylist.concat([currentTrack.id])
         localStorage.setItem('createdPlaylistTracks', JSON.stringify(traccePlaylist))
         setToast(true, "Traccia aggiunta correttamente")
     })

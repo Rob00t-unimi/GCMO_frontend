@@ -162,7 +162,18 @@ function ModalModifyPlaylist({show, onClose, playlist, modifyPlaylist }) {
                                 {image&&<div className='copertina'><img src={image.url}></img></div>}
                                 {!image&&<div className='copertina text-center text-light'><div>Nessuna Immagine</div></div>}
                             </div>
-                            <div className='d-flex justify-content-end'><div className='inputFoto'><input type="file" accept="image/jpeg" onChange={(event)=>{impostaImmagine(event.target.files[0])}}/></div></div>    
+                            <div className='d-flex justify-content-end'><div className='inputFoto'><input type="file" accept="image/jpeg" onChange={(event)=>{
+                                const img = new Image();
+                                img.src = URL.createObjectURL(event.target.files[0]);
+                                img.onload = () => {
+                                    if(img.width!==img.height) {
+                                        setToast(true, "L'immagine deve essere quadrata.")
+                                        event.target.value=null
+                                    }
+                                    else {
+                                        impostaImmagine(event.target.files[0])
+                                    }
+                                }}}/></div></div>        
                         </div>
                     </div>
                 </Modal.Body>

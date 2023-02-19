@@ -22,6 +22,7 @@ export default function ErrorStatusCheck(errore, changeAccessToken) {
         console.log("Retry after ", errore.headers["retry_after"])
         alert("Sono state inviate troppe richieste, il traffico disponibile per la nostra applicazione è limitato. Riprovare più tardi.")
         setTimeout(() => {
+           changeAccessToken()   //questo serve solo per cambiare lo stato di accessToken permettendomi di rieseguire le funzioni principali dopo il 429
            return
         }, errore.headers["retry_after"]);
     }

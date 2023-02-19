@@ -52,16 +52,6 @@ function NavigationPage(){
 const [searchLimit, setSearchLimit] = useState(5) //viene modificato con il componente filtri di ricerca
 
 
-//ESTRAGGO LA LISTA DI PLAYLIST________________________________________________________________________________________________________________________________________________________________________________________________________________
-
-const [lista, setLista] = useState()
-
-useEffect(() => {
-  if(localStorage.getItem('playlist_list')) {
-    setLista((JSON.parse(localStorage.getItem('playlist_list'))))
-  }
-}, [localStorage.getItem('playlist_list')])
-
 
 //IMPOSTAZIONI DI RICERCA_______________________________________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -381,7 +371,7 @@ function getMyTopTracksFunction() {
         <FiltriRicerca changeLimit={(childNumber)=>setSearchLimit(childNumber)} filterArr={filterArr} cosaCercare={(filtriSelezionati)=>setFilterArr(filtriSelezionati)} setOptionCategory={(categoria)=>setOptionCategory(categoria)} activeCategory={optionCategory}/>
 
       {/* LISTA DELLE PLAYLIST */}
-      {lista&&<Playlist_list lista={lista} showFooter={showFooter} setShowFooter={()=>setShowFooter(true)}></Playlist_list>}
+      <Playlist_list showFooter={showFooter} setShowFooter={()=>setShowFooter(true)}></Playlist_list>
 
         {/* CAROSELLO MY TOP TRACK */}
         {myTopTracks&&(!searchWord||searchWord==="")&&optionCategory===""&&<Container fluid className="cardsTop" >

@@ -4,12 +4,12 @@ import { Card, Button, Row, Col, Container } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import playlistImage from '../../assets/generalPlaylistImage.jpg'
 import { spotifyApi } from '../../util/costanti';
+import ErrorStatusCheck from '../../util/errorStatusCheck';
 
 
 
 function FooterElement({close, playlist}){
 
-    
     const [immagine, setImmagine] = useState()
 
     //CONTROLLO L'IMMAGINE_________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -27,14 +27,17 @@ function FooterElement({close, playlist}){
     function recuperaImmagine() {
         spotifyApi.getPlaylist(playlist.id)         //metto una ricorsione altrimenti arriva la risposta quando l'immagine non è ancora stata salvata nella playlist nei server delle api
             .then(dat=>{                                 //eseguo la ricorsione finchè non arriva l'immagine
-                console.log("datttt", dat)
                 if((dat.body.images.length > 0)&&(!playlist.oldImage||dat.body.images[0].url!==playlist.oldImage)) {        //finchè non arriva l'immagine non la cambio
                     setImmagine(dat.body.images[0].url)                                                                     //se l'immagine arriva ed è la stessa di oldImage significa che non è ancora stata cambiata quindi continuo
                     return                                                                                                  //se c'è oldImage ed è diverso dall'immagine arrivata posso fermarmi
                 } else {                                                                                                    //se oldImage è null mi fermo non appena arriva un immagine poichè non è stata cambiata
                     return recuperaImmagine()
                 }
-        })
+            })
+            .catch(err=>{
+                ErrorStatusCheck(err)
+                recuperaImmagine()
+            })
     }
 
     //CHIUDE IL FOOTER e rimuove la playlist dal local storage______________________________________________________________________________________________________________________________________________________________________________
