@@ -38,7 +38,7 @@ function PlaylistCardNavigationPage({playlist, showFooter, createdPlaylist}){
          .catch(err => {
             ErrorStatusCheck(err)
         })
-        console.log(playlist.name,type)
+        //console.log(playlist.name,type)
     }, [playlist])
 
 //INVERTE IL TIPO DELLA PLAYLIST____________________________________________________________________________________________________________________________________________________________

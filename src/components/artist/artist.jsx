@@ -27,7 +27,7 @@ function Artist({artist}){
 
         spotifyApi.isFollowingArtists([artist.id])
         .then(res =>{
-            console.log('risposta', res)
+            //console.log('risposta', res)
             setType(res.body[0])
             })
         .catch(err => {

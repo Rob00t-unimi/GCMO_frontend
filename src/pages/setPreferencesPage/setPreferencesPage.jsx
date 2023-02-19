@@ -9,6 +9,7 @@ import TrackCardHorizontal from "../../components/trackCardHorizontal/trackCardH
 import TrackCardVertical from "../../components/trackCardVertical/trackCardVertical";
 import Album from "../../components/album/album";
 import Artist from "../../components/artist/artist";
+import "../../components/generalStyle.css"
 
 
 
@@ -145,7 +146,7 @@ useEffect(() => {
         </div>
 
         {/* CAROSELLO TOP 10 TRACKS SPOTIFY */}
-        {topTracks&&(!searchWord||searchWord==="")&&<Container fluid className="containerRisultati" style={{height: "100%"}}>
+        {topTracks&&(!searchWord||searchWord==="")&&<Container fluid className="containerRisultati" >
            <hr/>
            <Carousel className="width-100" indicators={false} controls={false}>
               <Carousel.Item interval={6000}>

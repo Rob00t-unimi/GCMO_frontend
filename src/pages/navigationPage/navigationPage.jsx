@@ -144,7 +144,7 @@ function ricerca(){
   if (filterArr[2]) {
     spotifyApi.searchAlbums(searchWord, { limit : searchLimit})
     .then(result => {
-      console.log("ALBUM_____", result)
+      //console.log("ALBUM_____", result)
       const albums = result.body.albums.items.map(item => {                                       
         return {
           image: item.images && item.images.length > 0 ? item.images[0].url : null,

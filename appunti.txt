@@ -84,7 +84,7 @@ sono rimasti i seguenti problemi da rivedere:
 aggiungere aggiornamento playlist list quando importo da album		risolto
 
 - il problema rimasto non è il refresh che funziona bene.. il problema è rilevare i cambiamenti del token nello storage 
-	per poter ri-renderizzare i componenti e rieseguire determinate funzioni
+	per poter ri-renderizzare i componenti e rieseguire determinate funzioni		risolto
 
 
 
