@@ -22,7 +22,7 @@ const [tracks, setTracks] = useState()
 
     useEffect(() => {
         const country = currentUser ? currentUser.country : null
-        spotifyApi.getArtistTopTracks(artist.id, country ? country : currentUser.country )
+        spotifyApi.getArtistTopTracks(artist.id, country ? country : "IT" )
         .then(res => {
             console.log(res)
             const tracce = res.body.tracks.map((trackInfo => {
