@@ -3,13 +3,25 @@ import { spotifyApi } from './costanti';
 
 const SERVER_BASIC_URL = 'http://localhost:9000';
 
+//uso un valore nel local storage come stato condiviso da ogni chiamata alla funzione di refresh
+//per garantire che se una funzione di refresh è in esecuzione nessun'altro refresh venga eseguito contemporaneamente
+//questo mi serve perchè molte chiamate falliscono se il token è scaduto e tutte insieme eseguirebbero il refresh
+//causando un errore 429 che sfora i limiti di rating
+
 export default function refreshToken(changeAccessToken) {
+
+    if(localStorage.getItem("refreshingToken")) {
+        return 
+    } else {
+        localStorage.setItem("refreshingToken", true) 
+    }
 
     console.log("Refreshing token")
     
     const refreshToken = localStorage.getItem('refreshToken')       
 
      if (!refreshToken) {
+        localStorage.removeItem("refreshingToken")
         return;
      }
 
@@ -30,6 +42,8 @@ export default function refreshToken(changeAccessToken) {
             .catch((err) => {
                 console.log(err)
             })
-
+            .finally(() => {
+                localStorage.removeItem("refreshingToken")
+              });
 }
 

@@ -86,7 +86,7 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
 
         {showCheckbox&&categorie&&<>
             <div className="CategorieTitle text-center"><h6>Puoi scegliere una categoria di ricerca per le playlist: </h6></div> 
-            <select class="form-control selectCategory" value={activeCategory ? activeCategory : ""} onChange={(e) => setCategoryPlaylist(e.target.value)}>
+            <select className="form-control selectCategory" value={activeCategory ? activeCategory : ""} onChange={(e) => setCategoryPlaylist(e.target.value)}>
                 <option value="" selected className="text-center">Seleziona una categoria</option>
                 {/* <option value="nomeTraccia" selected className="text-center">Nome di una traccia</option> */}
                 {categorie.map((category) => (
@@ -95,7 +95,7 @@ export default function FiltriRicerca({changeLimit, filterArr, /*isAllowed, user
             </select>
         </>}
         <hr />
-        <Row><Col><h5 className="text-center">Canzoni</h5></Col><Col><Form.Check custom className="switchFilter" type="switch" disabled={disabled[1]} checked={filterArr[1] }  onChange={()=>switchingValues(1)}></Form.Check></Col></Row>                
+        <Row><Col><h5 className="text-center">Canzoni</h5></Col><Col><Form.Check className="switchFilter" type="switch" disabled={disabled[1]} checked={filterArr[1] }  onChange={()=>switchingValues(1)}></Form.Check></Col></Row>                
         <hr />
         <Row><Col><h5 className="text-center">Album</h5></Col><Col> <Form.Check className="switchFilter" type="switch" disabled={disabled[2]} checked={filterArr[2] } onChange={()=>switchingValues(2)}></Form.Check></Col></Row>                   
         <hr />

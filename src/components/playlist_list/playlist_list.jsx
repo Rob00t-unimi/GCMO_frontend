@@ -29,7 +29,6 @@ function Playlist_list({showFooter, setShowFooter}){
         if(!showFooter) {
             spotifyApi.getPlaylistTracks(playlist.id)
             .then((tracks) => {
-                console.log(tracks)
                 const tracce = tracks.body.items.map(traccia=>{
                     return traccia.track.id
                 })
@@ -52,7 +51,7 @@ function Playlist_list({showFooter, setShowFooter}){
             <h2 className="myPlaylistList text-light">My Playlists</h2>
             <p className="text-light text-center">Premi su una playlist per aggiungere i brani</p>
             <hr className="text-light"></hr>
-            <div className="tabellaPlaylistList" striped bordered hover variant="dark">
+            <div className="tabellaPlaylistList" variant="dark">
                 {lista.map((playlist, index) => (
                     <div key={index}><Button className="playlistListElements btn-dark" onClick={()=>addPlaylistInStorage(playlist)}>{playlist.name}<hr/></Button></div>
                 ))}

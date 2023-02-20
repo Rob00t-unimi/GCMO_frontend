@@ -24,7 +24,7 @@ export default function ErrorStatusCheck(errore, changeAccessToken) {
         setTimeout(() => {
            changeAccessToken()   //questo serve solo per cambiare lo stato di accessToken permettendomi di rieseguire le funzioni principali dopo il 429
            return
-        }, errore.headers["retry_after"]);
+        }, errore.headers["retry_after"]*1000);
     }
 
     if (errore.body.error.status === 500 || errore.body.error.status === 502 || errore.body.error.status === 503){

@@ -27,16 +27,20 @@ function FooterElement({close, playlist}){
     function recuperaImmagine() {
         spotifyApi.getPlaylist(playlist.id)         //metto una ricorsione altrimenti arriva la risposta quando l'immagine non è ancora stata salvata nella playlist nei server delle api
             .then(dat=>{                                 //eseguo la ricorsione finchè non arriva l'immagine
-                if((dat.body.images.length > 0)&&(!playlist.oldImage||dat.body.images[0].url!==playlist.oldImage)) {        //finchè non arriva l'immagine non la cambio
+                if((dat.body.images.length > 0)&&(!playlist.oldImage || dat.body.images[0].url!==playlist.oldImage)) {        //finchè non arriva l'immagine non la cambio
                     setImmagine(dat.body.images[0].url)                                                                     //se l'immagine arriva ed è la stessa di oldImage significa che non è ancora stata cambiata quindi continuo
                     return                                                                                                  //se c'è oldImage ed è diverso dall'immagine arrivata posso fermarmi
-                } else {                                                                                                    //se oldImage è null mi fermo non appena arriva un immagine poichè non è stata cambiata
-                    return recuperaImmagine()
+                } else {   
+                    setTimeout(() => {
+                        recuperaImmagine()
+                    }, 250);                                                                                                 //se oldImage è null mi fermo non appena arriva un immagine poichè non è stata cambiata
                 }
             })
             .catch(err=>{
-                ErrorStatusCheck(err)
-                recuperaImmagine()
+                setTimeout(() => {
+                    ErrorStatusCheck(err)               //uso i timeout per rallentare e quindi diminuire il numero di chiamate ricorsive
+                    recuperaImmagine()
+                }, 250);      
             })
     }
 
