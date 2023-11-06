@@ -20,7 +20,7 @@
 
 - track                         (OK)
 
-- navigation page               (raffinare la ricerca con i vari filtri)
+- navigation page               (raffinare la ricerca con filtri)
 
 -playlist-2                     (OK)
 
